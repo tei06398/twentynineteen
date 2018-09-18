@@ -23,3 +23,7 @@ Thumbs.db
 .idea
 .gradle
 build/
+
+# Nano / Vim swap files
+*.swp
+
