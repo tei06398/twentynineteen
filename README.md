@@ -3,7 +3,8 @@ This GitHub repository contains the source code that is used to build the Androi
 
 ## Downloading the Project
 It is important to note that this repository is large and can take a long time and use a lot of space to download.
-###On a Personal (Windows) Computer
+
+### On a Personal (Windows) Computer
 Install JDK 8
 
 Install Git for Windows
@@ -58,7 +59,7 @@ When the progress bar is labelled "Done", press "Finish"
 
 **Your install should now be Complete!**
 
-###If on a school computer
+### If on a school computer
 To be Added
 
 **************************************************************************************
