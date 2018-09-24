@@ -59,9 +59,6 @@ When the progress bar is labelled "Done", press "Finish"
 
 **Your install should now be Complete!**
 
-### If on a school computer
-To be Added
-
 **************************************************************************************
 # Version Info
 **************************************************************************************
