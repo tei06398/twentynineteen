@@ -1,6 +1,35 @@
 ## Welcome!
 This GitHub repository contains the source code that is used to build the Android app used to control the RoboWarriors' *FIRST* Tech Challenge competition robot.  To use this SDK, follow the instructions below.
 
+##6460 Programming Handbook
+September 24th, 2018
+
+This year, we would like to try to work more closely with Git, for version control, and code review, to make sure any changes that are pushed are meant to be there, and are functional.
+In implementing these changes, we would like to impose a set of rules and guidelines that should not under most any circumstances be broken. These are as follows:
+
+NEVER commit straight to master - instead, open a pull request under a new branch and submit that for review and eventually, a merge.
+
+
+Put effort into your pull request message. Detail the changes made, so if/when we are looking for a commit that caused a specific problem, we can narrow it down to commits that deal with certain functionality.
+
+
+Unless having confirmed with the rest of the programming team that it is safe to edit files outside of your sub-subteam (Auton or TeleOp), DO NOT edit said files.
+
+
+Unless a majority of the programming team agrees that a force reset to the head branch is necessary, DON’T DO IT. We’ve had to in previous years, but hopefully with further review, we won’t have to this year.
+
+
+In any situation, think logically about what you’re doing. Being programmers, this seems like it should come naturally to us, but sometimes you just get lost in what you’re doing so much that you don’t stop to think about why you’re doing it.
+
+We’ll be trying to keep core functionality to a limit of 3 files this year, to be expanded if necessary. These files are planned to be as follows:
+
+
+DriverFunction
+GunnerFunction
+SensorFunction / AutonFunction
+
+These shouldn’t rely on any other class built for functionality and should be self-contained.
+
 ## Downloading the Project
 It is important to note that this repository is large and can take a long time and use a lot of space to download.
 
