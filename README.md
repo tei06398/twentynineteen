@@ -1,7 +1,7 @@
 ## Welcome!
 This GitHub repository contains the source code that is used to build the Android app used to control the RoboWarriors' *FIRST* Tech Challenge competition robot.  To use this SDK, follow the instructions below.
 
-##6460 Programming Handbook
+## 6460 Programming Handbook
 September 24th, 2018
 
 This year, we would like to try to work more closely with Git, for version control, and code review, to make sure any changes that are pushed are meant to be there, and are functional.
