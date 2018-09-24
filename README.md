@@ -25,7 +25,9 @@ We’ll be trying to keep core functionality to a limit of 3 files this year, to
 
 
 DriverFunction
+
 GunnerFunction
+
 SensorFunction / AutonFunction
 
 These shouldn’t rely on any other class built for functionality and should be self-contained.
