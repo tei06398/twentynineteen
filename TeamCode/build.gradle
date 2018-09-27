@@ -15,6 +15,6 @@
 apply from: '../build.common.gradle'
 
 dependencies {
-    compile project(path: ':endercv')
-    compile project(path: ':openCVLibrary3')
+    implementation project(path: ':endercv')
+    implementation project(path: ':openCVLibrary3')
 }
