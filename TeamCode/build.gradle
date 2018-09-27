@@ -13,3 +13,8 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+
+dependencies {
+    compile project(path: ':endercv')
+    compile project(path: ':openCVLibrary3')
+}
