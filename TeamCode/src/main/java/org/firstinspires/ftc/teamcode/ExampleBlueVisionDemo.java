@@ -53,7 +53,7 @@ public class ExampleBlueVisionDemo extends OpMode {
         blueVision = new ExampleBlueVision();
         // can replace with ActivityViewDisplay.getInstance() for fullscreen
         blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-        blueVision.setShowCountours(false);
+        blueVision.setShowCountours(true);
         // start the vision system
         blueVision.enable();
     }
