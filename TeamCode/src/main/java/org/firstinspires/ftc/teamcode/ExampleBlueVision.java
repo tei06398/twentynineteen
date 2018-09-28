@@ -69,8 +69,8 @@ public class ExampleBlueVision extends OpenCVPipeline {
         // Then, we threshold our hsv image so that we get a black/white binary image where white
         // is the blues listed in the specified range of values
         // you can use a program like WPILib GRIP to find these values, or just play around.
-        Scalar lower_white = new Scalar(0, 0, 0);
-        Scalar upper_white = new Scalar(10, 0, 255);
+        Scalar lower_white = new Scalar(0, 0, 240);
+        Scalar upper_white = new Scalar(255, 15, 255);
 
 
         Core.inRange(hsv, lower_white, upper_white, thresholded);
