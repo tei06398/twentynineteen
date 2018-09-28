@@ -70,7 +70,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
         // is the blues listed in the specified range of values
         // you can use a program like WPILib GRIP to find these values, or just play around.
         Scalar lower_white = new Scalar(0, 0, 85);
-        Scalar upper_white = new Scalar(0, 0, 255);
+        Scalar upper_white = new Scalar(10, 0, 255);
 
 
         Core.inRange(hsv, lower_white, upper_white, thresholded);
