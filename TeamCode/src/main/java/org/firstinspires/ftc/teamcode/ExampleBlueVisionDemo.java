@@ -61,7 +61,7 @@ public class ExampleBlueVisionDemo extends OpMode {
     @Override
     public void loop() {
         // update the settings of the vision pipeline
-        blueVision.setShowCountours(gamepad1.x);
+        blueVision.setShowCountours(true);
 
         // get a list of contours from the vision system
         List<MatOfPoint> contours = blueVision.getContours();
