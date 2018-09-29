@@ -19,25 +19,29 @@ public class ExampleBlueVisionDemo extends OpMode {
     @Override
     public void init() {
         blueVision = new ExampleBlueVision();
-        blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // can replace with ActivityViewDisplay.getInstance() for fullscreen
+        blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
         blueVision.setShowCountours(true);
-        blueVision.enable(); // start the vision system
+        blueVision.enable(); // start vision system
     }
 
     @Override
     public void loop() {
 
-        List<MatOfPoint> contours = blueVision.getContours(); // get a list of contours from the vision system
+        List<MatOfPoint> contours = blueVision.getContours(); // Get list of contours from the vision system
 
         for (int i = 0; i < contours.size(); i++) {
 
-            Rect boundingRect = Imgproc.boundingRect(contours.get(i)); // get the bounding rectangle of a single contour, we use it to get the x/y center - yes there's a mass center using Imgproc.moments but w/e
+            // Get bounding rectangle of single contour and find x/y center (could do mass center using Imgproc.moments)
+            Rect boundingRect = Imgproc.boundingRect(contours.get(i));
 
-            telemetry.addData("contour" + Integer.toString(i), String.format(Locale.getDefault(), "(%d, %d)", (boundingRect.x + boundingRect.width) / 2, (boundingRect.y + boundingRect.height) / 2));
+            String caption = "contour" + Integer.toString(i);
+            String value = String.format(Locale.getDefault(), "(%d, %d)", (boundingRect.x + boundingRect.width) / 2, (boundingRect.y + boundingRect.height) / 2);
+            telemetry.addData(caption, value);
+
         }
     }
 
     public void stop() {
-        blueVision.disable(); // stop the vision system
+        blueVision.disable(); // stop vision system
     }
 }
