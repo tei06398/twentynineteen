@@ -16,8 +16,11 @@ public class ExampleBlueVision extends OpenCVPipeline {
     private Mat thresholdedWhite = new Mat();
     private Mat thresholdedYellow = new Mat();
 
-    private List<MatOfPoint> whiteContours = new ArrayList<>(); // Here so we can expose it later through getContours
-    private List<MatOfPoint> yellowContours = new ArrayList<>(); // Here so we can expose it later through getContours
+    private List<MatOfPoint> whiteContours = new ArrayList<>();
+    private List<MatOfPoint> yellowContours = new ArrayList<>();
+
+    private List<MatOfPoint> goodWhiteContours = new ArrayList<>();
+    private List<MatOfPoint> goodYellowContours = new ArrayList<>();
 
     public synchronized List<MatOfPoint> getContours() {
         return whiteContours; // TODO
@@ -30,14 +33,6 @@ public class ExampleBlueVision extends OpenCVPipeline {
         // Change colorspace from RGBA to HSV
         Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
 
-        // --- Yellow detection section ---
-
-        // Threshold to find yellow colors
-        Core.inRange(hsv, new Scalar(10, 180, 110), new Scalar(30, 255, 255), thresholdedYellow);
-
-        // Blur thresholded image
-        Imgproc.blur(thresholdedYellow, thresholdedYellow, new Size(3, 3));
-
         // --- White detection section ---
 
         // Threshold to find white colors
@@ -46,14 +41,50 @@ public class ExampleBlueVision extends OpenCVPipeline {
         // Blur thresholded image
         Imgproc.blur(thresholdedWhite, thresholdedWhite, new Size(3, 3));
 
+        // --- Yellow detection section ---
+
+        // Threshold to find yellow colors
+        Core.inRange(hsv, new Scalar(10, 180, 110), new Scalar(30, 255, 255), thresholdedYellow);
+
+        // Blur thresholded image
+        Imgproc.blur(thresholdedYellow, thresholdedYellow, new Size(3, 3));
+
         whiteContours = new ArrayList<>();
         yellowContours = new ArrayList<>();
 
-        Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.findContours(thresholdedWhite, whiteContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        Imgproc.drawContours(rgba, yellowContours, -1, new Scalar(0, 0, 255), 2, 15);
-        Imgproc.drawContours(rgba, whiteContours, -1, new Scalar(0, 0, 0), 2, 15);
+        goodWhiteContours = new ArrayList<>();
+        goodYellowContours = new ArrayList<>();
+
+        for (int i = 0; i < whiteContours.size(); i++) {
+
+            MatOfPoint2f current = new MatOfPoint2f();
+            MatOfPoint2f approx = new MatOfPoint2f();
+
+            whiteContours.get(i).convertTo(current, CvType.CV_32F);
+
+            Imgproc.approxPolyDP(current, approx, 0.01 * Imgproc.arcLength(current, true), true);
+
+            double area = Imgproc.contourArea(current);
+
+            int approxArrayLength = approx.toArray().length;
+
+            if (approxArrayLength > 8 && approxArrayLength < 23 && area > 30)
+                goodWhiteContours.add(whiteContours.get(i));
+
+        }
+
+        for (int i = 0; i < yellowContours.size(); i++) {
+            goodYellowContours.add(yellowContours.get(i));
+        }
+
+        Imgproc.drawContours(rgba, goodWhiteContours, -1, new Scalar(0, 0, 0), 2, 15);
+        Imgproc.drawContours(rgba, goodYellowContours, -1, new Scalar(0, 0, 255), 2, 15);
+
+        Imgproc.putText(rgba, "All: " + whiteContours.size(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
+        Imgproc.putText(rgba, "Filter: " + goodWhiteContours.size(), new Point(25, 70), 1, 2.5, new Scalar(0, 255, 0), 3);
 
         return rgba; // display image seen by the camera
 
