@@ -13,16 +13,14 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
     // Declare mats here to avoid re-instantiating on every call to processFrame
     private Mat hsv = new Mat();
-    private Mat thresholded = new Mat();
+    private Mat thresholdedWhite = new Mat();
+    private Mat thresholdedYellow = new Mat();
 
-    private List<MatOfPoint> contours = new ArrayList<>(); // Here so we can expose it later through getContours
-
-    public synchronized void setShowCountours(boolean enabled) {
-        showContours = enabled;
-    }
+    private List<MatOfPoint> whiteContours = new ArrayList<>(); // Here so we can expose it later through getContours
+    private List<MatOfPoint> yellowContours = new ArrayList<>(); // Here so we can expose it later through getContours
 
     public synchronized List<MatOfPoint> getContours() {
-        return contours;
+        return whiteContours; // TODO
     }
 
     // Called every camera frame.
@@ -32,25 +30,33 @@ public class ExampleBlueVision extends OpenCVPipeline {
         // Change colorspace from RGBA to HSV
         Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
 
-        // Threshold hsv image to b/w binary image where white is where there is blue within in specified range of values
-        Core.inRange(hsv, new Scalar(0, 0, 200), new Scalar(179, 45, 255), thresholded);
+        // --- Yellow detection section ---
 
-        // Blur thresholded image to remove noise, other blur types include box or gaussian
-        Imgproc.blur(thresholded, thresholded, new Size(3, 3));
+        // Threshold to find yellow colors
+        Core.inRange(hsv, new Scalar(10, 180, 110), new Scalar(30, 255, 255), thresholdedYellow);
 
-        // List to hold contours, w/ single contour for outline of every blue object - could iterate over them to find objects of interest
-        // Imgproc module has functions to analyze individual contours by their area, avg position, etc.
-        contours = new ArrayList<>();
+        // Blur thresholded image
+        Imgproc.blur(thresholdedYellow, thresholdedYellow, new Size(3, 3));
 
-        // this function fills our contours variable with the outlines of blue objects we found
-        Imgproc.findContours(thresholded, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+        // --- White detection section ---
 
-        // display binary threshold on screen - draws green outlines of blue contours over original image
-        if (showContours) {
-            Imgproc.drawContours(rgba, contours, -1, new Scalar(0, 255, 0), 2, 15); // Comment if testing polydp
-        }
+        // Threshold to find white colors
+        Core.inRange(hsv, new Scalar(0, 0, 200), new Scalar(179, 45, 255), thresholdedWhite);
 
-        // return thresholded; // For better visualization
+        // Blur thresholded image
+        Imgproc.blur(thresholdedWhite, thresholdedWhite, new Size(3, 3));
+
+        whiteContours = new ArrayList<>();
+        yellowContours = new ArrayList<>();
+
+        Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(thresholdedWhite, whiteContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        Imgproc.drawContours(rgba, yellowContours, -1, new Scalar(0, 0, 255), 2, 15);
+        Imgproc.drawContours(rgba, whiteContours, -1, new Scalar(0, 0, 0), 2, 15);
+
         return rgba; // display image seen by the camera
+
     }
+
 }
