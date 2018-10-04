@@ -33,21 +33,26 @@ public class ExampleBlueVision extends OpenCVPipeline {
         // Change colorspace from RGBA to HSV
         Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
 
+        // Blur thresholded image
+        Imgproc.blur(hsv, hsv, new Size(10, 10));
+
+
+
         // --- White detection section ---
 
         // Threshold to find white colors
-        Core.inRange(hsv, new Scalar(0, 0, 200), new Scalar(179, 45, 255), thresholdedWhite);
+        Core.inRange(hsv, new Scalar(0, 0, 170), new Scalar(179, 100, 255), thresholdedWhite);
 
-        // Blur thresholded image
-        Imgproc.blur(thresholdedWhite, thresholdedWhite, new Size(3, 3));
+        Imgproc.erode(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 3, Core.BORDER_CONSTANT);
+        Imgproc.dilate(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 3, Core.BORDER_CONSTANT);
+
+
 
         // --- Yellow detection section ---
 
         // Threshold to find yellow colors
         Core.inRange(hsv, new Scalar(10, 180, 110), new Scalar(30, 255, 255), thresholdedYellow);
 
-        // Blur thresholded image
-        Imgproc.blur(thresholdedYellow, thresholdedYellow, new Size(3, 3));
 
         whiteContours = new ArrayList<>();
         yellowContours = new ArrayList<>();
@@ -58,6 +63,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
         goodWhiteContours = new ArrayList<>();
         goodYellowContours = new ArrayList<>();
 
+        /*
         for (int i = 0; i < whiteContours.size(); i++) {
 
             MatOfPoint2f current = new MatOfPoint2f();
@@ -74,6 +80,11 @@ public class ExampleBlueVision extends OpenCVPipeline {
             if (approxArrayLength > 8 && approxArrayLength < 23 && area > 30)
                 goodWhiteContours.add(whiteContours.get(i));
 
+        }
+        */
+
+        for (int i = 0; i < whiteContours.size(); i++) {
+            goodWhiteContours.add(whiteContours.get(i));
         }
 
         for (int i = 0; i < yellowContours.size(); i++) {
