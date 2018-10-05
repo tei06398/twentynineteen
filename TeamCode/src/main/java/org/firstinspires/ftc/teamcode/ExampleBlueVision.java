@@ -1,3 +1,8 @@
+/*
+Testing class using HSV color thresholding and edge detection to determine the position
+of the cubes and balls within the camera frame.
+*/
+
 package org.firstinspires.ftc.teamcode;
 
 import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
