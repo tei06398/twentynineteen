@@ -14,8 +14,6 @@ import java.util.List;
 
 public class ExampleBlueVision extends OpenCVPipeline {
 
-    private boolean showContours = true;
-
     // Declare mats here to avoid re-instantiating on every call to processFrame
     private Mat hsv = new Mat();
     private Mat thresholdedWhite = new Mat();
@@ -46,10 +44,10 @@ public class ExampleBlueVision extends OpenCVPipeline {
         // --- White detection section ---
 
         // Threshold to find white colors
-        Core.inRange(hsv, new Scalar(0, 0, 170), new Scalar(179, 100, 255), thresholdedWhite);
+        Core.inRange(hsv, new Scalar(0, 0, 190), new Scalar(179, 60, 255), thresholdedWhite);
 
-        Imgproc.erode(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 3, Core.BORDER_CONSTANT);
-        Imgproc.dilate(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 3, Core.BORDER_CONSTANT);
+        Imgproc.erode(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
+        Imgproc.dilate(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
 
 
@@ -59,9 +57,28 @@ public class ExampleBlueVision extends OpenCVPipeline {
         Core.inRange(hsv, new Scalar(10, 180, 110), new Scalar(30, 255, 255), thresholdedYellow);
 
 
+
+        // --- Circle detection test #2 ---
+        List<MatOfPoint> contours = new ArrayList<>();
+        Imgproc.findContours(thresholdedWhite, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        double maxArea = 0;
+
+        float[] circleRadius = new float[1];
+        Point circleCenter = new Point();
+
+        for (int i = 0; i < contours.size(); i++) {
+            MatOfPoint currentContour = contours.get(i);
+            if (Imgproc.contourArea(currentContour) > maxArea) {
+                Imgproc.minEnclosingCircle(new MatOfPoint2f(currentContour.toArray()), circleCenter, circleRadius);
+            }
+        }
+
+
+        // --- Find the white and yellow contours
         whiteContours = new ArrayList<>();
         yellowContours = new ArrayList<>();
 
+        // Use RETR_EXTERNAL instead of RETR_LIST to find only external contours
         Imgproc.findContours(thresholdedWhite, whiteContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
 
@@ -69,6 +86,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
         goodYellowContours = new ArrayList<>();
 
         /*
+        // --- PolyDB test ---
         for (int i = 0; i < whiteContours.size(); i++) {
 
             MatOfPoint2f current = new MatOfPoint2f();
@@ -88,6 +106,16 @@ public class ExampleBlueVision extends OpenCVPipeline {
         }
         */
 
+        /*
+        // --- Circle detection test ---
+        Mat circles = new Mat();
+        Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, thresholdedWhite.rows() / 8.0, 100, 100, 0, 1000000000);
+        List<MatOfPoint> circleContours = new ArrayList<>();
+        Imgproc.findContours(circles, circleContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+        */
+
+        /*
+        // --- Contour filtering placeholder ---
         for (int i = 0; i < whiteContours.size(); i++) {
             goodWhiteContours.add(whiteContours.get(i));
         }
@@ -101,8 +129,11 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
         Imgproc.putText(rgba, "All: " + whiteContours.size(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
         Imgproc.putText(rgba, "Filter: " + goodWhiteContours.size(), new Point(25, 70), 1, 2.5, new Scalar(0, 255, 0), 3);
+        */
 
-        return rgba; // display image seen by the camera
+        Imgproc.circle(thresholdedWhite, circleCenter, (int)circleRadius[0], new Scalar(255, 0, 0), 2);
+
+        return thresholdedWhite; // display image seen by the camera
 
     }
 
