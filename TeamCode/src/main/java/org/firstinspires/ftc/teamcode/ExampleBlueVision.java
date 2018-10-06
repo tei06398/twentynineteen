@@ -64,6 +64,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
             goodContours.add(whiteContoursExternal.get(whiteContoursExternal.size() - 1 - i));
         }
 
+        /*
         // --- Find the white and yellow contours
         whiteContours = new ArrayList<>();
         yellowContours = new ArrayList<>();
@@ -74,32 +75,6 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
         goodWhiteContours = new ArrayList<>();
         goodYellowContours = new ArrayList<>();
-
-        /*
-        // --- PolyDB test ---
-        for (int i = 0; i < whiteContours.size(); i++) {
-
-            MatOfPoint2f current = new MatOfPoint2f();
-            MatOfPoint2f approx = new MatOfPoint2f();
-
-            whiteContours.get(i).convertTo(current, CvType.CV_32F);
-
-            Imgproc.approxPolyDP(current, approx, 0.01 * Imgproc.arcLength(current, true), true);
-
-            double area = Imgproc.contourArea(current);
-
-            int approxArrayLength = approx.toArray().length;
-
-            if (approxArrayLength > 8 && approxArrayLength < 23 && area > 30)
-                goodWhiteContours.add(whiteContours.get(i));
-
-        }
-
-        // --- Circle detection test ---
-        Mat circles = new Mat();
-        Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, thresholdedWhite.rows() / 8.0, 100, 100, 0, 1000000000);
-        List<MatOfPoint> circleContours = new ArrayList<>();
-        Imgproc.findContours(circles, circleContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
 
         // --- Contour filtering placeholder ---
         for (int i = 0; i < whiteContours.size(); i++) {
