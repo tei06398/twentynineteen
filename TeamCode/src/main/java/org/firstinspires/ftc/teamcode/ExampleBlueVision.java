@@ -10,6 +10,7 @@ import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExampleBlueVision extends OpenCVPipeline {
@@ -66,12 +67,16 @@ public class ExampleBlueVision extends OpenCVPipeline {
         float[] circleRadius = new float[1];
         Point circleCenter = new Point();
 
+        Collections.sort(contours, (c1, c2) -> Double.compare(Imgproc.contourArea(c1), Imgproc.contourArea(c2)));
+
+        /*
         for (int i = 0; i < contours.size(); i++) {
             MatOfPoint currentContour = contours.get(i);
             if (Imgproc.contourArea(currentContour) > maxArea) {
                 Imgproc.minEnclosingCircle(new MatOfPoint2f(currentContour.toArray()), circleCenter, circleRadius);
             }
         }
+        */
 
 
         // --- Find the white and yellow contours
