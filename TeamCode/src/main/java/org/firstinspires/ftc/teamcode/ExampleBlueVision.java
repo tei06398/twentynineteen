@@ -22,9 +22,6 @@ public class ExampleBlueVision extends OpenCVPipeline {
     private List<MatOfPoint> whiteContours = new ArrayList<>();
     private List<MatOfPoint> yellowContours = new ArrayList<>();
 
-    private List<MatOfPoint> goodWhiteContours = new ArrayList<>();
-    private List<MatOfPoint> goodYellowContours = new ArrayList<>();
-
     public synchronized List<MatOfPoint> getContours() {
         return whiteContours; // TODO
     }
@@ -33,6 +30,10 @@ public class ExampleBlueVision extends OpenCVPipeline {
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
 
+        // Clear contour lists
+        yellowContours.clear();
+        whiteContours.clear();
+
         // Change colorspace from RGBA to HSV
         Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
 
@@ -40,37 +41,37 @@ public class ExampleBlueVision extends OpenCVPipeline {
         Imgproc.blur(hsv, hsv, new Size(10, 10));
 
         // White threshold, erode, and dilate
-        Core.inRange(hsv, new Scalar(0, 0, 190), new Scalar(179, 60, 255), thresholdedWhite);
+        Core.inRange(hsv, new Scalar(0, 0, 185), new Scalar(179, 70, 255), thresholdedWhite);
         Imgproc.erode(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
         Imgproc.dilate(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
         // Yellow threshold, erode, and dilate
         Core.inRange(hsv, new Scalar(10, 180, 110), new Scalar(30, 255, 255), thresholdedYellow);
-        Imgproc.erode(thresholdedYellow,  thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
-        Imgproc.dilate(thresholdedYellow,  thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
+        Imgproc.erode(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
+        Imgproc.dilate(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
-        /*
-        // Use RETR_EXTERNAL instead of RETR_LIST to find only external contours
-        Imgproc.findContours(thresholdedWhite, whiteContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-        */
-
+        // Create mask from thresholdedWhite that only has the external contours
+        // Use Imgproc.RETR_EXTERNAL instead of Imgproc.RETR_LIST to find only external contours
+        Imgproc.findContours(thresholdedWhite, whiteContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Mat thresholdedWhiteExternal =  Mat.zeros(thresholdedWhite.size(), thresholdedWhite.type());
+        Imgproc.fillPoly(thresholdedWhiteExternal, whiteContours, new Scalar(255, 255, 255));
 
         // --- Find Hough Circles ---
 
-        Imgproc.cvtColor(rgba, gray, Imgproc.COLOR_BGR2GRAY);
         Mat circles = new Mat();
+
+        int minDist = 50;
 
         int CannyUpperThreshold = 120;
         int Accumulator = 10;
 
-        int minRadius = 15;
-        int maxRadius = 30;
+        int minRadius = 30;
+        int maxRadius = 80;
 
-        Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minRadius, CannyUpperThreshold, Accumulator, minRadius, maxRadius);
+        Imgproc.HoughCircles(thresholdedWhiteExternal, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, CannyUpperThreshold, Accumulator, minRadius, maxRadius);
         System.out.println(circles);
 
-        Imgproc.putText(rgba, "Circles: " + circles.size(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
+        Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
 
         if (circles.cols() > 0) {
             for (int x = 0; x < circles.cols(); x++) {
