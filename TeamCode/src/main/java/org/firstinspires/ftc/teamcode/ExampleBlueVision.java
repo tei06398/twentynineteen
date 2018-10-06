@@ -50,11 +50,10 @@ public class ExampleBlueVision extends OpenCVPipeline {
         Imgproc.erode(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
         Imgproc.dilate(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
-        // Create mask from thresholdedWhite that only has the external contours
+        // Modify mask to fill holes
         // Use Imgproc.RETR_EXTERNAL instead of Imgproc.RETR_LIST to find only external contours
         Imgproc.findContours(thresholdedWhite, whiteContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        Mat thresholdedWhiteExternal =  Mat.zeros(thresholdedWhite.size(), thresholdedWhite.type());
-        Imgproc.fillPoly(thresholdedWhiteExternal, whiteContours, new Scalar(255, 255, 255));
+        Imgproc.fillPoly(thresholdedWhite, whiteContours, new Scalar(255, 255, 255));
 
         // --- Find Hough Circles ---
 
@@ -68,7 +67,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
         int minRadius = 30;
         int maxRadius = 80;
 
-        Imgproc.HoughCircles(thresholdedWhiteExternal, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, CannyUpperThreshold, Accumulator, minRadius, maxRadius);
+        Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, CannyUpperThreshold, Accumulator, minRadius, maxRadius);
         System.out.println(circles);
 
         Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
