@@ -1,3 +1,10 @@
+/*
+Troubleshooting the controller:
+- Restart the robot (app, not phone)
+- Unplug and replug the controller(s) from the USB hub
+- Press start+A or start+B
+ */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -65,10 +72,14 @@ public class TestTeleOp extends OpMode {
 
         // Servo position
         if (this.gamepad1.left_bumper) {
-            testServoPosition += 0.01;
+            if (testServoPosition <= 1) {
+                testServoPosition += 0.05;
+            }
         }
         if (this.gamepad1.right_bumper) {
-            testServoPosition -= 0.01;
+            if (testServoPosition >= 0) {
+                testServoPosition -= 0.05;
+            }
         }
         testServo.setPosition(testServoPosition);
 
