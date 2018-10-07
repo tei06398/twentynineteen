@@ -17,10 +17,8 @@ public class TestTeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    /*
     private DcMotor testMotor;
     private double testMotorPower;
-    */
 
     private Servo testServo;
     private double testServoPosition;
@@ -31,11 +29,9 @@ public class TestTeleOp extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        /*
         this.testMotor = this.hardwareMap.dcMotor.get("testMotor");
         testMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         testMotorPower = 0;
-        */
 
         this.testServo = this.hardwareMap.servo.get("testServo");
         testServoPosition = 0;
@@ -43,8 +39,7 @@ public class TestTeleOp extends OpMode {
 
     // Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
     @Override
-    public void init_loop() {
-    }
+    public void init_loop() {}
 
     // Code to run ONCE when the driver hits PLAY
     @Override
@@ -56,7 +51,6 @@ public class TestTeleOp extends OpMode {
     @Override
     public void loop() {
 
-        /*
         // Motor power
         if (this.gamepad1.right_stick_x > 0.1) {
             testMotorPower = 0.5;
@@ -68,7 +62,6 @@ public class TestTeleOp extends OpMode {
             testMotorPower = 0;
         }
         this.testMotor.setPower(testMotorPower);
-        */
 
         // Servo position
         if (this.gamepad1.left_bumper) {
@@ -83,16 +76,14 @@ public class TestTeleOp extends OpMode {
         }
         testServo.setPosition(testServoPosition);
 
-        // telemetry.addData("Test Motor Power", testMotorPower);
+        telemetry.addData("Test Motor Power", testMotorPower);
         telemetry.addData("Test Servo Position", testServoPosition);
         telemetry.addData("Run Time", runtime.toString());
         telemetry.update();
-
     }
 
     // Code to run ONCE after the driver hits STOP
     @Override
-    public void stop() {
-    }
+    public void stop() {}
 
 }
