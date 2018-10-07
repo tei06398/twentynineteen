@@ -78,31 +78,25 @@ public class ExampleBlueVision extends OpenCVPipeline {
             }
         }
 
-        // --- Find Hough Circles ---
+        // --- Hough Circles Test ---
 
         Mat circles = new Mat();
 
         int minDist = 50;
-
         int CannyUpperThreshold = 120;
         int Accumulator = 10;
-
         int minRadius = 30;
         int maxRadius = 80;
 
         Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, CannyUpperThreshold, Accumulator, minRadius, maxRadius);
-        System.out.println(circles);
-
         Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
 
         if (circles.cols() > 0) {
             for (int x = 0; x < circles.cols(); x++) {
                 double currentCircle[] = circles.get(0, x);
-
                 if (currentCircle != null) {
                     Point center = new Point(Math.round(currentCircle[0]), Math.round(currentCircle[1]));
                     int radius = (int) Math.round(currentCircle[2]);
-
                     // Draw circle perimeter
                     Imgproc.circle(rgba, center, radius, new Scalar(0, 255, 0), 2);
                     // Draw small circle to indicate center
