@@ -3,19 +3,19 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.*;
 
 @TeleOp(name="Test TeleOp", group="TeleOp OpMode")
 public class TestTeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private Telemetry telemetry;
 
+    /*
     private DcMotor testMotor;
-    private Servo testServo;
-
     private double testMotorPower;
+    */
+
+    private Servo testServo;
     private double testServoPosition;
 
     // Code to run ONCE when the driver hits INIT
@@ -24,12 +24,13 @@ public class TestTeleOp extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        /*
         this.testMotor = this.hardwareMap.dcMotor.get("testMotor");
-        this.testServo = this.hardwareMap.servo.get("testServo");
-
         testMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         testMotorPower = 0;
+        */
+
+        this.testServo = this.hardwareMap.servo.get("testServo");
         testServoPosition = 0;
     }
 
@@ -48,6 +49,7 @@ public class TestTeleOp extends OpMode {
     @Override
     public void loop() {
 
+        /*
         // Motor power
         if (this.gamepad1.right_stick_x > 0.1) {
             testMotorPower = 0.5;
@@ -59,6 +61,7 @@ public class TestTeleOp extends OpMode {
             testMotorPower = 0;
         }
         this.testMotor.setPower(testMotorPower);
+        */
 
         // Servo position
         if (this.gamepad1.left_bumper) {
@@ -69,10 +72,11 @@ public class TestTeleOp extends OpMode {
         }
         testServo.setPosition(testServoPosition);
 
-        telemetry.addData("Test Motor Power", testMotorPower);
+        // telemetry.addData("Test Motor Power", testMotorPower);
         telemetry.addData("Test Servo Position", testServoPosition);
         telemetry.addData("Run Time", runtime.toString());
         telemetry.update();
+
     }
 
     // Code to run ONCE after the driver hits STOP
