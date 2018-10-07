@@ -20,8 +20,13 @@ public class TestTeleOp extends OpMode {
     private DcMotor testMotor;
     private double testMotorPower;
 
+    private double motorSpeed = 0.3;
+
     private Servo testServo;
     private double testServoPosition;
+
+    private double servoUpperLimit = 1;
+    private double servoLowerLimit = 0.5;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -34,7 +39,7 @@ public class TestTeleOp extends OpMode {
         testMotorPower = 0;
 
         this.testServo = this.hardwareMap.servo.get("testServo");
-        testServoPosition = 0;
+        testServoPosition = servoLowerLimit;
     }
 
     // Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
@@ -53,10 +58,10 @@ public class TestTeleOp extends OpMode {
 
         // Motor power
         if (this.gamepad1.right_stick_x > 0.1) {
-            testMotorPower = 0.5;
+            testMotorPower = motorSpeed;
         }
         else if (this.gamepad1.right_stick_x < -0.1) {
-            testMotorPower = -0.5;
+            testMotorPower = -1 * motorSpeed;
         }
         else {
             testMotorPower = 0;
@@ -65,12 +70,12 @@ public class TestTeleOp extends OpMode {
 
         // Servo position
         if (this.gamepad1.left_bumper) {
-            if (testServoPosition <= 1) {
+            if (testServoPosition < servoUpperLimit) {
                 testServoPosition += 0.05;
             }
         }
         if (this.gamepad1.right_bumper) {
-            if (testServoPosition >= 0) {
+            if (testServoPosition > servoLowerLimit) {
                 testServoPosition -= 0.05;
             }
         }
