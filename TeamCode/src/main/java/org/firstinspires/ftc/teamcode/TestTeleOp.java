@@ -20,7 +20,7 @@ public class TestTeleOp extends OpMode {
     private DcMotor testMotor;
     private double testMotorPower;
 
-    private double motorSpeed = 0.3;
+    private double motorSpeed = 1;
 
     private Servo testServo;
     private double testServoPosition;
