@@ -83,12 +83,12 @@ public class ExampleBlueVision extends OpenCVPipeline {
         Mat circles = new Mat();
 
         int minDist = 50;
-        int CannyUpperThreshold = 120;
-        int Accumulator = 10;
+        int cannyUpperThreshold = 120;
+        int accumulator = 10;
         int minRadius = 30;
         int maxRadius = 80;
 
-        Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, CannyUpperThreshold, Accumulator, minRadius, maxRadius);
+        Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
         Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
 
         if (circles.cols() > 0) {
