@@ -27,7 +27,14 @@ public class ExampleBlueVision extends OpenCVPipeline {
     private List<MatOfPoint> goodYellowContours = new ArrayList<>();
 
     public synchronized List<MatOfPoint> getContours() {
-        return whiteContours; // TODO
+
+        List<MatOfPoint> returnWhiteContours = new ArrayList<>();
+
+        for (MatOfPoint m : whiteContours) {
+            returnWhiteContours.add((MatOfPoint) m.clone());
+        }
+
+        return returnWhiteContours; // return whiteContours;
     }
 
     // Called every camera frame.
