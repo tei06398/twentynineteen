@@ -29,69 +29,61 @@ public class GunnerFunction {
 
     }
 
-    // TODO Add actual code within setPower() functions
+    // TODO Add actual code within setPower() and increment() functions
     public void upArm() {
         motorArm.setPower();
-        telemetry.log().add("Raise Glyphter Arm");
+        telemetry.log().add("Raise Motor Arm");
     }
 
     public void downArm() {
         motorArm.setPower();
-        telemetry.log().add("Lower Glyphter Arm");
+        telemetry.log().add("Lower Motor Arm");
     }
 
     public void stopArm() {
         motorArm.setPower();
-        telemetry.log().add("Stop Glyphter Arm");
+        telemetry.log().add("Stop Motor Arm");
     }
 
-    public void openGlyphter() {
-        servoGlyphterLeft.passive();
-        servoGlyphterRight.passive();
-        telemetry.log().add("Open Glyphter");
+    public void openGear() {
+        servoGear.passive();
+        telemetry.log().add("Open Gear");
     }
 
-    public void closeGlyphter() {
-        servoGlyphterLeft.active();
-        servoGlyphterRight.active();
-        telemetry.log().add("Close Glyphter");
+    public void closeGear() {
+        servoGear.active();
+        telemetry.log().add("Close Gear");
     }
 
-    public void openGlyphterFully() {
-        servoGlyphterLeft.getServo().setPosition(0);
-        servoGlyphterRight.getServo().setPosition(1);
+    public void openGearFully() {
+        servoGearLeft.getServo().setPosition(0);
+        servoGearRight.getServo().setPosition(1);
     }
 
-    public void openGlyphterIncremental() {
-        servoGlyphterLeft.incrementTowardsPassive();
-        servoGlyphterRight.incrementTowardsPassive();
-        telemetry.log().add("Open Glyphter Incremental");
+    public void openGearIncremental() {
+        servoGearLeft.incrementTowardsPassive();
+        servoGearRight.incrementTowardsPassive();
+        telemetry.log().add("Open Gear Incremental");
     }
 
-    public void closeGlyphterIncremental() {
-        servoGlyphterLeft.incrementTowardsActive();
-        servoGlyphterRight.incrementTowardsActive();
-        telemetry.log().add("Close Glyphter Incremental");
+    public void closeGearIncremental() {
+        servoGearLeft.incrementTowardsActive();
+        servoGearRight.incrementTowardsActive();
+        telemetry.log().add("Close Gear Incremental");
     }
-
-    public void extendJewelPusher() { servoJewelPusher.setPosition(JEWELPUSHER_SERVO_EXTEND_POS);telemetry.log().add("Extend Jewel Pusher"); }
-
-    public void retractJewelPusher() { servoJewelPusher.setPosition(JEWELPUSHER_SERVO_RETRACT_POS);telemetry.log().add("Retract Jewel Pusher"); }
-
-    public void stopJewelPusher() { servoJewelPusher.setPosition(JEWELPUSHER_SERVO_STOPPED_POS);telemetry.log().add("Stop Jewel Pusher");}
 
     public void retractRelicSlide() {
-        motorRelicSlide.setPower(0.6);
+        motorRelicSlide.setPower();
         telemetry.log().add("Expand Relic Slide");
     }
 
     public void extendRelicSlide() {
-        motorRelicSlide.setPower(-0.6);
+        motorRelicSlide.setPower();
         telemetry.log().add("Retract Relic Slide");
     }
 
     public void stopRelicSlide() {
-        motorRelicSlide.setPower(0);
+        motorRelicSlide.setPower();
         telemetry.log().add("Stop Relic Slide");
     }
 
@@ -137,23 +129,23 @@ public class GunnerFunction {
         relicLifter.active();
     }
 
-    public void extendAutonGlyphter() {
-        autonGlyphter.active();
+    public void extendAutonGear() {
+        autonGear.active();
     }
 
-    public void retractAutonGlyphter() {
-        autonGlyphter.passive();
+    public void retractAutonGear() {
+        autonGear.passive();
     }
 
-    public void stopAutonGlyphter() {
-        autonGlyphter.getServo().setPosition(0.5);
+    public void stopAutonGear() {
+        autonGear.getServo().setPosition();
     }
 
     public void reset() {
-        //closeGlyphter();
+        //closeGear();
         relicGrabber.passive();
         relicLifter.passive();
-        servoJewelPusher.setPosition(JEWELPUSHER_SERVO_STOPPED_POS);
+        servoJewelPusher.setPosition(GEAR_SERVO_STOPPED_POS);
         telemetry.log().add("Reset");
     }
 
