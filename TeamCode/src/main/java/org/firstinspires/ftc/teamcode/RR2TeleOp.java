@@ -1,97 +1,93 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-/**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+import static org.firstinspires.ftc.teamcode.DriverFunction.MAX_SPEED_RATIO;
+import static org.firstinspires.ftc.teamcode.DriverFunction.MIN_SPEED_RATIO;
+import static org.firstinspires.ftc.teamcode.DriverFunction.NORMAL_SPEED_RATIO;
 
 @TeleOp(name="RR2 TeleOp", group="TeleOp OpMode")
-public class RR2TeleOp extends OpMode
-{
-    // Declare OpMode members.
+public class RR2TeleOp extends OpMode {
+
     private ElapsedTime runtime = new ElapsedTime();
-    private DriverFunction driverFunction = new DriverFunction(hardwareMap, telemetry);;
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
+    private DriverFunction driverFunction;
+    private DriverFunction.Steering steering;
+
+    private final static double TURNING_SPEED_BOOST = 0.3;
+
+    // Code to run ONCE when the driver hits INIT
     @Override
     public void init() {
+
+        driverFunction = new DriverFunction(hardwareMap, telemetry);
+        steering = driverFunction.getSteering();
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
+    // Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
     @Override
     public void init_loop() {
     }
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
+    // Code to run ONCE when the driver hits PLAY
     @Override
     public void start() {
         runtime.reset();
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
+    // Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
     @Override
     public void loop() {
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+
+        // --- GAMEPAD 1 ---
+
+        // Set speed ratio depending on triggers pressed
+        if (this.gamepad1.right_trigger > 0.5) {
+            steering.setSpeedRatio(MAX_SPEED_RATIO); // Left trigger: minimum speed ratio
+        }
+        else if (this.gamepad1.left_trigger > 0.5) {
+            steering.setSpeedRatio(MIN_SPEED_RATIO); // Right trigger: maximum speed ratio
+        }
+        else {
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+        }
+
+        // Right Stick: Turn/Rotate
+        if (this.gamepad1.right_stick_x > 0.1) {
+            steering.turnClockwise();
+            steering.setSpeedRatio(Math.min(1, steering.getSpeedRatio() + TURNING_SPEED_BOOST));
+        }
+        else if (this.gamepad1.right_stick_x < -0.1) {
+            steering.turnCounterclockwise();
+            steering.setSpeedRatio(Math.min(1, steering.getSpeedRatio() + TURNING_SPEED_BOOST));
+        }
+
+        // Left Stick: Drive/Strafe
+        if (Math.abs(this.gamepad1.left_stick_x) > 0.1 || Math.abs(this.gamepad1.left_stick_y) > 0.1) {
+            double angle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
+            telemetry.addData("Angle", angle);
+            steering.moveRadians(angle);
+        }
+        else {
+            telemetry.addData("Angle", 0);
+        }
+
+        // --- GAMEPAD 2 ---
+
+        // Nothing here yet...
+
+        // Finish steering, putting power into hardware, and update telemetry
+        steering.finishSteering();
+        telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
     }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
+    // Code to run ONCE after the driver hits STOP
     @Override
     public void stop() {
     }
