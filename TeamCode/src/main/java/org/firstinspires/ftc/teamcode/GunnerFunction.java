@@ -12,7 +12,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class GunnerFunction {
     // TODO Temporary, current # of motors and servos as of 10/15/18
     private final DcMotor motorArm;
-    private final Servo servoGear;
+    private final TwoStateServo servoPusher;
+    private final TwoStateServo servoLock;
     private final Telemetry telemetry;
 
     GunnerFunction(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -22,8 +23,9 @@ public class GunnerFunction {
 
         // TODO Template Initializations for Actual Motors and Servos
         this.motorArm = hardwareMap.dcMotor.get("armMotor");
-        this.servoGear = hardwareMap.servo.get("servoGear");
-        servoGear.setPosition(GEAR_SERVO_STOPPED_POS);
+        // TODO Put in actual positions in place of X
+        this.servoPusher = new TwoStateServo(hardwareMap.servo.get("servoPusher"), x, x, x, true);
+        this.servoLock = new TwoStateServo(hardwareMap.servo.get("servoLock"), X, X, X, true);
 
         this.telemetry = telemetry;
 
@@ -45,107 +47,72 @@ public class GunnerFunction {
         telemetry.log().add("Stop Motor Arm");
     }
 
-    public void openGear() {
-        servoGear.passive();
-        telemetry.log().add("Open Gear");
+    public void extendPusher() {
+        servoPusher.active();
+        telemetry.log().add("Open Pusher");
     }
 
-    public void closeGear() {
-        servoGear.active();
-        telemetry.log().add("Close Gear");
+    public void retractPusher() {
+        servoPusher.passive();
+        telemetry.log().add("Close Pusher");
     }
 
-    public void openGearFully() {
-        servoGearLeft.getServo().setPosition(0);
-        servoGearRight.getServo().setPosition(1);
+    public void extendPusherFully() {
+        servoPusher.getServo().setPosition(0);
+        servoPusher.getServo().setPosition(1);
     }
 
-    public void openGearIncremental() {
-        servoGearLeft.incrementTowardsPassive();
-        servoGearRight.incrementTowardsPassive();
-        telemetry.log().add("Open Gear Incremental");
+    public void extendPusherIncremental() {
+        servoPusher.incrementTowardsActive();
+        servoPusher.incrementTowardsActive();
+        telemetry.log().add("Extend Pusher Incremental");
     }
 
-    public void closeGearIncremental() {
-        servoGearLeft.incrementTowardsActive();
-        servoGearRight.incrementTowardsActive();
-        telemetry.log().add("Close Gear Incremental");
+    public void retractPusherIncremental() {
+        servoPusher.incrementTowardsPassive();
+        servoPusher.incrementTowardsPassive();
+        telemetry.log().add("Retract Pusher Incremental");
     }
 
-    public void retractRelicSlide() {
-        motorRelicSlide.setPower();
-        telemetry.log().add("Expand Relic Slide");
+    public void stopPusher() {
+        servoPusher.getServo().setPosition();
     }
 
-    public void extendRelicSlide() {
-        motorRelicSlide.setPower();
-        telemetry.log().add("Retract Relic Slide");
+    public void extendServoLock() {
+        servoLock.active();
+        telemetry.log().add("Extend Locking Servo");
     }
 
-    public void stopRelicSlide() {
-        motorRelicSlide.setPower();
-        telemetry.log().add("Stop Relic Slide");
+    public void retractServoLock() {
+        servoLock.passive();
+        telemetry.log().add("Retract Locking Servo");
     }
 
-    public void toggleRelicGrabber() {
-        relicGrabber.toggle();
-        telemetry.log().add("Toggle Relic Grabber");
+     public void extendServoLockIncremental() {
+        servoPusher.incrementTowardsActive();
+        servoPusher.incrementTowardsActive();
+        telemetry.log().add("Extend Locking Servo Incremental");
     }
 
-    public void openRelicGrabberIncremental() {
-        relicGrabber.incrementTowardsActive();
-        telemetry.log().add("Open Relic Grabber Incremental");
+     public void retractServoLockIncremental() {
+        servoPusher.incrementTowardsPassive();
+        servoPusher.incrementTowardsPassive();
+        telemetry.log().add("Retract Locking Servo Incremental");
     }
 
-    public void releaseRelic() {
-        relicGrabber.incrementTowardsActive();
-        if (relicLifter.getServo().getPosition() > 0.7) {
-            relicLifter.incrementTowardsPassive();
-        }
-        telemetry.log().add("Release Relic");
+    public void toggleServoLock() {
+        servoLock.toggle();
+        telemetry.log().add("Toggle Locking Servo");
     }
 
-    public void grabRelic() {
-        relicGrabber.incrementTowardsPassive();
-        motorRelicSlide.setPower(-0.3);
-        telemetry.log().add("Grab Relic");
-    }
-
-    public void closeRelicGrabberIncremental() {
-        relicGrabber.incrementTowardsPassive();
-        telemetry.log().add("Close Relic Grabber Incremental");
-    }
-
-    public void toggleRelicLifter() {
-        relicLifter.toggle();
-        telemetry.log().add("Toggle Relic Lifter");
-    }
-
-    public void raiseRelicLifter() {
-        relicLifter.passive();
-    }
-
-    public void lowerRelicLifter() {
-        relicLifter.active();
-    }
-
-    public void extendAutonGear() {
-        autonGear.active();
-    }
-
-    public void retractAutonGear() {
-        autonGear.passive();
-    }
-
-    public void stopAutonGear() {
-        autonGear.getServo().setPosition();
+    public void stopServoLock() {
+        servoLock.getServo().setPosition();
     }
 
     public void reset() {
-        //closeGear();
-        relicGrabber.passive();
-        relicLifter.passive();
-        servoJewelPusher.setPosition(GEAR_SERVO_STOPPED_POS);
+        //closePusher();
+        servoPusher.passive();
+        servoLock.passive();
         telemetry.log().add("Reset");
     }
 
@@ -157,5 +124,87 @@ public class GunnerFunction {
     public void enablePwm(HardwareMap hardwareMap) {
         ServoController servoController = hardwareMap.servoController.get("Servo Controller 1");
         servoController.pwmEnable();
+    }
+
+
+    private class TwoStateServo {
+        private Servo servo;
+        private double passivePosition;
+        private double activePosition;
+
+        private boolean isActive;
+        private double incrementalSpeed;
+
+        public TwoStateServo(Servo servo, double passivePosition, double activePosition) {
+            this(servo, passivePosition, activePosition, 1, false);
+        }
+
+        public TwoStateServo(Servo servo, double passivePosition, double activePosition, double incrementalSpeed) {
+            this(servo, passivePosition, activePosition, incrementalSpeed, false);
+        }
+
+        public TwoStateServo(Servo servo, double passivePosition, double activePosition, double incrementalSpeed, boolean startAsActive) {
+            this.servo = servo;
+            this.passivePosition = passivePosition;
+            this.activePosition = activePosition;
+            this.incrementalSpeed = incrementalSpeed;
+            isActive = startAsActive;
+            updatePosition();
+        }
+
+        public void passive() {
+            updatePosition(false);
+        }
+
+        public void active() {
+            updatePosition(true);
+        }
+
+        public void toggle() {
+            isActive = !isActive;
+            updatePosition();
+        }
+
+        private void updatePosition() {
+            servo.setPosition(isActive ? activePosition : passivePosition);
+        }
+
+        private void updatePosition(boolean isActive) {
+            this.isActive = isActive;
+            updatePosition();
+        }
+
+        public void incrementTowardsPassive() {
+            incrementTowards(passivePosition);
+        }
+
+        public void incrementTowardsActive() {
+            incrementTowards(activePosition);
+        }
+
+        private void incrementTowards(double desiredValue) {
+            double servoPos = servo.getPosition();
+            if (servoPos > desiredValue) {
+                servo.setPosition(RobotUtil.clipRange(passivePosition, activePosition, servoPos - incrementalSpeed));
+            } else if (servoPos < desiredValue){
+                servo.setPosition(RobotUtil.clipRange(passivePosition, activePosition, servoPos + incrementalSpeed));
+            }
+        }
+
+        public Servo getServo() {
+            return servo;
+        }
+    }
+
+    public static class RobotUtil {
+        public static double clipRange(double min, double max, double value) {
+            // Fix swapped ordering
+            if (min > max) {
+                double oldMax = max;
+                max = min;
+                min = oldMax;
+            }
+            return Math.min(max, Math.max(value, min));
+        }
     }
 }
