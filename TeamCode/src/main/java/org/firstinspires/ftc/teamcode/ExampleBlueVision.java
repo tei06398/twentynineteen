@@ -97,13 +97,17 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
         Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
         Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
+        ArrayList center_list =new ArrayList();
+        ArrayList radii =new ArrayList();
 
         if (circles.cols() > 0) {
             for (int x = 0; x < circles.cols(); x++) {
                 double currentCircle[] = circles.get(0, x);
                 if (currentCircle != null) {
                     Point center = new Point(Math.round(currentCircle[0]), Math.round(currentCircle[1]));
+                    center_list.add(center);
                     int radius = (int) Math.round(currentCircle[2]);
+                    radii.add(radius);
                     // Draw circle perimeter
                     Imgproc.circle(rgba, center, radius, new Scalar(0, 255, 0), 2);
                     // Draw small circle to indicate center
@@ -111,6 +115,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
                 }
             }
         }
+
 
         return rgba; // display image seen by the camera
 
