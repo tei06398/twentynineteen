@@ -26,25 +26,39 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
     private List<MatOfPoint> goodYellowContours = new ArrayList<>();
 
+    private Mat circles = new Mat();
+
     public synchronized List<MatOfPoint> getContours() {
-
         List<MatOfPoint> returnWhiteContours = new ArrayList<>();
-
         for (MatOfPoint m : whiteContours) {
             returnWhiteContours.add((MatOfPoint) m.clone());
         }
-
         return returnWhiteContours; // return whiteContours;
+    }
+
+    public synchronized int getPosition() {
+        if (circles.cols() != 2) {
+            return -1000;
+        }
+        double[] xCors = new double[2];
+        for (int i = 0; i < circles.cols(); i++) {
+            xCors[i] = circles.get(0, i)[0];
+        }
+        return 0;
     }
 
     // Called every camera frame.
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
 
-        // Clear contour lists
+        // --- Clear contour lists ---
+
         yellowContours.clear();
         whiteContours.clear();
         goodYellowContours.clear();
+
+
+        // --- Preliminary filtering ---
 
         // Change colorspace from RGBA to HSV
         Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
@@ -68,26 +82,26 @@ public class ExampleBlueVision extends OpenCVPipeline {
         Imgproc.erode(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
         Imgproc.dilate(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
-        // Preliminary block location algorithm
+        // --- Block Detection ---
+
+        // TODO: Search for 4-6 sided polygon (a cube viewed from different angles could have between 4 and 6 sides)
         Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         Collections.sort(yellowContours, (c1, c2) -> Double.compare(Imgproc.contourArea(c1), Imgproc.contourArea(c2)));
         for (int i = 0; i < Math.min(1, yellowContours.size()); i++) {
             goodYellowContours.add(yellowContours.get(yellowContours.size() - 1 - i));
         }
-        Imgproc.drawContours(rgba, goodYellowContours, -1, new Scalar(255, 0, 0), 2, 15);
+        Imgproc.drawContours(rgba, goodYellowContours, -1, new Scalar(255, 0, 0), 2, 15); // Draw the largest yellow contour
         if (goodYellowContours.size() > 0) {
             for (MatOfPoint cont : goodYellowContours) {
                 Moments moments = Imgproc.moments(cont);
                 int centerX = (int) (moments.get_m10() / moments.get_m00());
                 int centerY = (int) (moments.get_m01() / moments.get_m00());
                 Point center = new Point(centerX, centerY);
-                Imgproc.circle(rgba, center, 3, new Scalar(255, 0, 255), 2);
+                Imgproc.circle(rgba, center, 3, new Scalar(255, 0, 255), 2); // Draw a circle at center of contour
             }
         }
 
-        // --- Hough Circles Test ---
-
-        Mat circles = new Mat();
+        // --- Wiffle Ball Detection ---
 
         int minDist = 50;
         int cannyUpperThreshold = 120;
@@ -95,25 +109,31 @@ public class ExampleBlueVision extends OpenCVPipeline {
         int minRadius = 30;
         int maxRadius = 80;
 
+        // Mat circles = new Mat();
+
         Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
-        Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
 
         if (circles.cols() > 0) {
             for (int x = 0; x < circles.cols(); x++) {
-                double currentCircle[] = circles.get(0, x);
+                double[] currentCircle = circles.get(0, x);
                 if (currentCircle != null) {
                     Point center = new Point(Math.round(currentCircle[0]), Math.round(currentCircle[1]));
                     int radius = (int) Math.round(currentCircle[2]);
-                    // Draw circle perimeter
-                    Imgproc.circle(rgba, center, radius, new Scalar(0, 255, 0), 2);
-                    // Draw small circle to indicate center
-                    Imgproc.circle(rgba, center, 3, new Scalar(0, 0, 255), 2);
+                    Imgproc.circle(rgba, center, radius, new Scalar(0, 255, 0), 2); // Draw circle perimeter
+                    Imgproc.circle(rgba, center, 3, new Scalar(0, 0, 255), 2); // Draw small circle to indicate center
                 }
             }
         }
 
-        return rgba; // display image seen by the camera
+        // --- Add image overlays ---
+
+        Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(20, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
+
+        // --- Return image ---
+
+        return rgba;
 
     }
+
 
 }

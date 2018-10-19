@@ -26,18 +26,19 @@ public class ExampleBlueVisionDemo extends OpMode {
     @Override
     public void loop() {
 
+        /*
         List<MatOfPoint> contours = blueVision.getContours(); // Get list of contours from the vision system
 
         for (int i = 0; i < contours.size(); i++) {
-
-            // Get bounding rectangle of single contour and find x/y center (could do mass center using Imgproc.moments)
-            Rect boundingRect = Imgproc.boundingRect(contours.get(i));
-
+            Rect boundingRect = Imgproc.boundingRect(contours.get(i)); // Get bounding rectangle and find x/y center
             String caption = "contour" + Integer.toString(i);
             String value = String.format(Locale.getDefault(), "(%d, %d)", (boundingRect.x + boundingRect.width) / 2, (boundingRect.y + boundingRect.height) / 2);
             telemetry.addData(caption, value);
-
         }
+        */
+
+        telemetry.addData("(Probably Bad) Position Estimate", blueVision.getPosition());
+
     }
 
     public void stop() {
