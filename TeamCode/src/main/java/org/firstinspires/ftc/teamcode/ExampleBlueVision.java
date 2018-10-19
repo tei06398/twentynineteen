@@ -29,11 +29,13 @@ public class ExampleBlueVision extends OpenCVPipeline {
     private Mat circles = new Mat();
 
     public synchronized List<MatOfPoint> getContours() {
-        List<MatOfPoint> returnWhiteContours = new ArrayList<>();
-        for (MatOfPoint m : whiteContours) {
-            returnWhiteContours.add((MatOfPoint) m.clone());
+        List<MatOfPoint> whiteContoursCopy = new ArrayList<>();
+        for (MatOfPoint contourMat : whiteContours) {
+            MatOfPoint tempMat = new MatOfPoint();
+            contourMat.copyTo(tempMat);
+            whiteContoursCopy.add(tempMat);
         }
-        return returnWhiteContours; // return whiteContours;
+        return whiteContoursCopy;
     }
 
     public synchronized int getPosition() {
