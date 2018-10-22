@@ -37,7 +37,13 @@ public class ExampleBlueVisionDemo extends OpMode {
         }
         */
 
-        telemetry.addData("(Probably Bad) Position Estimate", blueVision.getPosition());
+        // telemetry.addData("Test", "Test");
+        // telemetry.addData("(Probably Bad) Position Estimate", blueVision.getPosition());
+
+        int count = 1;
+        for (Double thing: blueVision.test()) {
+            telemetry.addData("Val " + count++, thing);
+        }
 
     }
 

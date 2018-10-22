@@ -26,6 +26,8 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
     private List<MatOfPoint> goodYellowContours = new ArrayList<>();
 
+    private Point yellowCenter = null;
+
     private Mat circles = new Mat();
 
     public synchronized List<MatOfPoint> getContours() {
@@ -39,14 +41,61 @@ public class ExampleBlueVision extends OpenCVPipeline {
     }
 
     public synchronized int getPosition() {
-        if (circles.cols() != 2) {
-            return -1000;
-        }
-        double[] xCors = new double[2];
+        ArrayList<double[]> sortableCircles = new ArrayList<>();
         for (int i = 0; i < circles.cols(); i++) {
-            xCors[i] = circles.get(0, i)[0];
+            double[] currentCircle = circles.get(0, i); // [0] is x, [1] is y, [2] is radius
+            sortableCircles.add(currentCircle);
         }
-        return 0;
+        Collections.sort(sortableCircles, (c1, c2) -> Double.compare(c1[2], c2[2]));
+
+        if (sortableCircles.size() < 2) {
+            return 10;
+        }
+        else if (yellowCenter == null) {
+            return 9;
+        }
+        else {
+            double yellowX = yellowCenter.x;
+            double c1X = sortableCircles.get(sortableCircles.size() - 1)[0]; // [0] is x
+            double c2X = sortableCircles.get(sortableCircles.size() - 2)[0]; // [0] is x
+
+            if (yellowX < c1X && yellowX < c2X) {
+                return -1;
+            }
+            else if ( (yellowX < c1X && yellowX > c2X) || (yellowX > c1X && yellowX < c2X) ) {
+                return 0;
+            }
+            else {
+                return 1;
+            }
+
+        }
+    }
+
+    public synchronized double[] test() {
+        ArrayList<double[]> sortableCircles = new ArrayList<>();
+        for (int i = 0; i < circles.cols(); i++) {
+            double[] currentCircle = circles.get(0, i); // [0] is x, [1] is y, [2] is radius
+            sortableCircles.add(currentCircle);
+        }
+        Collections.sort(sortableCircles, (c1, c2) -> Double.compare(c1[2], c2[2]));
+
+        if (sortableCircles.size() < 2) {
+            return new double[]{20, 20, 20};
+        }
+        else if (yellowCenter == null) {
+            return new double[]{30, 30, 30};
+        }
+        else {
+
+            double[] toReturn = new double[3];
+
+            toReturn[0] = yellowCenter.x;
+            toReturn[1] = sortableCircles.get(sortableCircles.size() - 1)[0];
+            toReturn[2] = sortableCircles.get(sortableCircles.size() - 2)[0];
+
+            return toReturn;
+        }
     }
 
     // Called every camera frame.
@@ -58,7 +107,6 @@ public class ExampleBlueVision extends OpenCVPipeline {
         yellowContours.clear();
         whiteContours.clear();
         goodYellowContours.clear();
-
 
         // --- Preliminary filtering ---
 
@@ -98,9 +146,13 @@ public class ExampleBlueVision extends OpenCVPipeline {
                 Moments moments = Imgproc.moments(cont);
                 int centerX = (int) (moments.get_m10() / moments.get_m00());
                 int centerY = (int) (moments.get_m01() / moments.get_m00());
-                Point center = new Point(centerX, centerY);
-                Imgproc.circle(rgba, center, 3, new Scalar(255, 0, 255), 2); // Draw a circle at center of contour
+                yellowCenter = new Point(centerX, centerY);
+                // TODO: Consider whether the point needs to be reset to null if this loop does not run
+                Imgproc.circle(rgba, yellowCenter, 3, new Scalar(255, 0, 255), 2); // Draw a circle at center of contour
             }
+        }
+        else {
+            yellowCenter = null;
         }
 
         // --- Wiffle Ball Detection ---
@@ -112,6 +164,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
         int maxRadius = 80;
 
         // Mat circles = new Mat();
+        circles = new Mat(); // IMPORTANT!
 
         Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
 
