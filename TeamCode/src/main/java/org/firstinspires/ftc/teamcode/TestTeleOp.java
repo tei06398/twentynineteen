@@ -21,16 +21,13 @@ public class TestTeleOp extends OpMode {
     private double testMotorPower;
 
     // private double motorSpeed = 1;
-    private double motorSpeed = 0.5;
+    private double motorSpeed = 0.6;
 
     private Servo testServo;
     private double testServoPosition;
 
     private double servoUpperLimit = 1;
     private double servoLowerLimit = 0.5;
-
-    private double speedLowerLimit = 0;
-    private double speedUpperLimit = 1;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -84,18 +81,6 @@ public class TestTeleOp extends OpMode {
             }
         }
         testServo.setPosition(testServoPosition);
-
-        // Servo position
-        if (this.gamepad1.right_trigger > 0.5) {
-            if (motorSpeed < speedUpperLimit) {
-                motorSpeed += 0.05;
-            }
-        }
-        else if (this.gamepad1.left_trigger > 0.5) {
-            if (motorSpeed > speedLowerLimit) {
-                motorSpeed -= 0.05;
-            }
-        }
 
         telemetry.addData("Test Motor Power", motorSpeed);
         telemetry.addData("Test Servo Position", testServoPosition);
