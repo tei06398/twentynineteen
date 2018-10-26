@@ -9,10 +9,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Encapsulates Robot Driving Functionality
  */
 public class DriverFunction {
-    private DrivingMotor lf; // stands for left front
-    private DrivingMotor lb; // stands for left back
-    private DrivingMotor rf; // stands for right front
-    private DrivingMotor rb; // stands for right back
+    public DrivingMotor lf; // stands for left front
+    public DrivingMotor lb; // stands for left back
+    public DrivingMotor rf; // stands for right front
+    public DrivingMotor rb; // stands for right back
 
     private Telemetry telemetry;
     
@@ -31,7 +31,6 @@ public class DriverFunction {
         this.lb = new DrivingMotor(hardwareMap.dcMotor.get("lbMotor"), smoothness);
         this.rf = new DrivingMotor(hardwareMap.dcMotor.get("rfMotor"), smoothness);
         this.rb = new DrivingMotor(hardwareMap.dcMotor.get("rbMotor"), smoothness);
-
         this.telemetry = telemetry;
     }
 
@@ -45,12 +44,12 @@ public class DriverFunction {
      * the power is gradually shifted.
      */
     public static class DrivingMotor {
-        private DcMotor motor;
+        public DcMotor motor;
         private WeightedValue acceleration;
         
         public DrivingMotor(DcMotor motor, double smoothness) {
             this.motor = motor;
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             acceleration = new WeightedValue(smoothness);
         }
 
@@ -65,6 +64,7 @@ public class DriverFunction {
     
     // An inner class that manages the repeated recalculation of motor powers.
     public class Steering {
+
         private double powerLF = 0;
         private double powerLB = 0;
         private double powerRF = 0;
@@ -213,7 +213,7 @@ public class DriverFunction {
             } else {
                 stopAllMotors();
             }
-            
+
             setAllPowers(0);
         }
     }
