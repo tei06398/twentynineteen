@@ -27,7 +27,7 @@ public class TestTeleOp extends OpMode {
     private double testServoPosition;
 
     private double servoUpperLimit = 1;
-    private double servoLowerLimit = 0.5;
+    private double servoLowerLimit = 0.0;
 
     // Code to run ONCE when the driver hits INIT
     @Override
