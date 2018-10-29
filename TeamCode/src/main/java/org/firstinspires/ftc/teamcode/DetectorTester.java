@@ -11,14 +11,14 @@ import org.opencv.imgproc.Imgproc;
 import java.util.List;
 import java.util.Locale;
 
-@TeleOp(name="Example: Blue Vision Demo")
-public class ExampleBlueVisionDemo extends OpMode {
+@TeleOp(name="Rowechen's Detector Algorithm")
+public class DetectorTester extends OpMode {
 
-    private ExampleBlueVision blueVision;
+    private Detector blueVision;
 
     @Override
     public void init() {
-        blueVision = new ExampleBlueVision();
+        blueVision = new Detector();
         blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
         blueVision.enable(); // start vision system
     }

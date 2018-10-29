@@ -58,18 +58,44 @@ public class RR2Auton extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DriverFunction driverFunction = new DriverFunction(hardwareMap, telemetry);
 
+    private int Stage=0;
+    /*Stages:
+    * 0: init
+    * 1:
+    */
     @Override
     public void runOpMode() {
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
         runtime.reset();
-
+        Stage=1;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", "Run Time: " + runtime.toString()+"Stage: "+Stage);
             telemetry.update();
+            switch(Stage){
+                case 1:
+                   Stage1();
+                   break;
+                case 2:
+                    Stage2();
+                    break;
+                case 3:
+                    Stage3();
+                    break;
+            }
         }
+    }
+    public void Stage1() {
+
+    }
+    public void Stage2() {
+
+    }
+    public void Stage3() {
+
     }
 }
