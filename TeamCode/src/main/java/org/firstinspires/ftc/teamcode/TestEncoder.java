@@ -33,12 +33,13 @@ public class TestEncoder extends OpMode {
     @Override
     public void loop() {
 
-        DriverFunction driverFunction = new DriverFunction(hardwareMap, telemetry);
+        //DriverFunction driverFunction = new DriverFunction(hardwareMap, telemetry);
 
-        telemetry.addData("LB", driverFunction.getLbPosition());
-        telemetry.addData("LF", driverFunction.getLfPosition());
-        telemetry.addData("RB", driverFunction.getRbPosition());
-        telemetry.addData("RF", driverFunction.getRfPosition());
+        //telemetry.addData("LB", driverFunction.getLbPosition());
+        //telemetry.addData("LF", driverFunction.getLfPosition());
+        //telemetry.addData("RB", driverFunction.getRbPosition());
+        //telemetry.addData("RF", driverFunction.getRfPosition());
+        GunnerFunction.ArmController armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("servo"), 0, 0));
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
 
