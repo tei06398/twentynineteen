@@ -35,10 +35,10 @@ public class TestEncoder extends OpMode {
 
         DriverFunction driverFunction = new DriverFunction(hardwareMap, telemetry);
 
-        telemetry.addData("LB", driverFunction.lb.motor.getCurrentPosition());
-        telemetry.addData("LF", driverFunction.lf.motor.getCurrentPosition());
-        telemetry.addData("RB", driverFunction.rb.motor.getCurrentPosition());
-        telemetry.addData("RF", driverFunction.rf.motor.getCurrentPosition());
+        telemetry.addData("LB", driverFunction.getLbPosition());
+        telemetry.addData("LF", driverFunction.getLfPosition());
+        telemetry.addData("RB", driverFunction.getRbPosition());
+        telemetry.addData("RF", driverFunction.getRfPosition());
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
 
