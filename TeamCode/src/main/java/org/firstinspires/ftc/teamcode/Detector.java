@@ -24,13 +24,25 @@ public class Detector extends OpenCVPipeline {
     private Mat thresholdedWhite = new Mat();
     private Mat thresholdedYellow = new Mat();
 
+    private Mat circles = new Mat();
+
+
     private List<MatOfPoint> whiteContours = new ArrayList<>();
     private List<MatOfPoint> yellowContours = new ArrayList<>();
 
     private List<MatOfPoint> goodYellowContours = new ArrayList<>();
 
-    private static final double[] y_bounds={0.4,0.6};
+    // Hough circles settings.
+    private int minDist = 50;
+    private int cannyUpperThreshold = 120;
+    private int accumulator = 10;
+    private int minRadius = 30;
+    private int maxRadius = 80;
 
+
+
+    private static final double[] y_bounds={0.35,0.65};
+    private static int history= 1;
 
     public synchronized List<MatOfPoint> getContours() {
 
@@ -46,6 +58,9 @@ public class Detector extends OpenCVPipeline {
     // Called every camera frame.
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
+        Size this_size=rgba.size();
+        double w=this_size.width;
+        double h=this_size.height;
 
         // Clear contour lists
         yellowContours.clear();
@@ -80,36 +95,36 @@ public class Detector extends OpenCVPipeline {
         for (int i = 0; i < Math.min(1, yellowContours.size()); i++) {
             goodYellowContours.add(yellowContours.get(yellowContours.size() - 1 - i));
         }
+
         Imgproc.drawContours(rgba, goodYellowContours, -1, new Scalar(255, 0, 0), 2, 15);
+        int avgtmp=0;// avg tmp variable
+        int yellow_final= (int)w/2;
         if (goodYellowContours.size() > 0) {
             for (MatOfPoint cont : goodYellowContours) {
                 Moments moments = Imgproc.moments(cont);
                 int centerX = (int) (moments.get_m10() / moments.get_m00());
                 int centerY = (int) (moments.get_m01() / moments.get_m00());
-                Point center = new Point(centerX, centerY);
-                Imgproc.circle(rgba, center, 3, new Scalar(255, 0, 255), 2);
+                if(y_bounds[0]*h<=centerY&&y_bounds[1]*h>=centerY) {
+                    Point center = new Point(centerX, centerY);
+
+                    avgtmp+=centerX;
+                    Imgproc.circle(rgba, center, 3, new Scalar(255, 0, 255), 2);
+                }
+
             }
+            yellow_final=avgtmp/goodYellowContours.size();
         }
+        Imgproc.putText(rgba, "Yellow: " + goodYellowContours.size(), new Point(0, 30), 1, 2.5, new Scalar(255, 0, 255), 3);
 
         // --- Hough Circles Test ---
 
-        Mat circles = new Mat();
-
-        int minDist = 50;
-        int cannyUpperThreshold = 120;
-        int accumulator = 10;
-        int minRadius = 30;
-        int maxRadius = 80;
-
-        Size this_size=rgba.size();
-        double w=this_size.width;
-        double h=this_size.width;
-
         Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
-        Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(0, 30), 1, 2.5, new Scalar(0, 255, 0), 3);
+        Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(0, 60), 1, 2.5, new Scalar(0, 255, 0), 3);
 
-        TreeMap<Integer, Point> sorted_circles= new TreeMap<Integer, Point>();
+        TreeMap<Integer, Point> sorted_circles= new TreeMap<Integer, Point>();//Treemaps are basically python lists but worse.
         int[] tmp=new int[2];
+        Imgproc.line(rgba, new Point(0,y_bounds[0]*h),new Point(w,y_bounds[0]*h),new Scalar(255,255,255));
+        Imgproc.line(rgba, new Point(0,y_bounds[1]*h),new Point(w,y_bounds[1]*h),new Scalar(255,255,255));
         if (circles.cols() > 0) {
             for (int x = 0; x < circles.cols(); x++) {
                 double currentCircle[] = circles.get(0, x);
@@ -126,15 +141,31 @@ public class Detector extends OpenCVPipeline {
                 }
             }
         }
-        Object[] radii_sorted=sorted_circles.descendingKeySet().toArray();
-        if(radii_sorted.length > 0) {
-            Imgproc.circle(rgba, sorted_circles.get(radii_sorted[0]), (int) radii_sorted[0] + 10, new Scalar(0, 255, 255), 2);
-            if (radii_sorted.length > 1) {
+        Object[] radii_sorted=sorted_circles.descendingKeySet().toArray(); //Sort the circles by radii
 
-                Imgproc.circle(rgba, sorted_circles.get(radii_sorted[1]), (int) radii_sorted[1] + 10, new Scalar(0, 255, 255), 2);
+        int result=-1;//none
+        if(radii_sorted.length > 0) {
+            Point c0=sorted_circles.get(radii_sorted[0]);
+
+            Imgproc.circle(rgba, c0, (int) radii_sorted[0] + 10, new Scalar(0, 255, 255), 2);
+            if (radii_sorted.length > 1) {
+                Point c1=sorted_circles.get(radii_sorted[1]);
+                Imgproc.circle(rgba, c1, (int) radii_sorted[1] + 10, new Scalar(0, 255, 255), 2);
+
+                result=yellow_final<=c0.x?yellow_final>c1.x?1:0:yellow_final<c1.x?1:2; //Ordering; only happens if both circles present.
             }
         }
-        Imgproc.putText(rgba, "y-bound: " + radii_sorted.length, new Point(0, 60), 1, 2.5, new Scalar(0, 255, 0), 3);
+        Imgproc.putText(rgba, "Y-bound: " + radii_sorted.length, new Point(0, 90), 1, 2.5, new Scalar(0, 255, 255), 3);
+
+        //---CIRCLE GUI---
+        Imgproc.circle(rgba, new Point(45,h-45), 30, new Scalar(255, 255, 255), 30);
+        Imgproc.circle(rgba, new Point(w/2,h-45), 30, new Scalar(255, 255, 255), 30);
+        Imgproc.circle(rgba, new Point(w-45,h-45), 30, new Scalar(255, 255, 255), 30);
+
+        if(result==-1) {result = history;}else{history=result;}//History-result swap.
+
+        Imgproc.circle(rgba, new Point(result == 0 ? 45 : result == 1 ? w / 2 : w - 45, h - 45), 30, new Scalar(255, 255, 0), 30);
+
 
         return rgba; // display image seen by the camera
 

@@ -14,19 +14,19 @@ import java.util.Locale;
 @TeleOp(name="Rowechen's Detector Algorithm")
 public class DetectorTester extends OpMode {
 
-    private Detector blueVision;
+    private Detector rr2detector;
 
     @Override
     public void init() {
-        blueVision = new Detector();
-        blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
-        blueVision.enable(); // start vision system
+        rr2detector = new Detector();
+        rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
+        rr2detector.enable(); // start vision system
     }
 
     @Override
     public void loop() {
 
-        List<MatOfPoint> contours = blueVision.getContours(); // Get list of contours from the vision system
+        List<MatOfPoint> contours = rr2detector.getContours(); // Get list of contours from the vision system
 
         for (int i = 0; i < contours.size(); i++) {
 
@@ -41,7 +41,7 @@ public class DetectorTester extends OpMode {
     }
 
     public void stop() {
-        blueVision.disable(); // stop vision system
+        rr2detector.disable(); // stop vision system
     }
 
 }
