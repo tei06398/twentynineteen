@@ -18,30 +18,16 @@ public class DetectorTester extends OpMode {
 
     @Override
     public void init() {
-        rr2detector = new Detector();
+        rr2detector = new Detector(telemetry);
         rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
         rr2detector.enable(); // start vision system
     }
 
     @Override
     public void loop() {
-
-        List<MatOfPoint> contours = rr2detector.getContours(); // Get list of contours from the vision system
-
-        for (int i = 0; i < contours.size(); i++) {
-
-            // Get bounding rectangle of single contour and find x/y center (could do mass center using Imgproc.moments)
-            Rect boundingRect = Imgproc.boundingRect(contours.get(i));
-
-            String caption = "contour" + Integer.toString(i);
-            String value = String.format(Locale.getDefault(), "(%d, %d)", (boundingRect.x + boundingRect.width) / 2, (boundingRect.y + boundingRect.height) / 2);
-            telemetry.addData(caption, value);
-
-        }
     }
 
     public void stop() {
         rr2detector.disable(); // stop vision system
     }
-
 }
