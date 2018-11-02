@@ -113,6 +113,8 @@ public class Detector extends OpenCVPipeline {
 
         // --- Hough Circles Test ---
 
+        circles = new Mat();
+
         Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
         Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(0, 60), 1, 2.5, new Scalar(0, 255, 0), 3);
 
