@@ -30,11 +30,10 @@ public class GunnerFunction {
     }
 
     public static class ArmController {
-        private final int ARM_LANDED = 0; //TODO Get Values
+        private final int ARM_LANDED = 0;
         private final int WINCH_SLACKED = 0; //TODO Get Values
-        private final int ARM_UP = 0; //TODO Get Values
-        private final int ARM_DOWN = 0; //TODO Get Values
-        private final int ARM_LIFTED = 0; //TODO Get Values
+        private final int ARM_UP = -313;
+        private final int ARM_DOWN = 180; //TODO Get Values
         private DcMotor armMotor;
         private DcMotor winchMotor;
         private TwoStateServo lockServo;
@@ -62,7 +61,7 @@ public class GunnerFunction {
         }
 
         public boolean isLanded() {
-            return (armMotor.getCurrentPosition() >= ARM_LANDED - 5 && armMotor.getCurrentPosition() <= ARM_LANDED + 5);
+            return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
         }
 
         public void slackWinch() {
@@ -78,11 +77,6 @@ public class GunnerFunction {
         public void armDown() {
             armMotor.setTargetPosition(ARM_DOWN);
             armMotor.setPower(0.25);
-        }
-
-        public void lift() {
-            armMotor.setTargetPosition(ARM_LIFTED);
-            armMotor.setPower(0.75);
         }
 
         public void doTelemetry(Telemetry telemetry) {
