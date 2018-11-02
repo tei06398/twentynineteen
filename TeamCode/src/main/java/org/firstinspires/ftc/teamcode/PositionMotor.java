@@ -10,8 +10,8 @@ public class PositionMotor {
     private double acceleration;
     private int currentPosition = 0;
 
-    private final double DEFAULT_POSITION = 0;
-    private final double DEFAULT_ACCELERATION = 0;
+    private static final int DEFAULT_POSITION = 0;
+    private static final double DEFAULT_ACCELERATION = 0;
 
     public PositionMotor(DcMotor motor) {
         this(motor, DEFAULT_ACCELERATION, DEFAULT_POSITION);
