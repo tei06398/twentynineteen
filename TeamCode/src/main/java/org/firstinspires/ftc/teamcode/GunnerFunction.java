@@ -122,43 +122,13 @@ public class GunnerFunction {
 
     public void stopPusher() {
         //pusherServo.getServo().setPosition();
-    }
-
-    public void extendServoLock() {
-        lockServo.active();
-        telemetry.log().add("Extend Locking Servo");
-    }
-
-    public void retractServoLock() {
-        lockServo.passive();
-        telemetry.log().add("Retract Locking Servo");
-    }
-
-     public void extendServoLockIncremental() {
-        pusherServo.incrementTowardsActive();
-        pusherServo.incrementTowardsActive();
-        telemetry.log().add("Extend Locking Servo Incremental");
-    }
-
-     public void retractServoLockIncremental() {
-        pusherServo.incrementTowardsPassive();
-        pusherServo.incrementTowardsPassive();
-        telemetry.log().add("Retract Locking Servo Incremental");
-    }
-
-    public void toggleServoLock() {
-        lockServo.toggle();
-        telemetry.log().add("Toggle Locking Servo");
-    }
-
-    public void stopServoLock() {
-        //lockServo.getServo().setPosition();
+        //TODO: Revise the Jeffrey Code to make this method possible
     }
 
     public void reset() {
         //closePusher();
         pusherServo.passive();
-        lockServo.passive();
+        lockServo.passive(); //TODO: Replace this with something that uses the ArmController Class
         telemetry.log().add("Reset");
     }
 
