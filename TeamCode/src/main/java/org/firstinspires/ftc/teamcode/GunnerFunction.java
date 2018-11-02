@@ -11,9 +11,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class GunnerFunction {
     // TODO Temporary, current # of motors and servos as of 10/15/18
-    private final DcMotor motorArm;
-    private final TwoStateServo servoPusher;
-    private final TwoStateServo servoLock;
+    private final TwoStateServo pusherServo;
+    private final TwoStateServo lockServo;
     private final Telemetry telemetry;
 
     GunnerFunction(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -22,97 +21,144 @@ public class GunnerFunction {
         servoController.pwmDisable();
 
         // TODO Template Initializations for Actual Motors and Servos
-        this.motorArm = hardwareMap.dcMotor.get("armMotor");
-        // TODO Put in actual positions in place of X
-        this.servoPusher = new TwoStateServo(hardwareMap.servo.get("servoPusher"), x, x, x, true);
-        this.servoLock = new TwoStateServo(hardwareMap.servo.get("servoLock"), X, X, X, true);
+        // TODO Put in actual positions in place of 0
+        this.pusherServo = new TwoStateServo(hardwareMap.servo.get("pusherServo"), 0, 0, 0, true);
+        this.lockServo = new TwoStateServo(hardwareMap.servo.get("lockServo"), 0, 0, 0, true);
 
         this.telemetry = telemetry;
 
     }
 
+    public static class ArmController {
+        private final int ARM_LANDED = 0; //TODO Get Values
+        private final int WINCH_SLACKED = 0; //TODO Get Values
+        private final int ARM_UP = 0; //TODO Get Values
+        private final int ARM_DOWN = 0; //TODO Get Values
+        private final int ARM_LIFTED = 0; //TODO Get Values
+        private DcMotor armMotor;
+        private DcMotor winchMotor;
+        private TwoStateServo lockServo;
+
+        public ArmController(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo) {
+            this.armMotor = armMotor;
+            this.winchMotor = winchMotor;
+            this.lockServo = lockServo;
+            resetEncoders();
+        }
+
+        public void resetEncoders() {
+            armMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            winchMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        public void unlock() {
+            lockServo.active();
+        }
+
+        public void lock() {
+            lockServo.passive();
+        }
+
+        public boolean isLanded() {
+            return (armMotor.getCurrentPosition() >= ARM_LANDED - 5 && armMotor.getCurrentPosition() <= ARM_LANDED + 5);
+        }
+
+        public void slackWinch() {
+            winchMotor.setTargetPosition(WINCH_SLACKED);
+            armMotor.setPower(0.5);
+        }
+
+        public void armUp() {
+            armMotor.setTargetPosition(ARM_UP);
+            armMotor.setPower(0.25);
+        }
+
+        public void armDown() {
+            armMotor.setTargetPosition(ARM_DOWN);
+            armMotor.setPower(0.25);
+        }
+
+        public void lift() {
+            armMotor.setTargetPosition(ARM_LIFTED);
+            armMotor.setPower(0.75);
+        }
+
+        public void doTelemetry(Telemetry telemetry) {
+            telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
+            telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
+        }
+    }
+
     // TODO Add actual code within setPower() and increment() functions
-    public void upArm() {
-        motorArm.setPower();
-        telemetry.log().add("Raise Motor Arm");
-    }
-
-    public void downArm() {
-        motorArm.setPower();
-        telemetry.log().add("Lower Motor Arm");
-    }
-
-    public void stopArm() {
-        motorArm.setPower();
-        telemetry.log().add("Stop Motor Arm");
-    }
 
     public void extendPusher() {
-        servoPusher.active();
+        pusherServo.active();
         telemetry.log().add("Open Pusher");
     }
 
     public void retractPusher() {
-        servoPusher.passive();
+        pusherServo.passive();
         telemetry.log().add("Close Pusher");
     }
 
     public void extendPusherFully() {
-        servoPusher.getServo().setPosition(0);
-        servoPusher.getServo().setPosition(1);
+        pusherServo.getServo().setPosition(0);
+        pusherServo.getServo().setPosition(1);
     }
 
     public void extendPusherIncremental() {
-        servoPusher.incrementTowardsActive();
-        servoPusher.incrementTowardsActive();
+        pusherServo.incrementTowardsActive();
+        pusherServo.incrementTowardsActive();
         telemetry.log().add("Extend Pusher Incremental");
     }
 
     public void retractPusherIncremental() {
-        servoPusher.incrementTowardsPassive();
-        servoPusher.incrementTowardsPassive();
+        pusherServo.incrementTowardsPassive();
+        pusherServo.incrementTowardsPassive();
         telemetry.log().add("Retract Pusher Incremental");
     }
 
     public void stopPusher() {
-        servoPusher.getServo().setPosition();
+        //pusherServo.getServo().setPosition();
     }
 
     public void extendServoLock() {
-        servoLock.active();
+        lockServo.active();
         telemetry.log().add("Extend Locking Servo");
     }
 
     public void retractServoLock() {
-        servoLock.passive();
+        lockServo.passive();
         telemetry.log().add("Retract Locking Servo");
     }
 
      public void extendServoLockIncremental() {
-        servoPusher.incrementTowardsActive();
-        servoPusher.incrementTowardsActive();
+        pusherServo.incrementTowardsActive();
+        pusherServo.incrementTowardsActive();
         telemetry.log().add("Extend Locking Servo Incremental");
     }
 
      public void retractServoLockIncremental() {
-        servoPusher.incrementTowardsPassive();
-        servoPusher.incrementTowardsPassive();
+        pusherServo.incrementTowardsPassive();
+        pusherServo.incrementTowardsPassive();
         telemetry.log().add("Retract Locking Servo Incremental");
     }
 
     public void toggleServoLock() {
-        servoLock.toggle();
+        lockServo.toggle();
         telemetry.log().add("Toggle Locking Servo");
     }
 
     public void stopServoLock() {
-        servoLock.getServo().setPosition();
+        //lockServo.getServo().setPosition();
     }
 
     public void reset() {
         //closePusher();
-        servoPusher.passive();
-        servoLock.passive();
+        pusherServo.passive();
+        lockServo.passive();
         telemetry.log().add("Reset");
     }
 
@@ -127,7 +173,7 @@ public class GunnerFunction {
     }
 
 
-    private class TwoStateServo {
+    public static class TwoStateServo {
         private Servo servo;
         private double passivePosition;
         private double activePosition;
