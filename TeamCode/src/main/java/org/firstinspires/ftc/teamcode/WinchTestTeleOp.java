@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.*;
 
-@TeleOp(name="Test TeleOp", group="TeleOp OpMode")
-public class TestTeleOp extends OpMode {
+@TeleOp(name="Winch Test TeleOp", group="TeleOp OpMode")
+public class WinchTestTeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
