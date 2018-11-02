@@ -12,6 +12,8 @@ public class TestEncoder extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    private GunnerFunction gunnerFunction;
+
     // Code to run ONCE when the driver hits INIT
     @Override
     public void init() {
