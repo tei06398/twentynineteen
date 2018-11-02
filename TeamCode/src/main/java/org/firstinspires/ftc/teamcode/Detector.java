@@ -23,13 +23,10 @@ public class Detector extends OpenCVPipeline {
     private Mat hsv = new Mat();
     private Mat thresholdedWhite = new Mat();
     private Mat thresholdedYellow = new Mat();
-
     private Mat circles = new Mat();
-
 
     private List<MatOfPoint> whiteContours = new ArrayList<>();
     private List<MatOfPoint> yellowContours = new ArrayList<>();
-
     private List<MatOfPoint> goodYellowContours = new ArrayList<>();
 
     // Hough circles settings.
@@ -38,21 +35,19 @@ public class Detector extends OpenCVPipeline {
     private int accumulator = 10;
     private int minRadius = 30;
     private int maxRadius = 80;
-
-
-
+    
     private static final double[] y_bounds={0.35,0.65};
     private static int history= 1;
 
     public synchronized List<MatOfPoint> getContours() {
-
-        List<MatOfPoint> returnWhiteContours = new ArrayList<>();
-
-        for (MatOfPoint m : whiteContours) {
-            returnWhiteContours.add((MatOfPoint) m.clone());
+        // Copy the contour list so that the client class doesn't throw errors if the actual contour list gets updated
+        List<MatOfPoint> whiteContoursCopy = new ArrayList<>();
+        for (MatOfPoint contourMat : whiteContours) {
+            MatOfPoint tempMat = new MatOfPoint();
+            contourMat.copyTo(tempMat);
+            whiteContoursCopy.add(tempMat);
         }
-
-        return returnWhiteContours; // return whiteContours;
+        return whiteContoursCopy;
     }
 
     // Called every camera frame.
