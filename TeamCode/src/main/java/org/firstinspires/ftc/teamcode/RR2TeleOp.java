@@ -13,6 +13,9 @@ public class RR2TeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    private GunnerFunction gunnerFuction;
+    private GunnerFunction.ArmController armController;
+
     private DriverFunction driverFunction;
     private DriverFunction.Steering steering;
 
@@ -24,6 +27,9 @@ public class RR2TeleOp extends OpMode {
 
         driverFunction = new DriverFunction(hardwareMap, telemetry);
         steering = driverFunction.getSteering();
+
+        armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0));
+        driverFunction = new DriverFunction(hardwareMap, telemetry);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -77,12 +83,39 @@ public class RR2TeleOp extends OpMode {
             telemetry.addData("Angle", 0);
         }
 
+        // Right Bumper: Locking/Unlocking Servo
+        if (this.gamepad1.right_bumper) {
+            if (armController.isLocked()) {
+                armController.lock();
+            } else {
+                armController.unlock();
+            }
+        }
+
+        // X Button: Toggles Arm Up/Down
+        if (this.gamepad1.x) {
+            if (armController.isArmUp()) {
+                armController.armDown();
+            } else {
+                armController.armUp();
+            }
+        }
+
+        // A Button: Resets Arm to Starting Position
+        if (this.gamepad1.a) {
+            armController.armStart();
+        }
+
+        // Slacking Winch
+        armController.slackWinch();
+
         // --- GAMEPAD 2 ---
 
         // Nothing here yet...
 
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
+        armController.doTelemetry(telemetry);
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
     }
@@ -90,6 +123,7 @@ public class RR2TeleOp extends OpMode {
     // Code to run ONCE after the driver hits STOP
     @Override
     public void stop() {
+        armController.resetEncoders();
     }
 
 }

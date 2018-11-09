@@ -12,12 +12,18 @@ public class TestEncoder extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    private GunnerFunction gunnerFunction;
+    private GunnerFunction gunnerFuction;
+    private GunnerFunction.ArmController armController;
+    private DriverFunction driverFunction;
 
     // Code to run ONCE when the driver hits INIT
     @Override
     public void init() {
+        armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0));
+        driverFunction = new DriverFunction(hardwareMap, telemetry);
 
+        telemetry.addData("Status:", "Initialized:");
+        telemetry.update();
     }
 
     // Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
@@ -35,13 +41,23 @@ public class TestEncoder extends OpMode {
     @Override
     public void loop() {
 
-        //DriverFunction driverFunction = new DriverFunction(hardwareMap, telemetry);
+        if (this.gamepad1.right_bumper) {
+            if (armController.isLocked()) {
+                armController.lock();
+            } else {
+                armController.unlock();
+            }
+        }
 
-        //telemetry.addData("LB", driverFunction.getLbPosition());
-        //telemetry.addData("LF", driverFunction.getLfPosition());
-        //telemetry.addData("RB", driverFunction.getRbPosition());
-        //telemetry.addData("RF", driverFunction.getRfPosition());
-        GunnerFunction.ArmController armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("servo"), 0, 0));
+        if (this.gamepad1.x) {
+            if (armController.isArmUp()) {
+                armController.armDown();
+            } else {
+                armController.armUp();
+            }
+        }
+
+        armController.doTelemetry(telemetry);
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
 
@@ -50,6 +66,7 @@ public class TestEncoder extends OpMode {
     // Code to run ONCE after the driver hits STOP
     @Override
     public void stop() {
+        armController.resetEncoders();
     }
 
 }
