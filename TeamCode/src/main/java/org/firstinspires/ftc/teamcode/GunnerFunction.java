@@ -24,8 +24,8 @@ public class GunnerFunction {
         // TODO Template Initializations for Actual Motors and Servos
         this.motorArm = hardwareMap.dcMotor.get("armMotor");
         // TODO Put in actual positions in place of X
-        this.servoPusher = new TwoStateServo(hardwareMap.servo.get("servoPusher"), x, x, x, true);
-        this.servoLock = new TwoStateServo(hardwareMap.servo.get("servoLock"), X, X, X, true);
+        this.servoPusher = new TwoStateServo(hardwareMap.servo.get("servoPusher"), 0, 0, 0, true);
+        this.servoLock = new TwoStateServo(hardwareMap.servo.get("servoLock"), 0, 0, 0, true);
 
         this.telemetry = telemetry;
 
@@ -33,17 +33,17 @@ public class GunnerFunction {
 
     // TODO Add actual code within setPower() and increment() functions
     public void upArm() {
-        motorArm.setPower();
+        motorArm.setPower(0);
         telemetry.log().add("Raise Motor Arm");
     }
 
     public void downArm() {
-        motorArm.setPower();
+        motorArm.setPower(0);
         telemetry.log().add("Lower Motor Arm");
     }
 
     public void stopArm() {
-        motorArm.setPower();
+        motorArm.setPower(0);
         telemetry.log().add("Stop Motor Arm");
     }
 
@@ -75,7 +75,7 @@ public class GunnerFunction {
     }
 
     public void stopPusher() {
-        servoPusher.getServo().setPosition();
+        servoPusher.getServo().setPosition(0);
     }
 
     public void extendServoLock() {
@@ -106,7 +106,7 @@ public class GunnerFunction {
     }
 
     public void stopServoLock() {
-        servoLock.getServo().setPosition();
+        servoLock.getServo().setPosition(0);
     }
 
     public void reset() {
