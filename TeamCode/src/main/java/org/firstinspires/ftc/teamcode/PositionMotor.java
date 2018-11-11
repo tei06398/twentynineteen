@@ -47,7 +47,7 @@ public class PositionMotor {
 
     // TODO: Will this stop the runmode until the method returns, or will it run asynchronously?
     public void runToPosition() {
-        // do something with currentPosition here
+        // do something with currentState here
     }
 
 }

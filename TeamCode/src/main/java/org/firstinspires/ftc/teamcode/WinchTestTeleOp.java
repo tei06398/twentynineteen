@@ -17,11 +17,11 @@ public class WinchTestTeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    private DcMotor testMotor;
-    private double testMotorPower;
-
-    // private double motorSpeed = 1;
-    private double motorSpeed = 0.6;
+    private DcMotor toggleMotor;
+    private double position_1 = 0;
+    private double position_2 = 1;
+    boolean currentState = false;
+    boolean toggle = false;
 
     private Servo testServo;
     private double testServoPosition;
@@ -35,9 +35,9 @@ public class WinchTestTeleOp extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        this.testMotor = this.hardwareMap.dcMotor.get("testMotor");
-        testMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        testMotorPower = 0;
+        this.toggleMotor = this.hardwareMap.dcMotor.get("testMotor");
+        toggleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        toggleMotor.setPower(position_1);
 
         this.testServo = this.hardwareMap.servo.get("testServo");
         testServoPosition = servoLowerLimit;
@@ -58,16 +58,22 @@ public class WinchTestTeleOp extends OpMode {
     public void loop() {
 
         // Motor power
-        if (this.gamepad1.right_stick_x > 0.1) {
-            testMotorPower = motorSpeed;
-        }
-        else if (this.gamepad1.right_stick_x < -0.1) {
-            testMotorPower = -1 * motorSpeed;
+        if (this.gamepad1.right_trigger > 0.1) {
+            if (currentState == false) {
+                currentState = true;
+                toggle = !toggle;
+            }
         }
         else {
-            testMotorPower = 0;
+            currentState = false;
         }
-        this.testMotor.setPower(testMotorPower);
+
+        if (toggle) {
+            toggleMotor.setPower(position_1);
+        }
+        else {
+            toggleMotor.setPower(position_2);
+        }
 
         // Servo position
         if (this.gamepad1.left_bumper) {
@@ -82,7 +88,7 @@ public class WinchTestTeleOp extends OpMode {
         }
         testServo.setPosition(testServoPosition);
 
-        telemetry.addData("Test Motor Power", motorSpeed);
+        telemetry.addData("Toggle", toggle);
         telemetry.addData("Test Servo Position", testServoPosition);
         telemetry.addData("Run Time", runtime.toString());
         telemetry.update();
