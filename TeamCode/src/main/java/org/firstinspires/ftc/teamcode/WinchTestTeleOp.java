@@ -18,10 +18,10 @@ public class WinchTestTeleOp extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor toggleMotor;
-    private double position_1 = 0;
-    private double position_2 = 1;
-    boolean currentState = false;
-    boolean toggle = false;
+    private int position_1 = -80;
+    private int position_2 = -410;
+    private boolean currentState = false;
+    private boolean toggle = false;
 
     private Servo testServo;
     private double testServoPosition;
@@ -35,9 +35,11 @@ public class WinchTestTeleOp extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        this.toggleMotor = this.hardwareMap.dcMotor.get("testMotor");
+        this.toggleMotor = this.hardwareMap.dcMotor.get("armMotor");
+        toggleMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
         toggleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        toggleMotor.setPower(position_1);
+        toggleMotor.setPower(0);
+        toggleMotor.setTargetPosition(position_1); //TODO
 
         this.testServo = this.hardwareMap.servo.get("testServo");
         testServoPosition = servoLowerLimit;
@@ -57,6 +59,8 @@ public class WinchTestTeleOp extends OpMode {
     @Override
     public void loop() {
 
+        toggleMotor.setPower(0.2);
+
         // Motor power
         if (this.gamepad1.right_trigger > 0.1) {
             if (currentState == false) {
@@ -69,10 +73,10 @@ public class WinchTestTeleOp extends OpMode {
         }
 
         if (toggle) {
-            toggleMotor.setPower(position_1);
+            toggleMotor.setTargetPosition(position_1);
         }
         else {
-            toggleMotor.setPower(position_2);
+            toggleMotor.setTargetPosition(position_2);
         }
 
         // Servo position
@@ -89,6 +93,7 @@ public class WinchTestTeleOp extends OpMode {
         testServo.setPosition(testServoPosition);
 
         telemetry.addData("Toggle", toggle);
+        telemetry.addData("Pos", toggleMotor.getCurrentPosition());
         telemetry.addData("Test Servo Position", testServoPosition);
         telemetry.addData("Run Time", runtime.toString());
         telemetry.update();
