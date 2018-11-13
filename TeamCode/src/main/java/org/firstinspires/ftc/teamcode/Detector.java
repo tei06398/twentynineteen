@@ -1,5 +1,5 @@
 /*
-Testing class using HSV color thresholding and edge detection to determine the position
+Uses HSV color thresholding and edge detection to determine the position
 of the cubes and balls within the camera frame.
 */
 
@@ -28,10 +28,6 @@ public class Detector extends OpenCVPipeline {
     private List<MatOfPoint> yellowContours = new ArrayList<>();
     private List<MatOfPoint> goodYellowContours = new ArrayList<>();
 
-    private Telemetry dTelemetry;
-
-    private boolean showUI;
-
     // Hough circles settings.
     private int minDist = 50;
     private int cannyUpperThreshold = 120;
@@ -43,6 +39,11 @@ public class Detector extends OpenCVPipeline {
     private static int history= 1;
 
     private int Position; //Final Output
+
+    //UI
+    private Telemetry dTelemetry;
+
+    private boolean showUI;
 
     Detector(Telemetry tele,boolean ui){
         super();
@@ -61,9 +62,12 @@ public class Detector extends OpenCVPipeline {
         return whiteContoursCopy;
     }
     public int getPosition(){
+        // Called every time we need output
+        // Called from the Auton/TeleOp.
         return Position;
     }
     // Called every camera frame.
+    // Used within the OCV pipeline.
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
         dTelemetry.addLine("---Detection Algorithm Begins---");
@@ -131,7 +135,7 @@ public class Detector extends OpenCVPipeline {
         dTelemetry.addData("Yellow", goodYellowContours.size());
         System.out.println("Yellow"+goodYellowContours.size());
 
-        // --- Hough Circles Test ---
+        // --- Hough Circles ---
 
         circles = new Mat();
         Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
@@ -198,7 +202,6 @@ public class Detector extends OpenCVPipeline {
         if(result==-1) {result = history;}else{history=result;}//History-result swap.
 
         Position=result;//After history. May change.
-
 
         if(showUI) {
             Imgproc.circle(rgba, new Point(result == 0 ? 45 : result == 1 ? w / 2 : w - 45, h - 45), 30, new Scalar(255, 255, 0), 30);
