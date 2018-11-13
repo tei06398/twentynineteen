@@ -18,7 +18,7 @@ public class DetectorTester extends OpMode {
 
     @Override
     public void init() {
-        rr2detector = new Detector(telemetry);
+        rr2detector = new Detector(telemetry,true);
         rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
         rr2detector.enable(); // start vision system
     }
