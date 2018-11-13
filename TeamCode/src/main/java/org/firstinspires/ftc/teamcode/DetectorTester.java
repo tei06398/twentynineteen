@@ -14,11 +14,11 @@ import java.util.Locale;
 @TeleOp(name="Rowechen's Detector Algorithm")
 public class DetectorTester extends OpMode {
 
-    private Detector rr2detector;
+    private WhiteYellowDetector rr2detector;
 
     @Override
     public void init() {
-        rr2detector = new Detector(telemetry,true);
+        rr2detector = new WhiteYellowDetector(telemetry,true);
         rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
         rr2detector.enable(); // start vision system
     }

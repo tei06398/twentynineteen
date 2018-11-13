@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 
-public class Detector extends OpenCVPipeline {
+public class WhiteYellowDetector extends OpenCVPipeline {
 
     // Declare mats here to avoid re-instantiating on every call to processFrame
     private Mat hsv = new Mat();
@@ -34,7 +34,7 @@ public class Detector extends OpenCVPipeline {
     private int accumulator = 10;
     private int minRadius = 30;
     private int maxRadius = 80;
-    
+
     private static final double[] y_bounds={0.35,0.65};
     private static int history= 1;
 
@@ -45,7 +45,7 @@ public class Detector extends OpenCVPipeline {
 
     private boolean showUI;
 
-    Detector(Telemetry tele,boolean ui){
+    WhiteYellowDetector(Telemetry tele,boolean ui){
         super();
         dTelemetry=tele;
         showUI=ui;
@@ -66,10 +66,10 @@ public class Detector extends OpenCVPipeline {
         // Called from the Auton/TeleOp.
         return Position;
     }
-    // Called every camera frame.
-    // Used within the OCV pipeline.
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
+        // Called every camera frame.
+        // Used within the OCV pipeline.
         dTelemetry.addLine("---Detection Algorithm Begins---");
         System.out.println("---Detection Algorithm Begins---");
         Size this_size=rgba.size();
