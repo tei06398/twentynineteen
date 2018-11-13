@@ -38,6 +38,7 @@ public class RR2TeleOp extends OpMode {
     // Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
     @Override
     public void init_loop() {
+        armController.resetEncoders();
     }
 
     // Code to run ONCE when the driver hits PLAY
