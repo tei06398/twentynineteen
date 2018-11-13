@@ -67,6 +67,7 @@ public class Detector extends OpenCVPipeline {
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
         dTelemetry.addLine("---Detection Algorithm Begins---");
+        System.out.println("---Detection Algorithm Begins---");
         Size this_size=rgba.size();
         double w=this_size.width;
         double h=this_size.height;
@@ -128,6 +129,7 @@ public class Detector extends OpenCVPipeline {
             Imgproc.putText(rgba, "Yellow: " + goodYellowContours.size(), new Point(0, 30), 1, 2.5, new Scalar(255, 0, 255), 3);
         }
         dTelemetry.addData("Yellow", goodYellowContours.size());
+        System.out.println("Yellow"+goodYellowContours.size());
 
         // --- Hough Circles Test ---
 
@@ -137,6 +139,7 @@ public class Detector extends OpenCVPipeline {
             Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(0, 60), 1, 2.5, new Scalar(0, 255, 0), 3);
         }
         dTelemetry.addData("Circles", circles.cols());
+        System.out.println("Circles"+goodYellowContours.size());
 
         TreeMap<Integer, Point> sorted_circles= new TreeMap<>();//Treemaps are basically python lists but worse.
         int[] tmp=new int[2];
@@ -181,6 +184,7 @@ public class Detector extends OpenCVPipeline {
         }
 
         dTelemetry.addData("Y-Bound", radii_sorted.length);
+        System.out.println("Y-Bound"+radii_sorted.length);
 
         //---CIRCLE GUI---
         if(showUI) {
@@ -189,6 +193,7 @@ public class Detector extends OpenCVPipeline {
             Imgproc.circle(rgba, new Point(w - 45, h - 45), 30, new Scalar(255, 255, 255), 30);
         }
         dTelemetry.addData("Detector Result",result);
+        System.out.println("Detector Result"+result);
 
         if(result==-1) {result = history;}else{history=result;}//History-result swap.
 
@@ -199,6 +204,7 @@ public class Detector extends OpenCVPipeline {
             Imgproc.circle(rgba, new Point(result == 0 ? 45 : result == 1 ? w / 2 : w - 45, h - 45), 30, new Scalar(255, 255, 0), 30);
         }
         dTelemetry.addLine("---Detection Algorithm Ends---");
+        System.out.println("---Detection Algorithm Ends---");
 
         return rgba; // display image seen by the camera
 
