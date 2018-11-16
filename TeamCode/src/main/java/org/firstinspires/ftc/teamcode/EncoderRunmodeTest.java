@@ -9,11 +9,16 @@ import com.qualcomm.robotcore.hardware.*;
 public class EncoderRunmodeTest extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-
     private DcMotor testMotor;
-
     private boolean leftToggleLock = false;
     private boolean rightToggleLock = false;
+
+    private DcMotor.RunMode[] runmodes = {
+        DcMotor.RunMode.RUN_USING_ENCODER,
+        DcMotor.RunMode.RUN_WITHOUT_ENCODER,
+        DcMotor.RunMode.RUN_USING_ENCODERS,
+        DcMotor.RunMode.RUN_WITHOUT_ENCODERS
+    };
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -25,7 +30,7 @@ public class EncoderRunmodeTest extends OpMode {
         this.testMotor = this.hardwareMap.dcMotor.get("armMotor");
 
         testMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        testMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        testMotor.setMode(runmodes[0]);
 
         // testMotor.setPower(0);
         // testMotor.setTargetPosition(0);
@@ -45,13 +50,6 @@ public class EncoderRunmodeTest extends OpMode {
     // Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
     @Override
     public void loop() {
-
-        DcMotor.RunMode[] runmodes = {
-                DcMotor.RunMode.RUN_USING_ENCODER,
-                DcMotor.RunMode.RUN_WITHOUT_ENCODER,
-                DcMotor.RunMode.RUN_USING_ENCODERS,
-                DcMotor.RunMode.RUN_WITHOUT_ENCODERS,
-        };
 
         // Right Trigger: Cycle through runmodes
         if (this.gamepad1.right_trigger > 0.1 && !leftToggleLock) {
@@ -73,8 +71,11 @@ public class EncoderRunmodeTest extends OpMode {
 
         // Left Trigger: Reset encoder
         if (this.gamepad1.left_trigger > 0.1 && !rightToggleLock) {
-                rightToggleLock = true;
-
+            rightToggleLock = true;
+            DcMotor.RunMode currentMode = testMotor.getMode();
+            // testMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            testMotor.setMode(currentMode);
         }
         else {
             rightToggleLock = false;
@@ -82,13 +83,11 @@ public class EncoderRunmodeTest extends OpMode {
 
         telemetry.addData("Motor Runmode", testMotor.getMode());
         telemetry.addData("Motor Position", testMotor.getCurrentPosition());
+        telemetry.addData("Motor Power", testMotor.getPower());
         telemetry.addData("OpMode Runtime", runtime.toString());
         telemetry.update();
 
-        /*
-        TODO: Test runmodes with DCMotor.getMode()
-        TODO: Test zero power behavior with DCMotor.getZeroPowerBehavior()
-         */
+        // TODO: Test zero power behavior with DCMotor.getZeroPowerBehavior()
     }
 
     // Code to run ONCE after the driver hits STOP
