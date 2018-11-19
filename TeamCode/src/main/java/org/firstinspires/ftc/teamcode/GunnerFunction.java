@@ -84,23 +84,17 @@ public class GunnerFunction {
             isArmUp = false;
         }
 
-        public void armStart() {
-            armMotor.setTargetPosition(0);
-            armMotor.setPower(0.25);
-            isArmUp = false;
-        }
-
-        public boolean isLocked() {
-            return isLocked;
-        }
-
-        public boolean isArmUp() {
-            return isArmUp;
-        }
-
         public void doTelemetry(Telemetry telemetry) {
             telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
             telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
+        }
+
+        public boolean getLocked() {
+            return isLocked;
+        }
+
+        public boolean getArmUp() {
+            return isArmUp;
         }
     }
 
@@ -135,43 +129,13 @@ public class GunnerFunction {
 
     public void stopPusher() {
         //pusherServo.getServo().setPosition();
-    }
-
-    public void extendServoLock() {
-        lockServo.active();
-        telemetry.log().add("Extend Locking Servo");
-    }
-
-    public void retractServoLock() {
-        lockServo.passive();
-        telemetry.log().add("Retract Locking Servo");
-    }
-
-     public void extendServoLockIncremental() {
-        pusherServo.incrementTowardsActive();
-        pusherServo.incrementTowardsActive();
-        telemetry.log().add("Extend Locking Servo Incremental");
-    }
-
-     public void retractServoLockIncremental() {
-        pusherServo.incrementTowardsPassive();
-        pusherServo.incrementTowardsPassive();
-        telemetry.log().add("Retract Locking Servo Incremental");
-    }
-
-    public void toggleServoLock() {
-        lockServo.toggle();
-        telemetry.log().add("Toggle Locking Servo");
-    }
-
-    public void stopServoLock() {
-        //lockServo.getServo().setPosition();
+        //TODO: Revise the Jeffrey Code to make this method possible
     }
 
     public void reset() {
         //closePusher();
         pusherServo.passive();
-        lockServo.passive();
+        lockServo.passive(); //TODO: Replace this with something that uses the ArmController Class
         telemetry.log().add("Reset");
     }
 

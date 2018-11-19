@@ -17,6 +17,8 @@ public class TestEncoder extends OpMode {
     private DriverFunction driverFunction;
 
     // Code to run ONCE when the driver hits INIT
+    DriverFunction driverFunction;
+    GunnerFunction.ArmController armController;
     @Override
     public void init() {
         armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0));
@@ -38,11 +40,12 @@ public class TestEncoder extends OpMode {
     }
 
     // Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+
     @Override
     public void loop() {
 
         if (this.gamepad1.right_bumper) {
-            if (armController.isLocked()) {
+            if (armController.getLocked()) {
                 armController.lock();
             } else {
                 armController.unlock();
@@ -50,13 +53,17 @@ public class TestEncoder extends OpMode {
         }
 
         if (this.gamepad1.x) {
-            if (armController.isArmUp()) {
+            if (armController.getArmUp()) {
                 armController.armDown();
             } else {
                 armController.armUp();
             }
         }
 
+        telemetry.addData("LB", driverFunction.getLbPosition());
+        telemetry.addData("LF", driverFunction.getLfPosition());
+        telemetry.addData("RB", driverFunction.getRbPosition());
+        telemetry.addData("RF", driverFunction.getRfPosition());
         armController.doTelemetry(telemetry);
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
@@ -66,6 +73,7 @@ public class TestEncoder extends OpMode {
     // Code to run ONCE after the driver hits STOP
     @Override
     public void stop() {
+        driverFunction.resetAllEncoders();
         armController.resetEncoders();
     }
 
