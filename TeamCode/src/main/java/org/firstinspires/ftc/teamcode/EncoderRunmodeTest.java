@@ -52,33 +52,35 @@ public class EncoderRunmodeTest extends OpMode {
     public void loop() {
 
         // Right Trigger: Cycle through runmodes
-        if (this.gamepad1.right_trigger > 0.1 && !leftToggleLock) {
-            leftToggleLock = true;
-
-            int position = 0;
-            for (int i = 0; i < runmodes.length; i++) {
-                if (runmodes[i] == testMotor.getMode()) {
-                    position = i;
+        if (this.gamepad1.right_trigger > 0.1) {
+            if (!rightToggleLock) {
+                rightToggleLock = true;
+                int position = 0;
+                for (int i = 0; i < runmodes.length; i++) {
+                    if (runmodes[i] == testMotor.getMode()) {
+                        position = i;
+                    }
                 }
+                int newPosition = (position + 1) % 4;
+                testMotor.setMode(runmodes[newPosition]);
             }
-            int newPosition = (position + 1) % 4;
-            testMotor.setMode(runmodes[newPosition]);
-
-        }
-        else {
-            leftToggleLock = false;
-        }
-
-        // Left Trigger: Reset encoder
-        if (this.gamepad1.left_trigger > 0.1 && !rightToggleLock) {
-            rightToggleLock = true;
-            DcMotor.RunMode currentMode = testMotor.getMode();
-            // testMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            testMotor.setMode(currentMode);
         }
         else {
             rightToggleLock = false;
+        }
+
+        // Left Trigger: Reset encoder
+        if (this.gamepad1.left_trigger > 0.1) {
+            if (!leftToggleLock) {
+                leftToggleLock = true;
+                DcMotor.RunMode currentMode = testMotor.getMode();
+                // testMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+                testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                testMotor.setMode(currentMode);
+            }
+        }
+        else {
+            leftToggleLock = false;
         }
 
         telemetry.addData("Motor Runmode", testMotor.getMode());
