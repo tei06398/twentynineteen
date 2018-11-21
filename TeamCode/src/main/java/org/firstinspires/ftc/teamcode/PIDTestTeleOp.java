@@ -13,11 +13,12 @@ public class PIDTestTeleOp extends OpMode {
     private boolean leftTriggerToggleLock = false;
     private boolean rightTriggerToggleLock = false;
     private boolean rightStickToggleLock = false;
+    private boolean leftStickToggleLock = false;
 
     private PIDPositionMotor testPIDMotor;
 
     private int position1 = -100;
-    private int position2 = -300;
+    private int position2 = -430;
 
     private double gainIncrement = 0.001;
 
@@ -90,10 +91,29 @@ public class PIDTestTeleOp extends OpMode {
             rightStickToggleLock = false;
         }
 
+        // Right Stick: Change max speed
+        if (this.gamepad1.left_stick_x > 0.1) {
+            if (!leftStickToggleLock) {
+                leftStickToggleLock = true;
+                testPIDMotor.MAX_SPEED += 0.1;
+            }
+        }
+        else if (this.gamepad1.left_stick_x < -0.1) {
+            if (!leftStickToggleLock) {
+                leftStickToggleLock = true;
+                if (testPIDMotor.MAX_SPEED - 0.1 >= 0)
+                    testPIDMotor.MAX_SPEED -= 0.1;
+            }
+        }
+        else {
+            leftStickToggleLock = false;
+        }
+
         telemetry.addData("P gain", testPIDMotor.getKp());
         telemetry.addData("Setpoint", testPIDMotor.getSetPoint());
         telemetry.addData("Current Position", testPIDMotor.getPosition());
         telemetry.addData("Motor Power", testPIDMotor.getMotor().getPower());
+        telemetry.addData("Max Speed", testPIDMotor.MAX_SPEED);
         telemetry.addData("OpMode Runtime", runtime.toString());
         telemetry.update();
 

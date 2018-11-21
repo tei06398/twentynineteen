@@ -21,7 +21,10 @@ public class PIDPositionMotor {
 
     private double previousValue;
 
-    private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER; // DcMotor.RunMode.RUN_USING_ENCODER
+    public double MAX_SPEED = 0.4;
+
+    // private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+    private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
     public PIDPositionMotor(DcMotor motor) {
         this(motor, DEFAULT_SETPOINT, DEFAULT_KP, DEFAULT_KI, DEFAULT_KD);
@@ -51,7 +54,9 @@ public class PIDPositionMotor {
 
         double pTerm = kp * getError();
 
-        motor.setPower(pTerm);
+        double speed = Math.max(Math.min(pTerm, MAX_SPEED), MAX_SPEED * -1);
+
+        motor.setPower(speed);
 
     }
 
