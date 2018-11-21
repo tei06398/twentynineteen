@@ -18,7 +18,7 @@ public class PIDTestTeleOp extends OpMode {
     private PIDPositionMotor testPIDMotor;
 
     private int position1 = -100;
-    private int position2 = -430;
+    private int position2 = -430; // -300
 
     private double gainIncrement = 0.001;
 
