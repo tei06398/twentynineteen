@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.*;
 
-@TeleOp(name="EncoderRunmodeTest", group="TeleOp OpMode")
+@TeleOp(name="Encoder Runmode Test Tele-Op", group="TeleOp OpMode")
 public class EncoderRunmodeTest extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
