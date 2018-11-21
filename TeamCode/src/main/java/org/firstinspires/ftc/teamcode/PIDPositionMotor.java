@@ -15,13 +15,13 @@ public class PIDPositionMotor {
 
     private static final int DEFAULT_SETPOINT = 0;
 
-    private static final double DEFAULT_KP = 1;
-    private static final double DEFAULT_KI = 1;
-    private static final double DEFAULT_KD = 1;
+    private static final double DEFAULT_KP = 0;
+    private static final double DEFAULT_KI = 0;
+    private static final double DEFAULT_KD = 0;
 
     private double previousValue;
 
-    private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
+    private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER; // DcMotor.RunMode.RUN_USING_ENCODER
 
     public PIDPositionMotor(DcMotor motor) {
         this(motor, DEFAULT_SETPOINT, DEFAULT_KP, DEFAULT_KI, DEFAULT_KD);
@@ -33,15 +33,8 @@ public class PIDPositionMotor {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setMode(DEFAULT_RUNMODE);
         resetEncoder();
-    }
-
-    private void resetEncoder() {
-        if (motor.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
-            motor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
     }
 
     /*
@@ -53,7 +46,22 @@ public class PIDPositionMotor {
     Upsides: It will hopefully avoid messing with multithreading.
     */
     public void runIteration() {
-        // TODO
+
+        // Currently: only proportional gain
+
+        double pTerm = kp * getError();
+
+        motor.setPower(pTerm);
+
+    }
+
+    // -------- Utilities --------
+
+    public void resetEncoder() {
+        if (motor.getMode() == DEFAULT_RUNMODE) {
+            motor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            motor.setMode(DEFAULT_RUNMODE);
+        }
     }
 
     // -------- Access Process Variable and Setpoint --------
@@ -71,7 +79,13 @@ public class PIDPositionMotor {
     }
 
     public double getError() {
-        return  motor.getCurrentPosition() - setPoint;
+        return  setPoint - motor.getCurrentPosition();
+    }
+
+    // -------- Access Encapsulated Motor --------
+
+    public DcMotor getMotor() {
+        return motor;
     }
 
     // -------- Access PID Coefficients --------
@@ -87,23 +101,29 @@ public class PIDPositionMotor {
     }
 
     public void setKp(double kp) {
-        this.kp = kp;
+        if (kp >= 0)
+            this.kp = kp;
     }
     public void setKi(double ki) {
-        this.ki = ki;
+        if (ki >= 0)
+            this.ki = ki;
     }
     public void setKd(double kd) {
-        this.kd = kd;
+        if (kd >= 0)
+            this.kd = kd;
     }
 
     public void changeKp(double delta) {
-        kp += delta;
+        if (kp + delta >= 0)
+            kp += delta;
     }
     public void changeKi(double delta) {
-        ki += delta;
+        if (ki + delta >= 0)
+            ki += delta;
     }
     public void changeKd(double delta) {
-        kd += delta;
+        if (kd + delta >= 0)
+            kd += delta;
     }
 
 }
