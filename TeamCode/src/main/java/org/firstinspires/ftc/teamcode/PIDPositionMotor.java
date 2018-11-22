@@ -66,14 +66,15 @@ public class PIDPositionMotor {
         firstIteration = false;
 
         double dt = loopTimer.getElapsedSeconds();
+        loopTimer.reset();
 
         double error = getError();
 
         double pTerm = kp * error;
 
-        iTerm += ki * (error - previousError) * dt;
+        iTerm += ki * error * dt;
 
-        double dTerm = (error - previousError) / dt; // TODO: Too large on first iteration?
+        double dTerm = (error - previousError) / dt;
 
         previousError = error;
 
@@ -85,8 +86,6 @@ public class PIDPositionMotor {
         }
 
         motor.setPower(speed);
-
-        loopTimer.reset();
     }
 
     // -------- Utilities --------
