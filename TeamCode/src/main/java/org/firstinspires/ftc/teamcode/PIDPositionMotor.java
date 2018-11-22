@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.sun.tools.javac.tree.DCTree;
 
 public class PIDPositionMotor {
 
@@ -19,12 +18,17 @@ public class PIDPositionMotor {
     private static final double DEFAULT_KI = 0;
     private static final double DEFAULT_KD = 0;
 
-    private double previousValue;
+    private double previousError = 0;
+    private double iTerm = 0; // errorIntegral
 
-    public double MAX_SPEED = 0.4;
+    private SimpleTimer loopTimer;
+    private boolean firstIteration = true;
 
-    // private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-    private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
+    private boolean clampOutput = true;
+
+    public double MAX_SPEED = 0.4; // TODO: Make private and add accessors/mutators
+
+    private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; // DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
     public PIDPositionMotor(DcMotor motor) {
         this(motor, DEFAULT_SETPOINT, DEFAULT_KP, DEFAULT_KI, DEFAULT_KD);
@@ -38,6 +42,7 @@ public class PIDPositionMotor {
         this.kd = kd;
         motor.setMode(DEFAULT_RUNMODE);
         resetEncoder();
+        loopTimer = new SimpleTimer();
     }
 
     /*
@@ -45,19 +50,42 @@ public class PIDPositionMotor {
     Thus, instead of having this class run the loop have this method only run one iteration of the method, and
     call the method once every loop of the main loop in the opmode.
     Downsides: Lower and potentially less consistent looptime - bad for the PID control system, since the
-    coefficients are constant values.
+    coefficients are constant values - will have to attempt to time the loop control loop.
     Upsides: It will hopefully avoid messing with multithreading.
     */
     public void runIteration() {
 
-        // Currently: only proportional gain
+        /*
+        Because the timer is initialized when the PIDPositionMotor object is created in the opMode init, but
+        significant time elapses between the first run of the control loop and this start of the timer, the timer
+        should be reset on the first run of the loop.
+         */
+        if (firstIteration)
+            loopTimer.reset();
+        firstIteration = false;
 
-        double pTerm = kp * getError();
+        double dt = loopTimer.getElapsedSeconds();
 
-        double speed = Math.max(Math.min(pTerm, MAX_SPEED), MAX_SPEED * -1);
+        double error = getError();
+
+        double pTerm = kp * error;
+
+        iTerm += ki * (error - previousError) * dt;
+
+        double dTerm = (error - previousError) / dt;
+
+        previousError = error;
+
+        double speed  = pTerm + iTerm + dTerm;
+
+        // Force the speed to be less than or equal to max speed
+        if (clampOutput) {
+            speed = Math.max(Math.min(speed, MAX_SPEED), MAX_SPEED * -1);
+        }
 
         motor.setPower(speed);
 
+        loopTimer.reset();
     }
 
     // -------- Utilities --------
@@ -129,6 +157,31 @@ public class PIDPositionMotor {
     public void changeKd(double delta) {
         if (kd + delta >= 0)
             kd += delta;
+    }
+
+    // -------- Nested Timer Class for determining looptimes  --------
+
+    public class SimpleTimer {
+
+        private long startTime;
+
+        // Calling the default constructor starts the timer
+        public SimpleTimer() {
+            reset();
+        }
+
+        public void reset() {
+            startTime = System.nanoTime();
+        }
+
+        public double getElapsedNanoseconds() {
+            return System.nanoTime() - startTime;
+        }
+
+        public double getElapsedSeconds() {
+            return getElapsedNanoseconds() / Math.pow(10, 9);
+        }
+
     }
 
 }
