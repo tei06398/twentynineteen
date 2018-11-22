@@ -74,7 +74,7 @@ public class PIDTestTeleOp extends OpMode {
             leftTriggerToggleLock = false;
         }
 
-        // Right Stick: Change p gain
+        // Right Stick x: Change p gain
         if (this.gamepad1.right_stick_x > 0.1) {
             if (!rightStickToggleLock) {
                 rightStickToggleLock = true;
@@ -91,7 +91,7 @@ public class PIDTestTeleOp extends OpMode {
             rightStickToggleLock = false;
         }
 
-        // Right Stick: Change max speed
+        // Left Stick x: Change max speed
         if (this.gamepad1.left_stick_x > 0.1) {
             if (!leftStickToggleLock) {
                 leftStickToggleLock = true;
