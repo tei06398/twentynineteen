@@ -61,7 +61,7 @@ public class EncoderRunmodeTest extends OpMode {
                         position = i;
                     }
                 }
-                int newPosition = (position + 1) % 4;
+                int newPosition = (position + 1) % runmodes.length;
                 testMotor.setMode(runmodes[newPosition]);
             }
         }
