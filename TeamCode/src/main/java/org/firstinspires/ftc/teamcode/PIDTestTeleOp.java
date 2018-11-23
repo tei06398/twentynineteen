@@ -12,15 +12,21 @@ public class PIDTestTeleOp extends OpMode {
     // Toggle locks
     private boolean leftTriggerToggleLock = false;
     private boolean rightTriggerToggleLock = false;
-    private boolean rightStickToggleLock = false;
     private boolean leftStickToggleLock = false;
+    private boolean rightStickXToggleLock = false;
+    private boolean rightStickYToggleLock = false;
 
     private PIDPositionMotor testPIDMotor;
 
     private int position1 = -100;
     private int position2 = -430; // -300
 
-    private double gainIncrement = 0.001;
+    private double pGainIncrement = 0.001;
+    private double iGainIncrement = 0.001;
+    private double dGainIncrement = 0.001;
+
+    private int currentGainAdjustmentMode = 0;
+    private static final int totalGainAdjustmentModes = 3;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -74,21 +80,65 @@ public class PIDTestTeleOp extends OpMode {
             leftTriggerToggleLock = false;
         }
 
-        // Right Stick x: Change p gain
-        if (this.gamepad1.right_stick_x > 0.1) {
-            if (!rightStickToggleLock) {
-                rightStickToggleLock = true;
-                testPIDMotor.changeKp(gainIncrement);
+        // Right Stick y: Change current gain adjustment mode
+        if (this.gamepad1.right_stick_y > 0.1) {
+            if (!rightStickYToggleLock) {
+                rightStickYToggleLock = true;
+                currentGainAdjustmentMode = (currentGainAdjustmentMode + 1) % totalGainAdjustmentModes;
             }
         }
-        else if (this.gamepad1.right_stick_x < -0.1) {
-            if (!rightStickToggleLock) {
-                rightStickToggleLock = true;
-                testPIDMotor.changeKp(-1 * gainIncrement);
+        else if (this.gamepad1.right_stick_y < -0.1) {
+            if (!rightStickYToggleLock) {
+                rightStickYToggleLock = true;
+                currentGainAdjustmentMode = (currentGainAdjustmentMode - 1) % totalGainAdjustmentModes;
+                if (currentGainAdjustmentMode < 0) {
+                    currentGainAdjustmentMode += totalGainAdjustmentModes;
+                }
             }
         }
         else {
-            rightStickToggleLock = false;
+            rightStickYToggleLock = false;
+        }
+
+        // Right Stick x: Adjust gain of current gain adjustment mode
+        if (this.gamepad1.right_stick_x > 0.1) {
+            if (!rightStickXToggleLock) {
+                rightStickXToggleLock = true;
+
+                switch (currentGainAdjustmentMode) {
+                    case 0:
+                        testPIDMotor.changeKp(pGainIncrement);
+                        break;
+                    case 1:
+                        testPIDMotor.changeKi(iGainIncrement);
+                        break;
+                    case 2:
+                        testPIDMotor.changeKd(dGainIncrement);
+                        break;
+                }
+
+            }
+        }
+        else if (this.gamepad1.right_stick_x < -0.1) {
+            if (!rightStickXToggleLock) {
+                rightStickXToggleLock = true;
+
+                switch (currentGainAdjustmentMode) {
+                    case 0:
+                        testPIDMotor.changeKp(-1 * pGainIncrement);
+                        break;
+                    case 1:
+                        testPIDMotor.changeKi(-1 * iGainIncrement);
+                        break;
+                    case 2:
+                        testPIDMotor.changeKd(-1 * dGainIncrement);
+                        break;
+                }
+
+            }
+        }
+        else {
+            rightStickXToggleLock = false;
         }
 
         // Left Stick x: Change max speed
@@ -109,7 +159,23 @@ public class PIDTestTeleOp extends OpMode {
             leftStickToggleLock = false;
         }
 
+        String adjusting = "";
+        switch (currentGainAdjustmentMode) {
+            case 0:
+                adjusting = "P Gain";
+                break;
+            case 1:
+                adjusting = "I Gain";
+                break;
+            case 2:
+                adjusting = "D Gain";
+                break;
+        }
+
+        telemetry.addData("Adjusting", adjusting);
         telemetry.addData("P gain", testPIDMotor.getKp());
+        telemetry.addData("I gain", testPIDMotor.getKi());
+        telemetry.addData("D gain", testPIDMotor.getKd());
         telemetry.addData("Setpoint", testPIDMotor.getSetPoint());
         telemetry.addData("Current Position", testPIDMotor.getPosition());
         telemetry.addData("Motor Power", testPIDMotor.getMotor().getPower());
