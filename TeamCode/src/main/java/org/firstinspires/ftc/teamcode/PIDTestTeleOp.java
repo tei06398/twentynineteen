@@ -22,9 +22,9 @@ public class PIDTestTeleOp extends OpMode {
     private int position1 = -100;
     private int position2 = -430; // -300
 
-    private double pGainIncrement = 0.001;
-    private double iGainIncrement = 0.001;
-    private double dGainIncrement = 0.001;
+    private double pGainIncrement = 0.0005;
+    private double iGainIncrement = 0.0005;
+    private double dGainIncrement = 0.0001;
 
     private int currentGainAdjustmentMode = 0;
     private static final int totalGainAdjustmentModes = 3;
