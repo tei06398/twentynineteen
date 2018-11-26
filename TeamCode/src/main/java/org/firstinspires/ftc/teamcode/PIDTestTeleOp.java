@@ -37,6 +37,9 @@ public class PIDTestTeleOp extends OpMode {
         telemetry.update();
 
         testPIDMotor = new PIDPositionMotor(this.hardwareMap.dcMotor.get("armMotor"));
+        testPIDMotor.setKp(0.001);
+        testPIDMotor.setKi(0.0015);
+        testPIDMotor.setKd(0.0007);
         testPIDMotor.setSetPoint(position1);
     }
 
