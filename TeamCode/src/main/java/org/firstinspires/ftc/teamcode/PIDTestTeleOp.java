@@ -15,6 +15,7 @@ public class PIDTestTeleOp extends OpMode {
     private boolean leftStickToggleLock = false;
     private boolean rightStickXToggleLock = false;
     private boolean rightStickYToggleLock = false;
+    private boolean leftBumperToggleLock = false;
 
     private PIDPositionMotor testPIDMotor;
 
@@ -157,6 +158,17 @@ public class PIDTestTeleOp extends OpMode {
         }
         else {
             leftStickToggleLock = false;
+        }
+
+        // Left bumper: reset I term
+        if (this.gamepad1.left_bumper) {
+            if (!leftBumperToggleLock) {
+                leftBumperToggleLock = true;
+                testPIDMotor.iTerm = 0;
+            }
+        }
+        else {
+            leftBumperToggleLock = false;
         }
 
         String adjusting = "";

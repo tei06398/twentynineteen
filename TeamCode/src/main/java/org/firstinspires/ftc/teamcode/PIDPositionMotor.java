@@ -19,7 +19,7 @@ public class PIDPositionMotor {
     private static final double DEFAULT_KD = 0;
 
     private double previousError = 0;
-    private double iTerm = 0; // errorIntegral
+    public double iTerm = 0; // errorIntegral
 
     private SimpleTimer loopTimer;
     private boolean firstIteration = true;
