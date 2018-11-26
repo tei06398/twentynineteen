@@ -104,7 +104,8 @@ public class RR2TeleOp extends OpMode {
 
         // A Button: Resets Arm to Starting Position
         if (this.gamepad1.a) {
-            armController.armStart();
+            armMotor.setTargetPosition(0);
+            armMotor.setPower(0.25);
         }
 
         // Slacking Winch
