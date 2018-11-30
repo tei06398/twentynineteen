@@ -13,7 +13,7 @@ public class RR2TeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    private GunnerFunction gunnerFuction;
+    private GunnerFunction gunnerFunction;
     private GunnerFunction.ArmController armController;
 
     private DriverFunction driverFunction;
@@ -86,7 +86,7 @@ public class RR2TeleOp extends OpMode {
 
         // Right Bumper: Locking/Unlocking Servo
         if (this.gamepad1.right_bumper) {
-            if (armController.isLocked()) {
+            if (armController.getLocked()) {
                 armController.lock();
             } else {
                 armController.unlock();
@@ -95,7 +95,7 @@ public class RR2TeleOp extends OpMode {
 
         // X Button: Toggles Arm Up/Down
         if (this.gamepad1.x) {
-            if (armController.isArmUp()) {
+            if (armController.getArmUp()) {
                 armController.armDown();
             } else {
                 armController.armUp();
@@ -103,10 +103,11 @@ public class RR2TeleOp extends OpMode {
         }
 
         // A Button: Resets Arm to Starting Position
-        if (this.gamepad1.a) {
+
+        /*if (this.gamepad1.a) {
             armMotor.setTargetPosition(0);
             armMotor.setPower(0.25);
-        }
+        }*/
 
         // Slacking Winch
         armController.slackWinch();

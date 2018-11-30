@@ -33,11 +33,22 @@ public class GunnerFunction {
         private final int WINCH_SLACKED = 0;
         private final int ARM_UP = -313;
         private final int ARM_DOWN = 180;
+
+        public void setLocked(boolean locked) {
+            isLocked = locked;
+        }
+
+
+        public void setArmUp(boolean armUp) {
+            isArmUp = armUp;
+        }
+
         private boolean isLocked = false;
         private boolean isArmUp = false;
         private DcMotor armMotor;
         private DcMotor winchMotor;
         private TwoStateServo lockServo;
+
 
         public ArmController(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo) {
             this.armMotor = armMotor;

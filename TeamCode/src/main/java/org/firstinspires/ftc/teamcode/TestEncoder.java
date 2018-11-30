@@ -17,8 +17,6 @@ public class TestEncoder extends OpMode {
     private DriverFunction driverFunction;
 
     // Code to run ONCE when the driver hits INIT
-    DriverFunction driverFunction;
-    GunnerFunction.ArmController armController;
     @Override
     public void init() {
         armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0));
