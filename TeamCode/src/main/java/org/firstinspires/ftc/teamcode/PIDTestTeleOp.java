@@ -167,7 +167,7 @@ public class PIDTestTeleOp extends OpMode {
         if (this.gamepad1.left_bumper) {
             if (!leftBumperToggleLock) {
                 leftBumperToggleLock = true;
-                testPIDMotor.iTerm = 0;
+                testPIDMotor.resetITerm();
             }
         }
         else {

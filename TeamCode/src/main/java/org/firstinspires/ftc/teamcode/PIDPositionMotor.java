@@ -19,7 +19,7 @@ public class PIDPositionMotor {
     private static final double DEFAULT_KD = 0;
 
     private double previousError = 0;
-    public double iTerm = 0; // errorIntegral
+    private double iTerm = 0; // errorIntegral
 
     private SimpleTimer loopTimer;
     private boolean firstIteration = true;
@@ -95,6 +95,11 @@ public class PIDPositionMotor {
             motor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             motor.setMode(DEFAULT_RUNMODE);
         }
+    }
+
+    // For testing
+    public void resetITerm() {
+        iTerm = 0;
     }
 
     // -------- Access Process Variable and Setpoint --------
