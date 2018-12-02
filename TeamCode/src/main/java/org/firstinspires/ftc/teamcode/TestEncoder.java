@@ -43,7 +43,7 @@ public class TestEncoder extends OpMode {
     public void loop() {
 
         if (this.gamepad1.right_bumper) {
-            if (armController.getLocked()) {
+            if (armController.isLocked()) {
                 armController.lock();
             } else {
                 armController.unlock();
@@ -51,7 +51,7 @@ public class TestEncoder extends OpMode {
         }
 
         if (this.gamepad1.x) {
-            if (armController.getArmUp()) {
+            if (armController.isArmUp()) {
                 armController.armDown();
             } else {
                 armController.armUp();
