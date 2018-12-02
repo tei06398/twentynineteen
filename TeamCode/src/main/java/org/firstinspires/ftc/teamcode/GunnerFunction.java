@@ -34,17 +34,7 @@ public class GunnerFunction {
         private final int ARM_UP = -313;
         private final int ARM_DOWN = 180;
 
-        public void setLocked(boolean locked) {
-            isLocked = locked;
-        }
-
-
-        public void setArmUp(boolean armUp) {
-            isArmUp = armUp;
-        }
-
         private boolean isLocked = false;
-        private boolean isArmUp = false;
         private DcMotor armMotor;
         private DcMotor winchMotor;
         private TwoStateServo lockServo;
@@ -58,9 +48,9 @@ public class GunnerFunction {
         }
 
         public void resetEncoders() {
-            armMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            winchMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
@@ -74,37 +64,49 @@ public class GunnerFunction {
             isLocked = true;
         }
 
-        public boolean isLanded() {
-            return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
-        }
+        // public boolean isArmUp() {
+        //     return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
+        // }
 
         public void slackWinch() {
-            winchMotor.setTargetPosition(WINCH_SLACKED);
-            armMotor.setPower(0.5);
+            winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
         public void armUp() {
             armMotor.setTargetPosition(ARM_UP);
-            armMotor.setPower(0.25);
+            armMotor.setPower(0.20);
             isArmUp = true;
         }
 
         public void armDown() {
             armMotor.setTargetPosition(ARM_DOWN);
-            armMotor.setPower(0.25);
+            armMotor.setPower(0.20);
             isArmUp = false;
         }
+
+        public void armReset() {
+            armMotor.setTargetPosition(0);
+            armMotor.setPower(0.20);
+        }
+
+        public void slackArm() {
+            armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
+
+        private boolean isArmUp = (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
 
         public void doTelemetry(Telemetry telemetry) {
             telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
             telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
+            telemetry.addData("isArmUp", isArmUp);
+            // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
         }
 
-        public boolean getLocked() {
+        public boolean isLocked() {
             return isLocked;
         }
 
-        public boolean getArmUp() {
+        public boolean isArmUp() {
             return isArmUp;
         }
     }

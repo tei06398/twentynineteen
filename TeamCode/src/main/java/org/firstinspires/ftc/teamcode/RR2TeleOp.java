@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static org.firstinspires.ftc.teamcode.DriverFunction.MAX_SPEED_RATIO;
@@ -19,6 +21,11 @@ public class RR2TeleOp extends OpMode {
     private DriverFunction driverFunction;
     private DriverFunction.Steering steering;
 
+    private Servo lockServo;
+    private double lockServoPosition;
+    private double servoUpperLimit = 1;
+    private double servoLowerLimit = 0.0;
+
     private final static double TURNING_SPEED_BOOST = 0.3;
 
     // Code to run ONCE when the driver hits INIT
@@ -30,6 +37,9 @@ public class RR2TeleOp extends OpMode {
 
         armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0));
         driverFunction = new DriverFunction(hardwareMap, telemetry);
+
+        this.lockServo = this.hardwareMap.servo.get("lockServo");
+        lockServoPosition = servoLowerLimit;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -84,30 +94,56 @@ public class RR2TeleOp extends OpMode {
             telemetry.addData("Angle", 0);
         }
 
-        // Right Bumper: Locking/Unlocking Servo
-        if (this.gamepad1.right_bumper) {
-            if (armController.getLocked()) {
-                armController.lock();
-            } else {
-                armController.unlock();
+        // Right and Left Bumper: Locking/Unlocking Servo with Increments
+        if (this.gamepad1.left_bumper) {
+            if (lockServoPosition < servoUpperLimit) {
+                lockServoPosition += 0.05;
+                telemetry.log().add("Decrement Servo");
+            }
+        }
+        else if (this.gamepad1.right_bumper) {
+            if (lockServoPosition > servoLowerLimit) {
+                lockServoPosition -= 0.05;
+                telemetry.log().add("Increment Servo");
             }
         }
 
+        // if (this.gamepad1.right_bumper) {
+        //     if (armController.isLocked()) {
+        //         armController.lock();
+        //     } else {
+        //         armController.unlock();
+        //     }
+        // }
+
         // X Button: Toggles Arm Up/Down
         if (this.gamepad1.x) {
-            if (armController.getArmUp()) {
+            if (armController.isArmUp()) {
                 armController.armDown();
+                telemetry.log().add("Lower Arm");
             } else {
                 armController.armUp();
+                telemetry.log().add("Raise Arm");
             }
         }
 
         // A Button: Resets Arm to Starting Position
+        if (this.gamepad1.a) {
+            armController.armReset();
+            telemetry.log().add("Reset Arm Position");
+        }
 
-        /*if (this.gamepad1.a) {
-            armMotor.setTargetPosition(0);
-            armMotor.setPower(0.25);
-        }*/
+        // B Button: Slacks Arm
+        if (this.gamepad1.b) {
+            armController.slackArm();
+            telemetry.log().add("Slack Arm");
+        }
+
+        // Y Button: Reset Motor Encoders
+        if (this.gamepad1.y) {
+            armController.resetEncoders();
+            telemetry.log().add("Reset Motor Encoders");
+        }
 
         // Slacking Winch
         armController.slackWinch();
@@ -119,6 +155,7 @@ public class RR2TeleOp extends OpMode {
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
         armController.doTelemetry(telemetry);
+        telemetry.addData("lockServo Position", lockServoPosition);
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
     }
@@ -126,6 +163,7 @@ public class RR2TeleOp extends OpMode {
     // Code to run ONCE after the driver hits STOP
     @Override
     public void stop() {
+        driverFunction.resetAllEncoders();
         armController.resetEncoders();
     }
 
