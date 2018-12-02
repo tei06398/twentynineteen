@@ -39,11 +39,13 @@ public class GunnerFunction {
         private DcMotor winchMotor;
         private TwoStateServo lockServo;
 
+        private boolean isArmUp;
 
         public ArmController(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo) {
             this.armMotor = armMotor;
             this.winchMotor = winchMotor;
             this.lockServo = lockServo;
+            isArmUp = (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
             resetEncoders();
         }
 
@@ -92,8 +94,6 @@ public class GunnerFunction {
         public void slackArm() {
             armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
-
-        private boolean isArmUp = (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
 
         public void doTelemetry(Telemetry telemetry) {
             telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
