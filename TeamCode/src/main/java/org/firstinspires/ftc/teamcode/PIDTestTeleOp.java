@@ -26,6 +26,8 @@ public class PIDTestTeleOp extends OpMode {
     private double iGainIncrement = 0.0005;
     private double dGainIncrement = 0.0001;
 
+    private double maxSpeedIncrement = 0.1;
+
     private int currentGainAdjustmentMode = 0;
     private static final int totalGainAdjustmentModes = 3;
 
@@ -149,14 +151,14 @@ public class PIDTestTeleOp extends OpMode {
         if (this.gamepad1.left_stick_x > 0.1) {
             if (!leftStickToggleLock) {
                 leftStickToggleLock = true;
-                testPIDMotor.MAX_SPEED += 0.1;
+                testPIDMotor.changeMaxSpeed(maxSpeedIncrement);
             }
         }
         else if (this.gamepad1.left_stick_x < -0.1) {
             if (!leftStickToggleLock) {
                 leftStickToggleLock = true;
-                if (testPIDMotor.MAX_SPEED - 0.1 >= 0)
-                    testPIDMotor.MAX_SPEED -= 0.1;
+                if (testPIDMotor.getMaxSpeed() - maxSpeedIncrement >= 0)
+                    testPIDMotor.changeMaxSpeed(-1 * maxSpeedIncrement);
             }
         }
         else {
@@ -194,7 +196,7 @@ public class PIDTestTeleOp extends OpMode {
         telemetry.addData("Setpoint", testPIDMotor.getSetPoint());
         telemetry.addData("Current Position", testPIDMotor.getPosition());
         telemetry.addData("Motor Power", testPIDMotor.getMotor().getPower());
-        telemetry.addData("Max Speed", testPIDMotor.MAX_SPEED);
+        telemetry.addData("Max Speed", testPIDMotor.getMaxSpeed());
         telemetry.addData("OpMode Runtime", runtime.toString());
         telemetry.update();
 

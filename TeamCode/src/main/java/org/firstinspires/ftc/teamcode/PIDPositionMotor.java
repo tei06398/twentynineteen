@@ -7,16 +7,16 @@ public class PIDPositionMotor {
     public DcMotor motor;
 
     private int setPoint;
-
     private double kp;
     private double ki;
     private double kd;
+    private double maxSpeed;
 
     private static final int DEFAULT_SETPOINT = 0;
-
     private static final double DEFAULT_KP = 0;
     private static final double DEFAULT_KI = 0;
     private static final double DEFAULT_KD = 0;
+    private static final double DEFAULT_MAX_SPEED = 1;
 
     private double previousError = 0;
     private double iTerm = 0; // errorIntegral
@@ -26,20 +26,19 @@ public class PIDPositionMotor {
 
     private boolean clampOutput = true;
 
-    public double MAX_SPEED = 0.4; // TODO: Make private and add accessors/mutators
-
     private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; // DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
     public PIDPositionMotor(DcMotor motor) {
-        this(motor, DEFAULT_SETPOINT, DEFAULT_KP, DEFAULT_KI, DEFAULT_KD);
+        this(motor, DEFAULT_SETPOINT, DEFAULT_KP, DEFAULT_KI, DEFAULT_KD, DEFAULT_MAX_SPEED);
     }
 
-    public PIDPositionMotor(DcMotor motor, int setPoint, double kp, double ki, double kd) {
+    public PIDPositionMotor(DcMotor motor, int setPoint, double kp, double ki, double kd, double maxSpeed) {
         this.motor = motor;
         this.setPoint = setPoint;
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
+        this.maxSpeed = maxSpeed;
         motor.setMode(DEFAULT_RUNMODE);
         resetEncoder();
         loopTimer = new SimpleTimer();
@@ -82,7 +81,7 @@ public class PIDPositionMotor {
 
         // Force the speed to be less than or equal to max speed
         if (clampOutput) {
-            speed = Math.max(Math.min(speed, MAX_SPEED), MAX_SPEED * -1);
+            speed = Math.max(Math.min(speed, maxSpeed), maxSpeed * -1);
         }
 
         motor.setPower(speed);
@@ -162,6 +161,18 @@ public class PIDPositionMotor {
     public void changeKd(double delta) {
         if (kd + delta >= 0)
             kd += delta;
+    }
+
+    // -------- Access Max Speed --------
+
+    public double getMaxSpeed() {
+        return maxSpeed;
+    }
+    public void setMaxSpeed(double maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+    public void changeMaxSpeed(double delta) {
+        this.maxSpeed += delta;
     }
 
     // -------- Nested Timer Class for determining looptimes  --------
