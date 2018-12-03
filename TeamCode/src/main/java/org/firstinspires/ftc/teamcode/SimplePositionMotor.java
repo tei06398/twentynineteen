@@ -14,7 +14,9 @@ public class SimplePositionMotor {
     private static final int DEFAULT_SETPOINT = 0;
     private static final double DEFAULT_MAX_SPEED = 0.2;
     private static final double DEFAULT_MARGINOFERROR = 10;
-    
+
+    private boolean reachedSetPoint = false;
+
     public SimplePositionMotor(DcMotor motor) {
         this(motor, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED, DEFAULT_MARGINOFERROR);
     }
@@ -34,11 +36,14 @@ public class SimplePositionMotor {
 
         double speed = 0;
 
-        if (error > marginOfError) {
+        if (error > marginOfError && !reachedSetPoint) {
             speed = maxSpeed;
         }
-        else if (error < -1 * marginOfError) {
+        else if (error < -1 * marginOfError && !reachedSetPoint) {
             speed = -1 * maxSpeed;
+        }
+        else if (!reachedSetPoint) {
+            reachedSetPoint = true;
         }
 
         motor.setPower(speed);
@@ -64,6 +69,8 @@ public class SimplePositionMotor {
     }
 
     public void setSetPoint(int setPoint) {
+        if (this.setPoint != setPoint)
+            reachedSetPoint = false;
         this.setPoint = setPoint;
     }
 
