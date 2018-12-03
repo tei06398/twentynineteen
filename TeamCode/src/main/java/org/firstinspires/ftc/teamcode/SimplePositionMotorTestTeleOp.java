@@ -119,13 +119,13 @@ public class SimplePositionMotorTestTeleOp extends OpMode {
         if (this.gamepad1.right_stick_y > 0.1) {
             if (!rightStickYToggleLock) {
                 rightStickYToggleLock = true;
-                simplePositionMotor.changeMaxSpeedForward(maxSpeedDownIncrement);
+                simplePositionMotor.changeMaxSpeedForward(-1 * maxSpeedDownIncrement);
             }
         }
         else if (this.gamepad1.right_stick_y < -0.1) {
             if (!rightStickYToggleLock) {
                 rightStickYToggleLock = true;
-                simplePositionMotor.changeMaxSpeedForward(-1 * maxSpeedDownIncrement);
+                simplePositionMotor.changeMaxSpeedForward(maxSpeedDownIncrement);
             }
         }
         else {
