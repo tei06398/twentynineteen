@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="PID Test Tele-Op", group="TeleOp OpMode")
+@TeleOp(name="Simple Position Motor Test Tele-Op", group="TeleOp OpMode")
 public class SimplePositionMotorTestTeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -22,7 +22,7 @@ public class SimplePositionMotorTestTeleOp extends OpMode {
     private int position1 = -100;
     private int position2 = -430;
 
-    private double maxSpeedIncrement = 0.1;
+    private double maxSpeedIncrement = 0.05;
     private double marginOfErrorIncrement = 1;
 
     // Code to run ONCE when the driver hits INIT
