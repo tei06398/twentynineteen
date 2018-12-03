@@ -15,7 +15,6 @@ public class RR2TeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    private GunnerFunction gunnerFunction;
     private GunnerFunction.ArmController armController;
 
     private DriverFunction driverFunction;
@@ -107,6 +106,7 @@ public class RR2TeleOp extends OpMode {
                 telemetry.log().add("Increment Servo");
             }
         }
+        lockServo.setPosition(lockServoPosition);
 
         // if (this.gamepad1.right_bumper) {
         //     if (armController.isLocked()) {

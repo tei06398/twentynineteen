@@ -70,18 +70,19 @@ public class GunnerFunction {
 
         public void slackWinch() {
             winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            winchMotor.setPower(0);
         }
 
         public void armUp() {
             armMotor.setTargetPosition(ARM_UP);
             armMotor.setPower(0.20);
-            isArmUp = true;
+            // isArmUp = true;
         }
 
         public void armDown() {
             armMotor.setTargetPosition(ARM_DOWN);
             armMotor.setPower(0.20);
-            isArmUp = false;
+            // isArmUp = false;
         }
 
         public void armReset() {
@@ -91,14 +92,13 @@ public class GunnerFunction {
 
         public void slackArm() {
             armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            armMotor.setPower(0);
         }
-
-        private boolean isArmUp = (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
 
         public void doTelemetry(Telemetry telemetry) {
             telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
             telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
-            telemetry.addData("isArmUp", isArmUp);
+            telemetry.addData("isArmUp", isArmUp());
             // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
         }
 
@@ -107,7 +107,7 @@ public class GunnerFunction {
         }
 
         public boolean isArmUp() {
-            return isArmUp;
+            return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
         }
     }
 
