@@ -13,7 +13,7 @@ public class SimplePositionMotor {
 
     private static final int DEFAULT_SETPOINT = 0;
     private static final double DEFAULT_MAX_SPEED = 0.2;
-    private static final double DEFAULT_MARGINOFERROR = 10;
+    private static final double DEFAULT_MARGINOFERROR = 5;
 
     private boolean reachedSetPoint = false;
 
