@@ -101,12 +101,12 @@ public class SimplePositionMotor {
         return marginOfError;
     }
 
-    public double setMarginOfError(double marginOfError) {
+    public void setMarginOfError(double marginOfError) {
         if (marginOfError >= 0)
             this.marginOfError = marginOfError;
     }
 
-    public double changeMarginOfError(double delta) {
+    public void changeMarginOfError(double delta) {
         if (marginOfError + delta >= 0)
             marginOfError += delta;
     }
