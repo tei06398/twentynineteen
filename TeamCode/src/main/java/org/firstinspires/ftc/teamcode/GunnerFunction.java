@@ -37,13 +37,19 @@ public class GunnerFunction {
         private boolean isLocked = false;
         private DcMotor armMotor;
         private DcMotor winchMotor;
+        private DcMotor chainMotor;
+        private DcMotor slideMotor;
+        private Servo sweepServo;
         private TwoStateServo lockServo;
 
 
-        public ArmController(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo) {
+        public ArmController(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo, Servo sweepServo, DcMotor chainMotor, DcMotor slideMotor) {
             this.armMotor = armMotor;
             this.winchMotor = winchMotor;
             this.lockServo = lockServo;
+            this.sweepServo = sweepServo;
+            this.chainMotor = chainMotor;
+            this.slideMotor = slideMotor;
             resetEncoders();
         }
 
@@ -52,6 +58,10 @@ public class GunnerFunction {
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            chainMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            chainMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         public void unlock() {
