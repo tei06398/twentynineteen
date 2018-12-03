@@ -21,6 +21,7 @@ public class RR2TeleOp extends OpMode {
     private DriverFunction.Steering steering;
 
     private Servo lockServo;
+    private Servo sweepServo;
     private double lockServoPosition;
     private double servoUpperLimit = 1;
     private double servoLowerLimit = 0.0;
@@ -38,6 +39,7 @@ public class RR2TeleOp extends OpMode {
         driverFunction = new DriverFunction(hardwareMap, telemetry);
 
         this.lockServo = this.hardwareMap.servo.get("lockServo");
+        this.sweepServo = this.hardwareMap.servo.get("sweepServo");
         lockServoPosition = servoLowerLimit;
 
         telemetry.addData("Status", "Initialized");
