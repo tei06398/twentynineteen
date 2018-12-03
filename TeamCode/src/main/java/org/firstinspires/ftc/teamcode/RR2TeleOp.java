@@ -95,13 +95,13 @@ public class RR2TeleOp extends OpMode {
 
         // Right and Left Bumper: Locking/Unlocking Servo with Increments
         if (this.gamepad1.left_bumper) {
-            if (lockServoPosition < servoUpperLimit) {
+            if (lockServoPosition <= servoUpperLimit) {
                 lockServoPosition += 0.05;
                 telemetry.log().add("Decrement Servo");
             }
         }
-        else if (this.gamepad1.right_bumper) {
-            if (lockServoPosition > servoLowerLimit) {
+        if (this.gamepad1.right_bumper) {
+            if (lockServoPosition >= servoLowerLimit) {
                 lockServoPosition -= 0.05;
                 telemetry.log().add("Increment Servo");
             }
