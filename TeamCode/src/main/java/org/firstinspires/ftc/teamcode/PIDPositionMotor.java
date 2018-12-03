@@ -169,10 +169,12 @@ public class PIDPositionMotor {
         return maxSpeed;
     }
     public void setMaxSpeed(double maxSpeed) {
-        this.maxSpeed = maxSpeed;
+        if (maxSpeed >= 0)
+            this.maxSpeed = maxSpeed;
     }
     public void changeMaxSpeed(double delta) {
-        this.maxSpeed += delta;
+        if (maxSpeed + delta >= 0)
+            this.maxSpeed += delta;
     }
 
     // -------- Nested Timer Class for determining looptimes  --------
