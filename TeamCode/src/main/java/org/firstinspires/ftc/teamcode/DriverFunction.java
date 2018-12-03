@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.sun.tools.javac.tree.DCTree;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
@@ -21,17 +22,17 @@ public class DriverFunction {
     public static final double MIN_SPEED_RATIO = 0.3;
 
     public static final double DEFAULT_SMOOTHNESS = 2;
+    // public static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
     public DriverFunction(HardwareMap hardwareMap, Telemetry telemetry) {
         this(hardwareMap, telemetry, DEFAULT_SMOOTHNESS);
     }
 
     public DriverFunction(HardwareMap hardwareMap, Telemetry telemetry, double smoothness) {
-        this.lf = new DrivingMotor(hardwareMap.dcMotor.get("lfMotor"), smoothness);
-        this.lb = new DrivingMotor(hardwareMap.dcMotor.get("lbMotor"), smoothness);
-        this.rf = new DrivingMotor(hardwareMap.dcMotor.get("rfMotor"), smoothness);
-        this.rb = new DrivingMotor(hardwareMap.dcMotor.get("rbMotor"), smoothness);
-
+        this.lf = new DrivingMotor(hardwareMap.dcMotor.get("lfMotor"), smoothness, DcMotor.RunMode.RUN_USING_ENCODER);
+        this.lb = new DrivingMotor(hardwareMap.dcMotor.get("lbMotor"), smoothness, DcMotor.RunMode.RUN_USING_ENCODER);
+        this.rf = new DrivingMotor(hardwareMap.dcMotor.get("rfMotor"), smoothness, DcMotor.RunMode.RUN_USING_ENCODER);
+        this.rb = new DrivingMotor(hardwareMap.dcMotor.get("rbMotor"), smoothness, DcMotor.RunMode.RUN_USING_ENCODER);
         this.telemetry = telemetry;
     }
 
@@ -45,12 +46,12 @@ public class DriverFunction {
      * the power is gradually shifted.
      */
     public static class DrivingMotor {
-        private DcMotor motor;
+        public DcMotor motor;
         private WeightedValue acceleration;
         
-        public DrivingMotor(DcMotor motor, double smoothness) {
+        public DrivingMotor(DcMotor motor, double smoothness, DcMotor.RunMode runMode) {
             this.motor = motor;
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setMode(runMode);
             acceleration = new WeightedValue(smoothness);
         }
 
@@ -61,10 +62,46 @@ public class DriverFunction {
         public void applyPower(double power) {
             this.motor.setPower(acceleration.applyValue(power));
         }
+
+        /**
+         * Toggle motor mode to reset encoder.
+         */
+        public void resetEncoder() {
+            if (motor.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
+                motor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+
+        public int getPosition() {
+            return motor.getCurrentPosition();
+        }
+
+    }
+
+    public int getLfPosition() {
+        return lf.getPosition();
+    }
+    public int getLbPosition() {
+        return lb.getPosition();
+    }
+    public int getRfPosition() {
+        return rf.getPosition();
+    }
+    public int getRbPosition() {
+        return rb.getPosition();
+    }
+
+    public void resetAllEncoders() {
+        lf.resetEncoder();
+        lb.resetEncoder();
+        rf.resetEncoder();
+        rb.resetEncoder();
     }
     
     // An inner class that manages the repeated recalculation of motor powers.
     public class Steering {
+
         private double powerLF = 0;
         private double powerLB = 0;
         private double powerRF = 0;
@@ -213,7 +250,7 @@ public class DriverFunction {
             } else {
                 stopAllMotors();
             }
-            
+
             setAllPowers(0);
         }
     }
