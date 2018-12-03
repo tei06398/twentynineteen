@@ -8,23 +8,26 @@ public class SimplePositionMotor {
     private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
     private int setPoint;
-    private double maxSpeed;
+    private double maxSpeedForward;
+    private double maxSpeedReverse;
     private double marginOfError;
 
     private static final int DEFAULT_SETPOINT = 0;
-    private static final double DEFAULT_MAX_SPEED = 0.2;
-    private static final double DEFAULT_MARGINOFERROR = 5;
+    private static final double DEFAULT_MAX_SPEED_FORWARD = 0.2;
+    private static final double DEFAULT_MAX_SPEED_REVERSE = 0.2;
+    private static final double DEFAULT_MARGIN_OF_ERROR = 5;
 
     private boolean reachedSetPoint = false;
 
     public SimplePositionMotor(DcMotor motor) {
-        this(motor, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED, DEFAULT_MARGINOFERROR);
+        this(motor, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED_FORWARD, DEFAULT_MAX_SPEED_REVERSE, DEFAULT_MARGIN_OF_ERROR);
     }
 
-    public SimplePositionMotor(DcMotor motor, int setPoint, double maxSpeed, double marginOfError) {
+    public SimplePositionMotor(DcMotor motor, int setPoint, double maxSpeedForward, double maxSpeedReverse, double marginOfError) {
         this.motor = motor;
         this.setPoint = setPoint;
-        this.maxSpeed = maxSpeed;
+        this.maxSpeedForward = maxSpeedForward;
+        this.maxSpeedReverse = maxSpeedReverse;
         this.marginOfError = marginOfError;
         motor.setMode(DEFAULT_RUNMODE);
         resetEncoder();
@@ -36,11 +39,13 @@ public class SimplePositionMotor {
 
         double speed = 0;
 
+        // Going down
         if (error > marginOfError && !reachedSetPoint) {
-            speed = maxSpeed;
+            speed = maxSpeedForward;
         }
+        // Going up
         else if (error < -1 * marginOfError && !reachedSetPoint) {
-            speed = -1 * maxSpeed;
+            speed = -1 * maxSpeedReverse;
         }
         else if (!reachedSetPoint) {
             reachedSetPoint = true;
@@ -84,20 +89,34 @@ public class SimplePositionMotor {
         return motor;
     }
 
-    // -------- Access Max Speed --------
+    // -------- Access Max Speeds --------
 
-    public double getMaxSpeed() {
-        return maxSpeed;
+    public double getMaxSpeedForward() {
+        return maxSpeedForward;
     }
 
-    public void setMaxSpeed(double maxSpeed) {
+    public void setMaxSpeedForward(double maxSpeed) {
         if (maxSpeed >= 0)
-            this.maxSpeed = maxSpeed;
+            this.maxSpeedForward = maxSpeed;
     }
 
-    public void changeMaxSpeed(double delta) {
-        if (maxSpeed + delta >= 0)
-            this.maxSpeed += delta;
+    public void changeMaxSpeedForward(double delta) {
+        if (maxSpeedForward + delta >= 0)
+            this.maxSpeedForward += delta;
+    }
+
+    public double getMaxSpeedReverse() {
+        return maxSpeedReverse;
+    }
+
+    public void setMaxSpeedReverse(double maxSpeedReverse) {
+        if (maxSpeedReverse >= 0)
+            this.maxSpeedReverse = maxSpeedReverse;
+    }
+
+    public void changeMaxSpeedReverse(double delta) {
+        if (maxSpeedReverse + delta >= 0)
+            this.maxSpeedReverse += delta;
     }
 
     // -------- Access Margin of Error --------

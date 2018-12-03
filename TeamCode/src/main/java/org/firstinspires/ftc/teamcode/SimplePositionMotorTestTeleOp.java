@@ -22,7 +22,11 @@ public class SimplePositionMotorTestTeleOp extends OpMode {
     private int position1 = -100;
     private int position2 = -430;
 
-    private double maxSpeedIncrement = 0.05;
+    private double maxSpeedUp = 0.2;
+    private double maxSpeedDown = 0.05;
+
+    private double maxSpeedUpIncrement = 0.05;
+    private double maxSpeedDownIncrement = 0.05;
     private double marginOfErrorIncrement = 1;
 
     // Code to run ONCE when the driver hits INIT
@@ -30,8 +34,9 @@ public class SimplePositionMotorTestTeleOp extends OpMode {
     public void init() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
         simplePositionMotor = new SimplePositionMotor(this.hardwareMap.dcMotor.get("armMotor"));
+        simplePositionMotor.setMaxSpeedForward(maxSpeedDown); // Going down
+        simplePositionMotor.setMaxSpeedReverse(maxSpeedUp); // Going up
         simplePositionMotor.setSetPoint(position1);
     }
 
@@ -76,56 +81,55 @@ public class SimplePositionMotorTestTeleOp extends OpMode {
             leftTriggerToggleLock = false;
         }
 
-        // Right Stick y: // TODO
-        if (this.gamepad1.right_stick_y > 0.1) {
-            if (!rightStickYToggleLock) {
-                rightStickYToggleLock = true;
-                // TODO
+        // Left Stick x: Change margin of error
+        if (this.gamepad1.left_stick_x > 0.1) {
+            if (!leftStickToggleLock) {
+                leftStickToggleLock = true;
+                simplePositionMotor.changeMarginOfError(marginOfErrorIncrement);
             }
         }
-        else if (this.gamepad1.right_stick_y < -0.1) {
-            if (!rightStickYToggleLock) {
-                rightStickYToggleLock = true;
-                // TODO
+        else if (this.gamepad1.left_stick_x < -0.1) {
+            if (!leftStickToggleLock) {
+                leftStickToggleLock = true;
+                simplePositionMotor.changeMarginOfError(-1 * marginOfErrorIncrement);
             }
         }
         else {
-            rightStickYToggleLock = false;
+            leftStickToggleLock = false;
         }
 
-        // Right Stick x: Change margin of error
+        // Right Stick x: Change max speed up
         if (this.gamepad1.right_stick_x > 0.1) {
             if (!rightStickXToggleLock) {
                 rightStickXToggleLock = true;
-                simplePositionMotor.changeMarginOfError(marginOfErrorIncrement);
+                simplePositionMotor.changeMaxSpeedReverse(maxSpeedUpIncrement);
             }
         }
         else if (this.gamepad1.right_stick_x < -0.1) {
             if (!rightStickXToggleLock) {
                 rightStickXToggleLock = true;
-                simplePositionMotor.changeMarginOfError(-1 * marginOfErrorIncrement);
+                simplePositionMotor.changeMaxSpeedReverse(-1 * maxSpeedUpIncrement);
             }
         }
         else {
             rightStickXToggleLock = false;
         }
 
-        // Left Stick x: Change max speed
-        if (this.gamepad1.left_stick_x > 0.1) {
-            if (!leftStickToggleLock) {
-                leftStickToggleLock = true;
-                simplePositionMotor.changeMaxSpeed(maxSpeedIncrement);
+        // Right Stick y: Change max speed down
+        if (this.gamepad1.right_stick_y > 0.1) {
+            if (!rightStickYToggleLock) {
+                rightStickYToggleLock = true;
+                simplePositionMotor.changeMaxSpeedForward(maxSpeedDownIncrement);
             }
         }
-        else if (this.gamepad1.left_stick_x < -0.1) {
-            if (!leftStickToggleLock) {
-                leftStickToggleLock = true;
-                if (simplePositionMotor.getMaxSpeed() - maxSpeedIncrement >= 0)
-                    simplePositionMotor.changeMaxSpeed(-1 * maxSpeedIncrement);
+        else if (this.gamepad1.right_stick_y < -0.1) {
+            if (!rightStickYToggleLock) {
+                rightStickYToggleLock = true;
+                simplePositionMotor.changeMaxSpeedForward(-1 * maxSpeedDownIncrement);
             }
         }
         else {
-            leftStickToggleLock = false;
+            rightStickYToggleLock = false;
         }
 
         // Left bumper: // TODO
@@ -142,7 +146,8 @@ public class SimplePositionMotorTestTeleOp extends OpMode {
         telemetry.addData("Setpoint", simplePositionMotor.getSetPoint());
         telemetry.addData("Current Position", simplePositionMotor.getPosition());
         telemetry.addData("Motor Power", simplePositionMotor.getMotor().getPower());
-        telemetry.addData("Max Speed", simplePositionMotor.getMaxSpeed());
+        telemetry.addData("Max Speed Up", simplePositionMotor.getMaxSpeedReverse());
+        telemetry.addData("Max Speed Down", simplePositionMotor.getMaxSpeedForward());
         telemetry.addData("Margin of Error", simplePositionMotor.getMarginOfError());
         telemetry.addData("OpMode Runtime", runtime.toString());
         telemetry.update();
