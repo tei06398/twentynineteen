@@ -19,7 +19,7 @@ public class TestEncoder extends OpMode {
     // Code to run ONCE when the driver hits INIT
     @Override
     public void init() {
-        armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0));
+        armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0), hardwareMap.servo.get("sweepServo"), hardwareMap.dcMotor.get("chainMotor"), hardwareMap.dcMotor.get("slideMotor"));
         driverFunction = new DriverFunction(hardwareMap, telemetry);
 
         telemetry.addData("Status:", "Initialized:");
