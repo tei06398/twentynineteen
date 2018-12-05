@@ -25,6 +25,9 @@ public class RR2TeleOp extends OpMode {
     private double lockServoPosition;
     private double servoUpperLimit = 1;
     private double servoLowerLimit = 0.0;
+    private double sweepServoPosition;
+    private double sweepUpperLimit = 1;
+    private double sweepLowerLimit = 0.0;
 
     private final static double TURNING_SPEED_BOOST = 0.3;
 
@@ -41,6 +44,7 @@ public class RR2TeleOp extends OpMode {
         this.lockServo = this.hardwareMap.servo.get("lockServo");
         this.sweepServo = this.hardwareMap.servo.get("sweepServo");
         lockServoPosition = servoLowerLimit;
+        sweepServoPosition = sweepLowerLimit;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -110,6 +114,22 @@ public class RR2TeleOp extends OpMode {
         }
         lockServo.setPosition(lockServoPosition);
 
+
+        // Right and Left DPAD: Locking/Unlocking Servo with Increments
+        if (this.gamepad1.dpad_left) {
+            if (lockServoPosition <= sweepUpperLimit) {
+                lockServoPosition += 0.05;
+                telemetry.log().add("Decrement Sweep Servo");
+            }
+        }
+        if (this.gamepad1.dpad_right) {
+            if (lockServoPosition >= sweepLowerLimit) {
+                lockServoPosition -= 0.05;
+                telemetry.log().add("Increment Sweep Servo");
+            }
+        }
+        lockServo.setPosition(lockServoPosition);
+
         // if (this.gamepad1.right_bumper) {
         //     if (armController.isLocked()) {
         //         armController.lock();
@@ -158,6 +178,7 @@ public class RR2TeleOp extends OpMode {
         steering.finishSteering();
         armController.doTelemetry(telemetry);
         telemetry.addData("lockServo Position", lockServoPosition);
+        telemetry.addData("sweepServo Position", sweepServoPosition);
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
     }

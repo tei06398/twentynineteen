@@ -59,7 +59,7 @@ public class GunnerFunction {
             winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             chainMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            chainMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            chainMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -103,6 +103,10 @@ public class GunnerFunction {
         public void slackArm() {
             armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             armMotor.setPower(0);
+        }
+
+        public void runChainMotor() {
+            chainMotor.setPower(.15);
         }
 
         public void doTelemetry(Telemetry telemetry) {
