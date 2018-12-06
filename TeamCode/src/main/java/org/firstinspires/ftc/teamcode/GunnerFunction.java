@@ -9,11 +9,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class GunnerFunction {
 
-    // private final int WINCH_SLACKED = 0;
     private final int ARM_UP = -313;
     private final int ARM_DOWN = 180;
 
-    private final double ARM_MAX_SPEED_UP = 0.2;
+    private final double ARM_MAX_SPEED_UP = 0.1;
     private final double ARM_MAX_SPEED_DOWN = 0.05;
 
     private boolean isLocked = false;
@@ -63,14 +62,14 @@ public class GunnerFunction {
         return isLocked;
     }
 
-    /// --- Winch Motor ---
+    // --- Winch Motor ---
 
     public void slackWinch() {
         winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         winchMotor.setPower(0);
     }
 
-    /// --- Arm Motor ---
+    // --- Arm Motor ---
 
     public void armUp() {
         armMotor.setSetPoint(ARM_UP);
@@ -82,10 +81,6 @@ public class GunnerFunction {
 
     public void armReset() {
         armMotor.setSetPoint(0);
-    }
-
-    public void slackArm() {
-        armMotor.getMotor().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     public boolean isArmUp() {
@@ -101,8 +96,12 @@ public class GunnerFunction {
         }
         // If the arm is not currently in up or down position
         else {
-            armMotor.setSetPoint(ARM_DOWN);
+            armMotor.setSetPoint(ARM_UP);
         }
+    }
+
+    public void runArmMotorIteration() {
+        armMotor.runIteration();
     }
 
     // --- Sweeper ---

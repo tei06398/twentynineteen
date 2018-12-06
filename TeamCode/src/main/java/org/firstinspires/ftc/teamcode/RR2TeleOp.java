@@ -136,7 +136,6 @@ public class RR2TeleOp extends OpMode {
         lockServo.setPosition(lockServoPosition);
 
         /*
-        //
         if (this.gamepad2.right_bumper) {
             if (gunnerFunction.isLocked()) {
                 gunnerFunction.lock();
@@ -158,12 +157,6 @@ public class RR2TeleOp extends OpMode {
             telemetry.log().add("Reset Arm Position");
         }
 
-        // B Button: Slacks Arm
-        if (this.gamepad2.b) {
-            gunnerFunction.slackArm();
-            telemetry.log().add("Slack Arm");
-        }
-
         // Y Button: Reset Motor Encoders
         if (this.gamepad2.y) {
             gunnerFunction.resetEncoders();
@@ -175,6 +168,7 @@ public class RR2TeleOp extends OpMode {
 
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
+        gunnerFunction.runArmMotorIteration();
         gunnerFunction.doTelemetry(telemetry);
         telemetry.addData("lockServo Position", lockServoPosition);
         telemetry.addData("sweepServo Position", sweepServoPosition);
