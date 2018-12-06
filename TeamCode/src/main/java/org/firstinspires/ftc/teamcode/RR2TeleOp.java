@@ -72,7 +72,7 @@ public class RR2TeleOp extends OpMode {
 
         // ----- Gamepad 1: Driving Functions -----
 
-        // Set speed ratio depending on triggers pressed
+        // Left/Right Triggers: Set driving speed ratio
         if (this.gamepad1.right_trigger > 0.5) {
             steering.setSpeedRatio(MAX_SPEED_RATIO); // Left trigger: minimum speed ratio
         }
@@ -103,6 +103,8 @@ public class RR2TeleOp extends OpMode {
             telemetry.addData("Angle", 0);
         }
 
+        // TODO: Move everything below to Gamepad 2
+
         // Right and Left Bumper: Locking/Unlocking Servo with Increments
         if (this.gamepad1.left_bumper) {
             if (lockServoPosition <= servoUpperLimit) {
@@ -117,7 +119,6 @@ public class RR2TeleOp extends OpMode {
             }
         }
         lockServo.setPosition(lockServoPosition);
-
 
         // Right and Left DPAD: Locking/Unlocking Servo with Increments
         if (this.gamepad1.dpad_left) {

@@ -3,22 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.ServoController;
 
 /**
  * A utility class that controls all gunner functions (arm, ball sweeper, etc.)
  */
 public class GunnerFunction {
 
-    /*
-    GunnerFunction(HardwareMap hardwareMap, Telemetry telemetry) {
-        ServoController servoController = hardwareMap.servoController.get("Servo Controller 1");
-        servoController.pwmDisable();
-    }
-    */
-
-    private final int WINCH_SLACKED = 0;
+    // private final int WINCH_SLACKED = 0;
     private final int ARM_UP = -313;
     private final int ARM_DOWN = 180;
 
@@ -31,7 +22,6 @@ public class GunnerFunction {
     private TwoStateServo lockServo;
 
     public GunnerFunction(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo, Servo sweepServo, DcMotor chainMotor, DcMotor slideMotor) {
-
         this.armMotor = armMotor;
         this.winchMotor = winchMotor;
         this.lockServo = lockServo;
@@ -39,7 +29,6 @@ public class GunnerFunction {
         this.chainMotor = chainMotor;
         this.slideMotor = slideMotor;
         resetEncoders();
-
     }
 
     public void resetEncoders() {
@@ -53,6 +42,8 @@ public class GunnerFunction {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    // --- Winch Lock Servo ---
+
     public void unlock() {
         lockServo.active();
         isLocked = false;
@@ -63,16 +54,18 @@ public class GunnerFunction {
         isLocked = true;
     }
 
-    /*
-    public boolean isArmUp() {
-        return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
+    public boolean isLocked() {
+        return isLocked;
     }
-    */
+
+    /// --- Winch Motor ---
 
     public void slackWinch() {
         winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         winchMotor.setPower(0);
     }
+
+    /// --- Arm Motor ---
 
     public void armUp() {
         armMotor.setTargetPosition(ARM_UP);
@@ -96,9 +89,17 @@ public class GunnerFunction {
         armMotor.setPower(0);
     }
 
+    public boolean isArmUp() {
+        return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
+    }
+
+    // --- Sweeper ---
+
     public void runChainMotor() {
         chainMotor.setPower(.15);
     }
+
+    // --- Telemetry ---
 
     public void doTelemetry(Telemetry telemetry) {
         telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
@@ -107,14 +108,9 @@ public class GunnerFunction {
         // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
     }
 
-    public boolean isLocked() {
-        return isLocked;
-    }
-
-    public boolean isArmUp() {
-        return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
-    }
-
+    /**
+     * Nested class that provides a servo that toggles between two positions
+     */
     public static class TwoStateServo {
 
         private Servo servo;
@@ -194,5 +190,4 @@ public class GunnerFunction {
             return servo;
         }
     }
-
 }
