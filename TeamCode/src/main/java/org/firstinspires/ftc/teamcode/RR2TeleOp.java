@@ -103,16 +103,16 @@ public class RR2TeleOp extends OpMode {
             telemetry.addData("Angle", 0);
         }
 
-        // TODO: Move everything below to Gamepad 2
+        // ----- Gamepad 2: Gunner Functions -----
 
         // Right and Left Bumper: Locking/Unlocking Servo with Increments
-        if (this.gamepad1.left_bumper) {
+        if (this.gamepad2.left_bumper) {
             if (lockServoPosition <= servoUpperLimit) {
                 lockServoPosition += 0.05;
                 telemetry.log().add("Decrement Servo");
             }
         }
-        if (this.gamepad1.right_bumper) {
+        if (this.gamepad2.right_bumper) {
             if (lockServoPosition >= servoLowerLimit) {
                 lockServoPosition -= 0.05;
                 telemetry.log().add("Increment Servo");
@@ -121,13 +121,13 @@ public class RR2TeleOp extends OpMode {
         lockServo.setPosition(lockServoPosition);
 
         // Right and Left DPAD: Locking/Unlocking Servo with Increments
-        if (this.gamepad1.dpad_left) {
+        if (this.gamepad2.dpad_left) {
             if (lockServoPosition <= sweepUpperLimit) {
                 lockServoPosition += 0.05;
                 telemetry.log().add("Decrement Sweep Servo");
             }
         }
-        if (this.gamepad1.dpad_right) {
+        if (this.gamepad2.dpad_right) {
             if (lockServoPosition >= sweepLowerLimit) {
                 lockServoPosition -= 0.05;
                 telemetry.log().add("Increment Sweep Servo");
@@ -136,7 +136,8 @@ public class RR2TeleOp extends OpMode {
         lockServo.setPosition(lockServoPosition);
 
         /*
-        if (this.gamepad1.right_bumper) {
+        //
+        if (this.gamepad2.right_bumper) {
             if (gunnerFunction.isLocked()) {
                 gunnerFunction.lock();
             }
@@ -147,7 +148,7 @@ public class RR2TeleOp extends OpMode {
         */
 
         // X Button: Toggles Arm Up/Down
-        if (this.gamepad1.x) {
+        if (this.gamepad2.x) {
             if (gunnerFunction.isArmUp()) {
                 gunnerFunction.armDown();
                 telemetry.log().add("Lower Arm");
@@ -158,28 +159,25 @@ public class RR2TeleOp extends OpMode {
         }
 
         // A Button: Resets Arm to Starting Position
-        if (this.gamepad1.a) {
+        if (this.gamepad2.a) {
             gunnerFunction.armReset();
             telemetry.log().add("Reset Arm Position");
         }
 
         // B Button: Slacks Arm
-        if (this.gamepad1.b) {
+        if (this.gamepad2.b) {
             gunnerFunction.slackArm();
             telemetry.log().add("Slack Arm");
         }
 
         // Y Button: Reset Motor Encoders
-        if (this.gamepad1.y) {
+        if (this.gamepad2.y) {
             gunnerFunction.resetEncoders();
             telemetry.log().add("Reset Motor Encoders");
         }
 
         // Slacking Winch
         gunnerFunction.slackWinch();
-
-        // ----- Gamepad 2: Gunner Functions -----
-        // TODO
 
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
