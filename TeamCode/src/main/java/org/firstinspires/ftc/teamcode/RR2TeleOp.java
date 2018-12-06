@@ -149,13 +149,7 @@ public class RR2TeleOp extends OpMode {
 
         // X Button: Toggles Arm Up/Down
         if (this.gamepad2.x) {
-            if (gunnerFunction.isArmUp()) {
-                gunnerFunction.armDown();
-                telemetry.log().add("Lower Arm");
-            } else {
-                gunnerFunction.armUp();
-                telemetry.log().add("Raise Arm");
-            }
+            gunnerFunction.toggleArm();
         }
 
         // A Button: Resets Arm to Starting Position
@@ -177,7 +171,7 @@ public class RR2TeleOp extends OpMode {
         }
 
         // Slacking Winch
-        gunnerFunction.slackWinch();
+        // gunnerFunction.slackWinch();
 
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
