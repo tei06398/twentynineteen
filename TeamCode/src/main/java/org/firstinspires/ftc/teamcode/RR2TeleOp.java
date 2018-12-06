@@ -10,7 +10,7 @@ import static org.firstinspires.ftc.teamcode.DriverFunction.MAX_SPEED_RATIO;
 import static org.firstinspires.ftc.teamcode.DriverFunction.MIN_SPEED_RATIO;
 import static org.firstinspires.ftc.teamcode.DriverFunction.NORMAL_SPEED_RATIO;
 
-@TeleOp(name="RR2 TeleOp", group="TeleOp OpMode")
+@TeleOp(name="Dom TeleOp", group="TeleOp OpMode")
 public class RR2TeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -100,52 +100,61 @@ public class RR2TeleOp extends OpMode {
         }
 
         // Right and Left Bumper: Locking/Unlocking Servo with Increments
-        if (this.gamepad1.left_bumper) {
-            if (lockServoPosition <= servoUpperLimit) {
-                lockServoPosition += 0.05;
-                telemetry.log().add("Decrement Servo");
-            }
-        }
+       // if (this.gamepad1.left_bumper) {
+         //   if (lockServoPosition <= servoUpperLimit) {
+           //     lockServoPosition += 0.05;
+            //    telemetry.log().add("Decrement Servo");
+            //}
+        //}
+        //if (this.gamepad1.right_bumper) {
+          //  if (lockServoPosition >= servoLowerLimit) {
+            //    lockServoPosition -= 0.05;
+              //  telemetry.log().add("Increment Servo");
+           // }
+        //}
+        //lockServo.setPosition(lockServoPosition);
         if (this.gamepad1.right_bumper) {
-            if (lockServoPosition >= servoLowerLimit) {
-                lockServoPosition -= 0.05;
-                telemetry.log().add("Increment Servo");
+            if (armController.isLocked()) {
+                armController.unlock();
+            } else {
+                armController.lock();
             }
         }
-        lockServo.setPosition(lockServoPosition);
 
+        // Slacking Winch
+        armController.brakeWinch();
 
-        // Right and Left DPAD: Locking/Unlocking Servo with Increments
         if (this.gamepad1.dpad_left) {
-            if (lockServoPosition <= sweepUpperLimit) {
-                lockServoPosition += 0.05;
+            if (sweepServoPosition <= sweepUpperLimit) {
+                sweepServoPosition += 0.05;
                 telemetry.log().add("Decrement Sweep Servo");
             }
         }
         if (this.gamepad1.dpad_right) {
-            if (lockServoPosition >= sweepLowerLimit) {
-                lockServoPosition -= 0.05;
+            if (sweepServoPosition >= sweepLowerLimit) {
+                sweepServoPosition -= 0.05;
                 telemetry.log().add("Increment Sweep Servo");
             }
         }
-        lockServo.setPosition(lockServoPosition);
-
-        // if (this.gamepad1.right_bumper) {
-        //     if (armController.isLocked()) {
-        //         armController.lock();
-        //     } else {
-        //         armController.unlock();
-        //     }
-        // }
+        sweepServo.setPosition(sweepServoPosition);
 
         // X Button: Toggles Arm Up/Down
         if (this.gamepad1.x) {
-            if (armController.isArmUp()) {
-                armController.armDown();
+            if (armController.isStart) {
+                armController.brakeWinch();
+                armController.slackArm();
+                armController.unlock();
+                armController.armUp();
+                armController.isStart = false;
                 telemetry.log().add("Lower Arm");
             } else {
-                armController.armUp();
-                telemetry.log().add("Raise Arm");
+                if (armController.isArmUp()) {
+                    armController.armDown();
+                    telemetry.log().add("Lower Arm");
+                } else {
+                    armController.armUp();
+                    telemetry.log().add("Raise Arm");
+                }
             }
         }
 
@@ -167,12 +176,26 @@ public class RR2TeleOp extends OpMode {
             telemetry.log().add("Reset Motor Encoders");
         }
 
-        // Slacking Winch
-        armController.slackWinch();
+        // DPAD UP: Start chainMotor
+        if (this.gamepad1.dpad_up) {
+            armController.runChainMotor();
+        }
+        if (this.gamepad1.dpad_down) {
+            armController.stopChainMotor();
+        }
+
 
         // --- GAMEPAD 2 ---
 
-        // Nothing here yet...
+        // Increment Slide Motor
+        if (this.gamepad2.right_bumper) {
+            armController.incrementSlideMotor();
+            telemetry.log().add("Incrementing Slide Motor");
+        }
+        if (this.gamepad2.left_bumper) {
+            armController.decrementSlideMotor();
+            telemetry.log().add("Decrementing Slide Motor");
+        }
 
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();

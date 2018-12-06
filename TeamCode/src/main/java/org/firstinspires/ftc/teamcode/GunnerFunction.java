@@ -23,7 +23,7 @@ public class GunnerFunction {
         // TODO Template Initializations for Actual Motors and Servos
         // TODO Put in actual positions in place of 0
         this.pusherServo = new TwoStateServo(hardwareMap.servo.get("pusherServo"), 0, 0, 0, true);
-        this.lockServo = new TwoStateServo(hardwareMap.servo.get("lockServo"), 0, 0, 0, true);
+        this.lockServo = new TwoStateServo(hardwareMap.servo.get("lockServo"), .35, 1, 0, true);
 
         this.telemetry = telemetry;
 
@@ -35,12 +35,15 @@ public class GunnerFunction {
         private final int ARM_DOWN = 180;
 
         private boolean isLocked = false;
+        public boolean isStart = true;
         private DcMotor armMotor;
         private DcMotor winchMotor;
         private DcMotor chainMotor;
         private DcMotor slideMotor;
         private Servo sweepServo;
         private TwoStateServo lockServo;
+
+        private int slide = 0;
 
 
         public ArmController(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo, Servo sweepServo, DcMotor chainMotor, DcMotor slideMotor) {
@@ -83,21 +86,26 @@ public class GunnerFunction {
             winchMotor.setPower(0);
         }
 
+        public void brakeWinch() {
+            winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            winchMotor.setPower(0);
+        }
+
         public void armUp() {
             armMotor.setTargetPosition(ARM_UP);
-            armMotor.setPower(0.20);
+            armMotor.setPower(0.15);
             // isArmUp = true;
         }
 
         public void armDown() {
             armMotor.setTargetPosition(ARM_DOWN);
-            armMotor.setPower(0.20);
+            armMotor.setPower(0.15);
             // isArmUp = false;
         }
 
         public void armReset() {
             armMotor.setTargetPosition(0);
-            armMotor.setPower(0.20);
+            armMotor.setPower(0.15);
         }
 
         public void slackArm() {
@@ -109,9 +117,26 @@ public class GunnerFunction {
             chainMotor.setPower(.15);
         }
 
+        public void stopChainMotor() {
+            chainMotor.setPower(0);
+        }
+
+        public void incrementSlideMotor() {
+            slideMotor.setTargetPosition(slide+=15);
+        }
+
+        public void decrementSlideMotor() {
+            if (slide - 15 >= 0) {
+                slideMotor.setTargetPosition(slide -= 15);
+            } else {
+                slideMotor.setTargetPosition(0);
+            }
+        }
+
         public void doTelemetry(Telemetry telemetry) {
             telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
             telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
+            telemetry.addData("Slide Motor", slideMotor.getCurrentPosition());
             telemetry.addData("isArmUp", isArmUp());
             // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
         }
