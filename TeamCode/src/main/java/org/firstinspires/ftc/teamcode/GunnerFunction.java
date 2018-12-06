@@ -15,6 +15,8 @@ public class GunnerFunction {
     private final double ARM_MAX_SPEED_UP = 0.1;
     private final double ARM_MAX_SPEED_DOWN = 0.05;
 
+    private int slide = 0;
+
     private boolean isLocked = false;
     private DcMotor winchMotor;
     private DcMotor chainMotor;
@@ -69,6 +71,11 @@ public class GunnerFunction {
         winchMotor.setPower(0);
     }
 
+    public void brakeWinch() {
+        winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        winchMotor.setPower(0);
+    }
+
     // --- Arm Motor ---
 
     public void armUp() {
@@ -107,7 +114,23 @@ public class GunnerFunction {
     // --- Sweeper ---
 
     public void runChainMotor() {
-        chainMotor.setPower(.15);
+        chainMotor.setPower(-.15);
+    }
+
+    public void stopChainMotor() {
+        chainMotor.setPower(0);
+    }
+
+    public void incrementSlideMotor() {
+        slideMotor.setTargetPosition(slide += 15);
+    }
+
+    public void decrementSlideMotor() {
+        if (slide - 15 >= 0) {
+            slideMotor.setTargetPosition(slide -= 15);
+        } else {
+            slideMotor.setTargetPosition(0);
+        }
     }
 
     // --- Telemetry ---
@@ -115,7 +138,9 @@ public class GunnerFunction {
     public void doTelemetry(Telemetry telemetry) {
         telemetry.addData("Arm Motor", armMotor.getPosition());
         telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
+        telemetry.addData("Slide Motor", slideMotor.getCurrentPosition());
         telemetry.addData("isArmUp", isArmUp());
+        // TODO: isStart? (For auton or tele-op?)
         // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
     }
 

@@ -40,7 +40,7 @@ public class RR2TeleOp extends OpMode {
         gunnerFunction = new GunnerFunction(
                 hardwareMap.dcMotor.get("armMotor"),
                 hardwareMap.dcMotor.get("winchMotor"),
-                new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0),
+                new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), .35, 1, 0, true),
                 hardwareMap.servo.get("sweepServo"),
                 hardwareMap.dcMotor.get("chainMotor"),
                 hardwareMap.dcMotor.get("slideMotor")
@@ -103,55 +103,49 @@ public class RR2TeleOp extends OpMode {
             telemetry.addData("Angle", 0);
         }
 
+        // TODO: Make space for this on other gamepad
+        // Right/Left Bumper: Increment/Decrement Slide Motor
+        if (this.gamepad1.right_bumper) {
+            gunnerFunction.incrementSlideMotor();
+            telemetry.log().add("Incrementing Slide Motor");
+        }
+        if (this.gamepad1.left_bumper) {
+            gunnerFunction.decrementSlideMotor();
+            telemetry.log().add("Decrementing Slide Motor");
+        }
+
         // ----- Gamepad 2: Gunner Functions -----
 
-        // Right and Left Bumper: Locking/Unlocking Servo with Increments
-        if (this.gamepad2.left_bumper) {
-            if (lockServoPosition <= servoUpperLimit) {
-                lockServoPosition += 0.05;
-                telemetry.log().add("Decrement Servo");
-            }
-        }
-        if (this.gamepad2.right_bumper) {
-            if (lockServoPosition >= servoLowerLimit) {
-                lockServoPosition -= 0.05;
-                telemetry.log().add("Increment Servo");
-            }
-        }
-        lockServo.setPosition(lockServoPosition);
-
-        // Right and Left DPAD: Locking/Unlocking Servo with Increments
+        // D-pad Left/Right: Increment/Decrement sweep servo
         if (this.gamepad2.dpad_left) {
-            if (lockServoPosition <= sweepUpperLimit) {
-                lockServoPosition += 0.05;
+            if (sweepServoPosition <= sweepUpperLimit) {
+                sweepServoPosition += 0.05;
                 telemetry.log().add("Decrement Sweep Servo");
             }
         }
         if (this.gamepad2.dpad_right) {
-            if (lockServoPosition >= sweepLowerLimit) {
-                lockServoPosition -= 0.05;
+            if (sweepServoPosition >= sweepLowerLimit) {
+                sweepServoPosition -= 0.05;
                 telemetry.log().add("Increment Sweep Servo");
             }
         }
-        lockServo.setPosition(lockServoPosition);
+        sweepServo.setPosition(sweepServoPosition);
 
-        /*
-        if (this.gamepad2.right_bumper) {
+        // Right Bumper: Toggle lock servo
+        if (this.gamepad1.right_bumper) {
             if (gunnerFunction.isLocked()) {
+                gunnerFunction.unlock();
+            } else {
                 gunnerFunction.lock();
             }
-            else {
-                gunnerFunction.unlock();
-            }
         }
-        */
 
-        // X Button: Toggles Arm Up/Down
+        // X Button: Toggle Arm Up/Down
         if (this.gamepad2.x) {
             gunnerFunction.toggleArm();
         }
 
-        // A Button: Resets Arm to Starting Position
+        // A Button: Reset Arm to Starting Position
         if (this.gamepad2.a) {
             gunnerFunction.armReset();
             telemetry.log().add("Reset Arm Position");
@@ -163,8 +157,13 @@ public class RR2TeleOp extends OpMode {
             telemetry.log().add("Reset Motor Encoders");
         }
 
-        // Slacking Winch
-        // gunnerFunction.slackWinch();
+        // D-pad Up/Down: Start/Stop chainMotor
+        if (this.gamepad1.dpad_up) {
+            gunnerFunction.runChainMotor();
+        }
+        if (this.gamepad1.dpad_down) {
+            gunnerFunction.stopChainMotor();
+        }
 
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
