@@ -114,7 +114,7 @@ public class GunnerFunction {
         }
 
         public void runChainMotor() {
-            chainMotor.setPower(.15);
+            chainMotor.setPower(-.15);
         }
 
         public void stopChainMotor() {

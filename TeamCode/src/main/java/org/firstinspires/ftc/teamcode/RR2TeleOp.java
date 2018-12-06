@@ -26,8 +26,8 @@ public class RR2TeleOp extends OpMode {
     private double servoUpperLimit = 1;
     private double servoLowerLimit = 0.0;
     private double sweepServoPosition;
-    private double sweepUpperLimit = 1;
-    private double sweepLowerLimit = 0.0;
+    private double sweepUpperLimit = 100;
+    private double sweepLowerLimit = -30;
 
     private final static double TURNING_SPEED_BOOST = 0.3;
 
