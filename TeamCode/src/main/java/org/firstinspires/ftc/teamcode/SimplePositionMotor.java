@@ -58,7 +58,7 @@ public class SimplePositionMotor {
 
     public void resetEncoder() {
         if (motor.getMode() == DEFAULT_RUNMODE) {
-            motor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DEFAULT_RUNMODE);
         }
     }
