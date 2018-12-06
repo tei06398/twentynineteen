@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -15,10 +14,10 @@ public class RR2TeleOp extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    private GunnerFunction.ArmController armController;
-
     private DriverFunction driverFunction;
     private DriverFunction.Steering steering;
+
+    private GunnerFunction gunnerFunction;
 
     private Servo lockServo;
     private Servo sweepServo;
@@ -38,8 +37,14 @@ public class RR2TeleOp extends OpMode {
         driverFunction = new DriverFunction(hardwareMap, telemetry);
         steering = driverFunction.getSteering();
 
-        armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0), hardwareMap.servo.get("sweepServo"), hardwareMap.dcMotor.get("chainMotor"), hardwareMap.dcMotor.get("slideMotor"));
-        driverFunction = new DriverFunction(hardwareMap, telemetry);
+        gunnerFunction = new GunnerFunction(
+                hardwareMap.dcMotor.get("armMotor"),
+                hardwareMap.dcMotor.get("winchMotor"),
+                new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0),
+                hardwareMap.servo.get("sweepServo"),
+                hardwareMap.dcMotor.get("chainMotor"),
+                hardwareMap.dcMotor.get("slideMotor")
+        );
 
         this.lockServo = this.hardwareMap.servo.get("lockServo");
         this.sweepServo = this.hardwareMap.servo.get("sweepServo");
@@ -52,21 +57,20 @@ public class RR2TeleOp extends OpMode {
 
     // Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
     @Override
-    public void init_loop() {
-        armController.resetEncoders();
-    }
+    public void init_loop() {}
 
     // Code to run ONCE when the driver hits PLAY
     @Override
     public void start() {
         runtime.reset();
+        gunnerFunction.resetEncoders();
     }
 
     // Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
     @Override
     public void loop() {
 
-        // --- GAMEPAD 1 ---
+        // ----- Gamepad 1: Driving Functions -----
 
         // Set speed ratio depending on triggers pressed
         if (this.gamepad1.right_trigger > 0.5) {
@@ -130,53 +134,55 @@ public class RR2TeleOp extends OpMode {
         }
         lockServo.setPosition(lockServoPosition);
 
-        // if (this.gamepad1.right_bumper) {
-        //     if (armController.isLocked()) {
-        //         armController.lock();
-        //     } else {
-        //         armController.unlock();
-        //     }
-        // }
+        /*
+        if (this.gamepad1.right_bumper) {
+            if (gunnerFunction.isLocked()) {
+                gunnerFunction.lock();
+            }
+            else {
+                gunnerFunction.unlock();
+            }
+        }
+        */
 
         // X Button: Toggles Arm Up/Down
         if (this.gamepad1.x) {
-            if (armController.isArmUp()) {
-                armController.armDown();
+            if (gunnerFunction.isArmUp()) {
+                gunnerFunction.armDown();
                 telemetry.log().add("Lower Arm");
             } else {
-                armController.armUp();
+                gunnerFunction.armUp();
                 telemetry.log().add("Raise Arm");
             }
         }
 
         // A Button: Resets Arm to Starting Position
         if (this.gamepad1.a) {
-            armController.armReset();
+            gunnerFunction.armReset();
             telemetry.log().add("Reset Arm Position");
         }
 
         // B Button: Slacks Arm
         if (this.gamepad1.b) {
-            armController.slackArm();
+            gunnerFunction.slackArm();
             telemetry.log().add("Slack Arm");
         }
 
         // Y Button: Reset Motor Encoders
         if (this.gamepad1.y) {
-            armController.resetEncoders();
+            gunnerFunction.resetEncoders();
             telemetry.log().add("Reset Motor Encoders");
         }
 
         // Slacking Winch
-        armController.slackWinch();
+        gunnerFunction.slackWinch();
 
-        // --- GAMEPAD 2 ---
-
-        // Nothing here yet...
+        // ----- Gamepad 2: Gunner Functions -----
+        // TODO
 
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
-        armController.doTelemetry(telemetry);
+        gunnerFunction.doTelemetry(telemetry);
         telemetry.addData("lockServo Position", lockServoPosition);
         telemetry.addData("sweepServo Position", sweepServoPosition);
         telemetry.addData("Runtime", runtime.toString());
@@ -187,7 +193,7 @@ public class RR2TeleOp extends OpMode {
     @Override
     public void stop() {
         driverFunction.resetAllEncoders();
-        armController.resetEncoders();
+        gunnerFunction.resetEncoders();
     }
 
 }

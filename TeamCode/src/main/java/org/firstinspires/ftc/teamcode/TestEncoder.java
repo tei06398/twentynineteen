@@ -2,24 +2,20 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import static org.firstinspires.ftc.teamcode.DriverFunction.*;
 
 @TeleOp(name="Encoder Tester", group="TeleOp OpMode")
 public class TestEncoder extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    private GunnerFunction gunnerFuction;
-    private GunnerFunction.ArmController armController;
+    private GunnerFunction gunnerFunction;
     private DriverFunction driverFunction;
 
     // Code to run ONCE when the driver hits INIT
     @Override
     public void init() {
-        armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0), hardwareMap.servo.get("sweepServo"), hardwareMap.dcMotor.get("chainMotor"), hardwareMap.dcMotor.get("slideMotor"));
+        gunnerFunction = new GunnerFunction(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0), hardwareMap.servo.get("sweepServo"), hardwareMap.dcMotor.get("chainMotor"), hardwareMap.dcMotor.get("slideMotor"));
         driverFunction = new DriverFunction(hardwareMap, telemetry);
 
         telemetry.addData("Status:", "Initialized:");
@@ -43,18 +39,18 @@ public class TestEncoder extends OpMode {
     public void loop() {
 
         if (this.gamepad1.right_bumper) {
-            if (armController.isLocked()) {
-                armController.lock();
+            if (gunnerFunction.isLocked()) {
+                gunnerFunction.lock();
             } else {
-                armController.unlock();
+                gunnerFunction.unlock();
             }
         }
 
         if (this.gamepad1.x) {
-            if (armController.isArmUp()) {
-                armController.armDown();
+            if (gunnerFunction.isArmUp()) {
+                gunnerFunction.armDown();
             } else {
-                armController.armUp();
+                gunnerFunction.armUp();
             }
         }
 
@@ -62,7 +58,7 @@ public class TestEncoder extends OpMode {
         telemetry.addData("LF", driverFunction.getLfPosition());
         telemetry.addData("RB", driverFunction.getRbPosition());
         telemetry.addData("RF", driverFunction.getRfPosition());
-        armController.doTelemetry(telemetry);
+        gunnerFunction.doTelemetry(telemetry);
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
 
@@ -72,7 +68,7 @@ public class TestEncoder extends OpMode {
     @Override
     public void stop() {
         driverFunction.resetAllEncoders();
-        armController.resetEncoders();
+        gunnerFunction.resetEncoders();
     }
 
 }
