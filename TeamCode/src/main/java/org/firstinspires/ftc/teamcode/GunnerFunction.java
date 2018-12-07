@@ -135,10 +135,6 @@ public class GunnerFunction {
         chainMotor.setPower(0);
     }
 
-    public double getChainMotorPower() {
-        return chainMotor.getPower();
-    }
-
     public void incrementSlideMotor() {
         slideMotor.setTargetPosition(slidePosition += 15);
     }
