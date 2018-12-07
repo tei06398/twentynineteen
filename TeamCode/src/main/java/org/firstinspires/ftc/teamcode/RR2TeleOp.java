@@ -172,6 +172,8 @@ public class RR2TeleOp extends OpMode {
             gunnerFunction.stopChainMotor();
         }
 
+        // TODO: B button reverse
+
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
         gunnerFunction.runArmMotorIteration();

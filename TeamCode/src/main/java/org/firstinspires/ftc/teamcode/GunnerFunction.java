@@ -17,6 +17,8 @@ public class GunnerFunction {
 
     private final double WINCH_POWER = 0.5;
 
+    private final double CHAIN_MOTOR_POWER = 0.15;
+
     private int slidePosition = 0;
 
     private boolean isLocked = false;
@@ -43,7 +45,8 @@ public class GunnerFunction {
     public void resetEncoders() {
         armMotor.resetEncoder();
         winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); // TODO: Update winch motor to use RUN_TO_POSITION
+        winchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         chainMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         chainMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -128,7 +131,11 @@ public class GunnerFunction {
     // --- Sweeper ---
 
     public void runChainMotor() {
-        chainMotor.setPower(-.15);
+        chainMotor.setPower(-1 * CHAIN_MOTOR_POWER);
+    }
+
+    public void runChainMotorReverse() {
+        chainMotor.setPower(CHAIN_MOTOR_POWER);
     }
 
     public void stopChainMotor() {
