@@ -103,17 +103,6 @@ public class RR2TeleOp extends OpMode {
             telemetry.addData("Angle", 0);
         }
 
-        // TODO: Make space for this on other gamepad
-        // Right/Left Bumper: Increment/Decrement Slide Motor
-        if (this.gamepad1.right_bumper) {
-            gunnerFunction.incrementSlideMotor();
-            telemetry.log().add("Incrementing Slide Motor");
-        }
-        if (this.gamepad1.left_bumper) {
-            gunnerFunction.decrementSlideMotor();
-            telemetry.log().add("Decrementing Slide Motor");
-        }
-
         // ----- Gamepad 2: Gunner Functions -----
 
         // Y Button: Toggle Arm Up/Down
@@ -143,9 +132,11 @@ public class RR2TeleOp extends OpMode {
         // Left Joystick Y: Move sweeper slide in/out
         if (this.gamepad2.left_stick_y > 0.5) {
             gunnerFunction.incrementSlideMotor();
+            telemetry.log().add("Incrementing Slide Motor");
         }
         else if (this.gamepad2.left_stick_y < -0.5) {
             gunnerFunction.decrementSlideMotor();
+            telemetry.log().add("Decrementing Slide Motor");
         }
 
         // D-pad Up/Down: Increment/Decrement sweep servo
