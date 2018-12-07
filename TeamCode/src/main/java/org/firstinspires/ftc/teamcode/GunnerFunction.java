@@ -15,7 +15,9 @@ public class GunnerFunction {
     private final double ARM_MAX_SPEED_UP = 0.1;
     private final double ARM_MAX_SPEED_DOWN = 0.05;
 
-    private int slide = 0;
+    private final double WINCH_POWER = 0.5;
+
+    private int slidePosition = 0;
 
     private boolean isLocked = false;
     private DcMotor winchMotor;
@@ -65,6 +67,18 @@ public class GunnerFunction {
     }
 
     // --- Winch Motor ---
+
+    public void winchForward() {
+        winchMotor.setPower(WINCH_POWER);
+    }
+
+    public void winchReverse() {
+        winchMotor.setPower(-1 * WINCH_POWER);
+    }
+
+    public void winchStop() {
+        winchMotor.setPower(0);
+    }
 
     public void slackWinch() {
         winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -121,13 +135,17 @@ public class GunnerFunction {
         chainMotor.setPower(0);
     }
 
+    public double getChainMotorPower() {
+        return chainMotor.getPower();
+    }
+
     public void incrementSlideMotor() {
-        slideMotor.setTargetPosition(slide += 15);
+        slideMotor.setTargetPosition(slidePosition += 15);
     }
 
     public void decrementSlideMotor() {
-        if (slide - 15 >= 0) {
-            slideMotor.setTargetPosition(slide -= 15);
+        if (slidePosition - 15 >= 0) {
+            slideMotor.setTargetPosition(slidePosition -= 15);
         } else {
             slideMotor.setTargetPosition(0);
         }

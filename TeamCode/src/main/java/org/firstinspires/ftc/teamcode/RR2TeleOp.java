@@ -116,14 +116,46 @@ public class RR2TeleOp extends OpMode {
 
         // ----- Gamepad 2: Gunner Functions -----
 
-        // D-pad Left/Right: Increment/Decrement sweep servo
-        if (this.gamepad2.dpad_left) {
+        // Y Button: Toggle Arm Up/Down
+        if (this.gamepad2.y) {
+            gunnerFunction.toggleArm();
+        }
+
+        // Right Joystick Y: Winch motor up/down
+        if (this.gamepad2.right_stick_y > 0.5) {
+            gunnerFunction.winchForward();
+        }
+        else if (this.gamepad2.right_stick_y < -0.5) {
+            gunnerFunction.winchReverse();
+        }
+        else {
+            gunnerFunction.stopChainMotor();
+        }
+
+        // Right/Left Trigger: Lock/Unlock winch servo
+        if (this.gamepad2.right_bumper) {
+            gunnerFunction.lock();
+        }
+        else if (this.gamepad2.left_bumper) {
+            gunnerFunction.unlock();
+        }
+
+        // Left Joystick Y: Move sweeper slide in/out
+        if (this.gamepad2.left_stick_y > 0.5) {
+            gunnerFunction.incrementSlideMotor();
+        }
+        else if (this.gamepad2.left_stick_y < -0.5) {
+            gunnerFunction.decrementSlideMotor();
+        }
+
+        // D-pad Up/Down: Increment/Decrement sweep servo
+        if (this.gamepad2.dpad_down) {
             if (sweepServoPosition <= sweepUpperLimit) {
                 sweepServoPosition += 0.05;
                 telemetry.log().add("Decrement Sweep Servo");
             }
         }
-        if (this.gamepad2.dpad_right) {
+        if (this.gamepad2.dpad_up) {
             if (sweepServoPosition >= sweepLowerLimit) {
                 sweepServoPosition -= 0.05;
                 telemetry.log().add("Increment Sweep Servo");
@@ -131,38 +163,14 @@ public class RR2TeleOp extends OpMode {
         }
         sweepServo.setPosition(sweepServoPosition);
 
-        // Right Bumper: Toggle lock servo
-        if (this.gamepad1.right_bumper) {
-            if (gunnerFunction.isLocked()) {
-                gunnerFunction.unlock();
-            } else {
-                gunnerFunction.lock();
+        // A: Start/Stop chainMotor
+        if (this.gamepad1.a) {
+            if (gunnerFunction.getChainMotorPower() == 0) {
+                gunnerFunction.runChainMotor();
             }
-        }
-
-        // X Button: Toggle Arm Up/Down
-        if (this.gamepad2.x) {
-            gunnerFunction.toggleArm();
-        }
-
-        // A Button: Reset Arm to Starting Position
-        if (this.gamepad2.a) {
-            gunnerFunction.armReset();
-            telemetry.log().add("Reset Arm Position");
-        }
-
-        // Y Button: Reset Motor Encoders
-        if (this.gamepad2.y) {
-            gunnerFunction.resetEncoders();
-            telemetry.log().add("Reset Motor Encoders");
-        }
-
-        // D-pad Up/Down: Start/Stop chainMotor
-        if (this.gamepad1.dpad_up) {
-            gunnerFunction.runChainMotor();
-        }
-        if (this.gamepad1.dpad_down) {
-            gunnerFunction.stopChainMotor();
+            else {
+                gunnerFunction.stopChainMotor();
+            }
         }
 
         // Finish steering, putting power into hardware, and update telemetry
