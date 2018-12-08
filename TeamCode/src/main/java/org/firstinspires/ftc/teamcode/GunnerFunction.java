@@ -33,10 +33,9 @@ public class GunnerFunction {
     // TODO: Update the min/max positions
     private final int SLIDE_POSITION_MIN = -1 * (int) Math.pow(10, 5);
     private final int SLIDE_POSITION_MAX = (int) Math.pow(10, 5);
-    private final int SLIDE_POSITION_INCREMENT = 100;
     private final double SLIDE_MOTOR_POWER = 0.3;
 
-    private int slidePosition = 0; // = SLIDE_POSITION_MIN;
+    private int slidePosition = 0;
 
     private boolean isLocked = false;
     private DcMotor winchMotor;
@@ -67,7 +66,8 @@ public class GunnerFunction {
         chainMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         chainMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     // --- Winch Lock Servo ---
@@ -159,32 +159,30 @@ public class GunnerFunction {
         chainMotor.setPower(0);
     }
 
-    // TODO: Consider whether the slide motor ever needs to be slacked (probably not...)
+    public void runSlideMotor() {
+        if (slideMotor.getCurrentPosition() < SLIDE_POSITION_MAX) {
+            slideMotor.setPower(SLIDE_MOTOR_POWER);
+        }
+        else {
+            slideMotor.setPower(0);
+        }
+    }
 
-    public void powerSlideMotor() {
-        slideMotor.setPower(SLIDE_MOTOR_POWER);
+    public void runSlideMotorReverse() {
+        if (slideMotor.getCurrentPosition() > SLIDE_POSITION_MIN) {
+            slideMotor.setPower(-1 * SLIDE_MOTOR_POWER);
+        }
+        else {
+            slideMotor.setPower(0);
+        }
     }
 
     public void stopSlideMotor() {
         slideMotor.setPower(0);
     }
 
-    public void incrementSlideMotor() {
-        if (slidePosition + SLIDE_POSITION_INCREMENT <= SLIDE_POSITION_MAX) {
-            slidePosition += SLIDE_POSITION_INCREMENT;
-            // slideMotor.setTargetPosition(slidePosition);
-        }
-    }
-
-    public void decrementSlideMotor() {
-        if (slidePosition - SLIDE_POSITION_MAX >= SLIDE_POSITION_MIN) {
-            slidePosition -= SLIDE_POSITION_INCREMENT;
-            // slideMotor.setTargetPosition(slidePosition);
-        }
-    }
-
-    public void runSlideMotorToTarget() {
-        slideMotor.setTargetPosition(slidePosition);
+    public double getSlideMotorPosition() {
+        return slideMotor.getCurrentPosition();
     }
 
     public void sweepServoForward() {
