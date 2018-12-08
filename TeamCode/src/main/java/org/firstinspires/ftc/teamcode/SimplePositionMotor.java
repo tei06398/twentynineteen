@@ -6,6 +6,7 @@ public class SimplePositionMotor {
 
     public DcMotor motor;
     private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
+    private static final DcMotor.ZeroPowerBehavior DEFAULT_ZERO_POWER_BEHAVIOR = DcMotor.ZeroPowerBehavior.BRAKE;
 
     private int setPoint;
     private double maxSpeedForward;
@@ -30,6 +31,7 @@ public class SimplePositionMotor {
         this.maxSpeedReverse = maxSpeedReverse;
         this.marginOfError = marginOfError;
         motor.setMode(DEFAULT_RUNMODE);
+        motor.setZeroPowerBehavior(DEFAULT_ZERO_POWER_BEHAVIOR);
         resetEncoder();
     }
 
