@@ -30,7 +30,13 @@ public class GunnerFunction {
     private final double SWEEP_SERVO_CENTER = 0.5;
     private final double SWEEP_SERVO_POWER = 0.5; // Between 0 and 0.5
 
-    private int slidePosition = 0;
+    // TODO: Update the min/max positions
+    private final int SLIDE_POSITION_MIN = -500;
+    private final int SLIDE_POSITION_MAX = 500;
+    private final int SLIDE_POSITION_INCREMENT = 15;
+    private final double SLIDE_MOTOR_POWER = 0.2;
+
+    private int slidePosition = 0; // = SLIDE_POSITION_MIN;
 
     private boolean isLocked = false;
     private DcMotor winchMotor;
@@ -153,16 +159,32 @@ public class GunnerFunction {
         chainMotor.setPower(0);
     }
 
+    // TODO: Consider whether the slide motor ever needs to be slacked (probably not...)
+
+    public void powerSlideMotor() {
+        slideMotor.setPower(SLIDE_MOTOR_POWER);
+    }
+
+    public void stopSlideMotor() {
+        slideMotor.setPower(0);
+    }
+
     public void incrementSlideMotor() {
-        slideMotor.setTargetPosition(slidePosition += 15);
+        if (slidePosition + SLIDE_POSITION_INCREMENT <= SLIDE_POSITION_MAX) {
+            slidePosition += SLIDE_POSITION_INCREMENT;
+            // slideMotor.setTargetPosition(slidePosition);
+        }
     }
 
     public void decrementSlideMotor() {
-        if (slidePosition - 15 >= 0) {
-            slideMotor.setTargetPosition(slidePosition -= 15);
-        } else {
-            slideMotor.setTargetPosition(0);
+        if (slidePosition - SLIDE_POSITION_MAX >= SLIDE_POSITION_MIN) {
+            slidePosition -= SLIDE_POSITION_INCREMENT;
+            // slideMotor.setTargetPosition(slidePosition);
         }
+    }
+
+    public void runSlideMotorToTarget() {
+        slideMotor.setTargetPosition(slidePosition);
     }
 
     public void sweepServoForward() {
@@ -181,8 +203,10 @@ public class GunnerFunction {
 
     public void doTelemetry(Telemetry telemetry) {
         telemetry.addData("Arm Motor", armMotor.getPosition());
-        telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
-        telemetry.addData("Slide Motor", slideMotor.getCurrentPosition());
+        // telemetry.addData("Winch Motor Current", winchMotor.getCurrentPosition());
+        telemetry.addData("Slide Motor Current Position", winchMotor.getCurrentPosition());
+        telemetry.addData("Slide Motor Internal Target", winchMotor.getTargetPosition());
+        telemetry.addData("Slide Motor External Target", slidePosition);
         telemetry.addData("isArmUp", isArmUp());
         // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
     }

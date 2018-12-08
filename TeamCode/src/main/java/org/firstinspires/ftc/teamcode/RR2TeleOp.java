@@ -23,6 +23,7 @@ public class RR2TeleOp extends OpMode {
     // Toggle locks
     private boolean gamepad2YToggleLock = false;
     private boolean gamepad2ABToggleLock = false;
+    private boolean gamepad2LeftJoyYToggleLock = false;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -106,6 +107,7 @@ public class RR2TeleOp extends OpMode {
         }
 
         // Right Joystick Y: Winch motor up/down
+        /*
         if (this.gamepad2.right_stick_y > 0.5) {
             gunnerFunction.winchForward();
         }
@@ -115,6 +117,8 @@ public class RR2TeleOp extends OpMode {
         else {
             gunnerFunction.winchStop();
         }
+        */
+        gunnerFunction.winchStop();
 
         // Right/Left Trigger: Lock/Unlock winch servo
         if (this.gamepad2.right_trigger > 0.5) {
@@ -126,13 +130,22 @@ public class RR2TeleOp extends OpMode {
 
         // Left Joystick Y: Move sweeper slide in/out
         if (this.gamepad2.left_stick_y > 0.5) {
-            gunnerFunction.incrementSlideMotor();
-            telemetry.log().add("Incrementing Slide Motor");
+            if (!gamepad2LeftJoyYToggleLock) {
+                gamepad2LeftJoyYToggleLock = true;
+                gunnerFunction.incrementSlideMotor();
+            }
         }
         else if (this.gamepad2.left_stick_y < -0.5) {
-            gunnerFunction.decrementSlideMotor();
-            telemetry.log().add("Decrementing Slide Motor");
+            if (!gamepad2LeftJoyYToggleLock) {
+                gamepad2LeftJoyYToggleLock = true;
+                gunnerFunction.decrementSlideMotor();
+            }
         }
+        else {
+            gamepad2LeftJoyYToggleLock = false;
+        }
+        gunnerFunction.runSlideMotorToTarget();
+        gunnerFunction.powerSlideMotor();
 
         // D-pad Y: Increment/Decrement sweep servo
         if (this.gamepad2.dpad_up) {
