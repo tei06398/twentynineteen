@@ -19,20 +19,13 @@ public class RR2TeleOp extends OpMode {
 
     private GunnerFunction gunnerFunction;
 
-    private Servo lockServo;
     private Servo sweepServo;
-    private double lockServoPosition;
-    private double servoUpperLimit = 1;
-    private double servoLowerLimit = 0.0;
-    private double sweepServoPosition;
-    private double sweepUpperLimit = 1;
-    private double sweepLowerLimit = 0.0;
 
     private final static double TURNING_SPEED_BOOST = 0.3;
 
     // Toggle locks
     private boolean gamepad2YToggleLock = false;
-    private boolean gamepad2AToggleLock = false;
+    private boolean gamepad2ABToggleLock = false;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -50,10 +43,7 @@ public class RR2TeleOp extends OpMode {
                 hardwareMap.dcMotor.get("slideMotor")
         );
 
-        this.lockServo = this.hardwareMap.servo.get("lockServo");
         this.sweepServo = this.hardwareMap.servo.get("sweepServo");
-        lockServoPosition = servoLowerLimit;
-        sweepServoPosition = sweepLowerLimit;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -160,26 +150,29 @@ public class RR2TeleOp extends OpMode {
             sweepServo.setPosition(0.5);
         }
 
-        // A: Start/Stop chainMotor
+        // A/B: Start/Reverse/Stop chainMotor
         if (this.gamepad2.a) {
-            if (!gamepad2AToggleLock) {
-                gamepad2AToggleLock = true;
+            if (!gamepad2ABToggleLock) {
+                gamepad2ABToggleLock = true;
                 gunnerFunction.runChainMotor();
             }
         }
+        else if (this.gamepad2.b) {
+            if (!gamepad2ABToggleLock) {
+                gamepad2ABToggleLock = true;
+                gunnerFunction.runChainMotorReverse();
+            }
+        }
         else {
-            gamepad2AToggleLock = false;
+            gamepad2ABToggleLock = false;
             gunnerFunction.stopChainMotor();
         }
-
-        // TODO: B button reverse
 
         // Finish steering, putting power into hardware, and update telemetry
         steering.finishSteering();
         gunnerFunction.runArmMotorIteration();
         gunnerFunction.doTelemetry(telemetry);
-        telemetry.addData("lockServo Position", lockServoPosition);
-        telemetry.addData("sweepServo Position", sweepServoPosition);
+        telemetry.addData("sweepServo Position", sweepServo.getPosition());
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
     }
