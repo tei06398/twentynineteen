@@ -9,6 +9,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class GunnerFunction {
 
+    /*
+    All the power and position constants are place here, for convenience
+    We should probably pass them in instead, but this is way easier...
+    */
+
     private final int ARM_UP = -313;
     private final int ARM_DOWN = 180;
 
@@ -18,6 +23,9 @@ public class GunnerFunction {
     private final double WINCH_POWER = 0.5;
 
     private final double CHAIN_MOTOR_POWER = 0.15;
+
+    private final double SWEEP_SERVO_CENTER = 0.5;
+    private final double SWEEP_SERVO_POWER = 0.5; // Between 0 and 0.5
 
     private int slidePosition = 0;
 
@@ -154,6 +162,18 @@ public class GunnerFunction {
         }
     }
 
+    public void sweepServoForward() {
+        sweepServo.setPosition(SWEEP_SERVO_CENTER + SWEEP_SERVO_POWER);
+    }
+
+    public void sweepServoReverse() {
+        sweepServo.setPosition(SWEEP_SERVO_CENTER - SWEEP_SERVO_POWER);
+    }
+
+    public void sweepServoStop() {
+        sweepServo.setPosition(SWEEP_SERVO_CENTER);
+    }
+
     // --- Telemetry ---
 
     public void doTelemetry(Telemetry telemetry) {
@@ -161,7 +181,6 @@ public class GunnerFunction {
         telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
         telemetry.addData("Slide Motor", slideMotor.getCurrentPosition());
         telemetry.addData("isArmUp", isArmUp());
-        // TODO: isStart? (For auton or tele-op?)
         // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
     }
 

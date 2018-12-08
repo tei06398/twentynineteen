@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static org.firstinspires.ftc.teamcode.DriverFunction.MAX_SPEED_RATIO;
@@ -17,11 +16,9 @@ public class RR2TeleOp extends OpMode {
     private DriverFunction driverFunction;
     private DriverFunction.Steering steering;
 
-    private GunnerFunction gunnerFunction;
-
-    private Servo sweepServo;
-
     private final static double TURNING_SPEED_BOOST = 0.3;
+
+    private GunnerFunction gunnerFunction;
 
     // Toggle locks
     private boolean gamepad2YToggleLock = false;
@@ -42,8 +39,6 @@ public class RR2TeleOp extends OpMode {
                 hardwareMap.dcMotor.get("chainMotor"),
                 hardwareMap.dcMotor.get("slideMotor")
         );
-
-        this.sweepServo = this.hardwareMap.servo.get("sweepServo");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -140,14 +135,14 @@ public class RR2TeleOp extends OpMode {
         }
 
         // D-pad Y: Increment/Decrement sweep servo
-        if (this.gamepad2.dpad_down) {
-            sweepServo.setPosition(1);
+        if (this.gamepad2.dpad_up) {
+            gunnerFunction.sweepServoForward();
         }
-        else if (this.gamepad2.dpad_up) {
-            sweepServo.setPosition(0);
+        else if (this.gamepad2.dpad_down) {
+            gunnerFunction.sweepServoReverse();
         }
         else {
-            sweepServo.setPosition(0.5);
+            gunnerFunction.sweepServoStop();
         }
 
         // A/B: Start/Reverse/Stop chainMotor
@@ -168,11 +163,12 @@ public class RR2TeleOp extends OpMode {
             gunnerFunction.stopChainMotor();
         }
 
-        // Finish steering, putting power into hardware, and update telemetry
+        // Finish steering, putting power into hardware, and update arm motor power
         steering.finishSteering();
         gunnerFunction.runArmMotorIteration();
+
+        // Update telemetry
         gunnerFunction.doTelemetry(telemetry);
-        telemetry.addData("sweepServo Position", sweepServo.getPosition());
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
     }
