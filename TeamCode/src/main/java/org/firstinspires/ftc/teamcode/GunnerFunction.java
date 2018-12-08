@@ -203,7 +203,7 @@ public class GunnerFunction {
 
     public void doTelemetry(Telemetry telemetry) {
         telemetry.addData("Arm Motor", armMotor.getPosition());
-        // telemetry.addData("Winch Motor Current", winchMotor.getCurrentPosition());
+        telemetry.addData("Winch Motor Powah", winchMotor.getPower());
         telemetry.addData("Slide Motor Current Position", slideMotor.getCurrentPosition());
         telemetry.addData("Slide Motor Internal Target", slideMotor.getTargetPosition());
         telemetry.addData("Slide Motor External Target", slidePosition);
