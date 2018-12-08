@@ -23,7 +23,6 @@ public class RR2TeleOp extends OpMode {
     // Toggle locks
     private boolean gamepad2YToggleLock = false;
     private boolean gamepad2ABToggleLock = false;
-    private boolean gamepad2LeftJoyYToggleLock = false;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -137,19 +136,10 @@ public class RR2TeleOp extends OpMode {
 
         // Left Joystick Y: Move sweeper slide in/out
         if (this.gamepad2.left_stick_y > 0.5) {
-            if (!gamepad2LeftJoyYToggleLock) {
-                gamepad2LeftJoyYToggleLock = true;
-                gunnerFunction.incrementSlideMotor();
-            }
+            gunnerFunction.incrementSlideMotor();
         }
         else if (this.gamepad2.left_stick_y < -0.5) {
-            if (!gamepad2LeftJoyYToggleLock) {
-                gamepad2LeftJoyYToggleLock = true;
-                gunnerFunction.decrementSlideMotor();
-            }
-        }
-        else {
-            gamepad2LeftJoyYToggleLock = false;
+            gunnerFunction.decrementSlideMotor();
         }
         gunnerFunction.runSlideMotorToTarget();
         gunnerFunction.powerSlideMotor();

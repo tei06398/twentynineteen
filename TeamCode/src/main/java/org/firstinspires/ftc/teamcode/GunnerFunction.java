@@ -33,7 +33,7 @@ public class GunnerFunction {
     // TODO: Update the min/max positions
     private final int SLIDE_POSITION_MIN = -1 * (int) Math.pow(10, 5);
     private final int SLIDE_POSITION_MAX = (int) Math.pow(10, 5);
-    private final int SLIDE_POSITION_INCREMENT = 100;
+    private final int SLIDE_POSITION_INCREMENT = 10;
     private final double SLIDE_MOTOR_POWER = 0.3;
 
     private int slidePosition = 0; // = SLIDE_POSITION_MIN;
@@ -177,7 +177,7 @@ public class GunnerFunction {
     }
 
     public void decrementSlideMotor() {
-        if (slidePosition - SLIDE_POSITION_MAX >= SLIDE_POSITION_MIN) {
+        if (slidePosition - SLIDE_POSITION_INCREMENT >= SLIDE_POSITION_MIN) {
             slidePosition -= SLIDE_POSITION_INCREMENT;
             // slideMotor.setTargetPosition(slidePosition);
         }
