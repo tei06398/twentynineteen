@@ -23,7 +23,7 @@ public class GunnerFunction {
     private final double ARM_MAX_SPEED_UP = 0.1;
     private final double ARM_MAX_SPEED_DOWN = 0.05;
 
-    private final double WINCH_POWER = 0.5;
+    private final double WINCH_POWER = 0.1;
 
     private final double CHAIN_MOTOR_POWER = 0.15;
 
@@ -31,10 +31,10 @@ public class GunnerFunction {
     private final double SWEEP_SERVO_POWER = 0.5; // Between 0 and 0.5
 
     // TODO: Update the min/max positions
-    private final int SLIDE_POSITION_MIN = -1 * (int) Math.pow(10, 5);
-    private final int SLIDE_POSITION_MAX = (int) Math.pow(10, 5);
-    private final int SLIDE_POSITION_INCREMENT = 10;
-    private final double SLIDE_MOTOR_POWER = 0.3;
+    private final int SLIDE_POSITION_MIN = 0;
+    private final int SLIDE_POSITION_MAX = 3150;
+    private final int SLIDE_POSITION_INCREMENT = 30;
+    private final double SLIDE_MOTOR_POWER = 0.5;
 
     private int slidePosition = 0; // = SLIDE_POSITION_MIN;
 

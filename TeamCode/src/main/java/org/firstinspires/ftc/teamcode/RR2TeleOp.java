@@ -108,7 +108,6 @@ public class RR2TeleOp extends OpMode {
             gamepad2YToggleLock = false;
         }
 
-        /*
         // Right Joystick Y: Winch motor up/down
         if (this.gamepad2.right_stick_y > 0.5) {
             gunnerFunction.winchForward();
@@ -122,9 +121,7 @@ public class RR2TeleOp extends OpMode {
             gunnerFunction.winchStop();
             telemetry.addData("Winch Control", "STOP");
         }
-        */
-        // TODO: gunnerFunction.winchStop();
-        gunnerFunction.winchStop();
+        // gunnerFunction.winchStop();
 
         // Right/Left Trigger: Lock/Unlock winch servo
         if (this.gamepad2.right_trigger > 0.5) {
@@ -136,10 +133,10 @@ public class RR2TeleOp extends OpMode {
 
         // Left Joystick Y: Move sweeper slide in/out
         if (this.gamepad2.left_stick_y > 0.5) {
-            gunnerFunction.incrementSlideMotor();
+            gunnerFunction.decrementSlideMotor();
         }
         else if (this.gamepad2.left_stick_y < -0.5) {
-            gunnerFunction.decrementSlideMotor();
+            gunnerFunction.incrementSlideMotor();
         }
         gunnerFunction.runSlideMotorToTarget();
         gunnerFunction.powerSlideMotor();
