@@ -23,7 +23,6 @@ public class RR2TeleOp extends OpMode {
     // Toggle locks
     private boolean gamepad2YToggleLock = false;
     private boolean gamepad2ABToggleLock = false;
-    private boolean gamepad2LeftJoyYToggleLock = false;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -41,7 +40,6 @@ public class RR2TeleOp extends OpMode {
                 hardwareMap.dcMotor.get("slideMotor")
         );
 
-        // TEST
         gunnerFunction.sweepServoStop();
 
         telemetry.addData("Status", "Initialized");
