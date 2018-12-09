@@ -130,10 +130,10 @@ public class RR2TeleOp extends OpMode {
 
         // Left Joystick Y: Move sweeper slide in/out
         if (this.gamepad2.left_stick_y > 0.5) {
-            gunnerFunction.runSlideMotor();
+            gunnerFunction.runSlideMotorReverse();
         }
         else if (this.gamepad2.left_stick_y < -0.5) {
-            gunnerFunction.runSlideMotorReverse();
+            gunnerFunction.runSlideMotor();
         }
         else {
             gunnerFunction.stopSlideMotor();
