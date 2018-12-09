@@ -109,23 +109,16 @@ public class RR2TeleOp extends OpMode {
             gamepad2YToggleLock = false;
         }
 
-        /*
         // Right Joystick Y: Winch motor up/down
         if (this.gamepad2.right_stick_y > 0.5) {
             gunnerFunction.winchForward();
-            telemetry.addData("Winch Control", "FORWARD");
         }
         else if (this.gamepad2.right_stick_y < -0.5) {
             gunnerFunction.winchReverse();
-            telemetry.addData("Winch Control", "REVERSE");
         }
         else {
             gunnerFunction.winchStop();
-            telemetry.addData("Winch Control", "STOP");
         }
-        */
-        // TODO: gunnerFunction.winchStop();
-        gunnerFunction.winchStop();
 
         // Right/Left Trigger: Lock/Unlock winch servo
         if (this.gamepad2.right_trigger > 0.5) {

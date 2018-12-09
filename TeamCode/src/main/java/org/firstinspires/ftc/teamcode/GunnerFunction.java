@@ -31,8 +31,8 @@ public class GunnerFunction {
     private final double SWEEP_SERVO_POWER = 0.5; // Between 0 and 0.5
 
     // TODO: Update the min/max positions
-    private final int SLIDE_POSITION_MIN = -1 * (int) Math.pow(10, 5);
-    private final int SLIDE_POSITION_MAX = (int) Math.pow(10, 5);
+    private final int SLIDE_POSITION_MIN = 0;
+    private final int SLIDE_POSITION_MAX = 3150;
     private final double SLIDE_MOTOR_POWER = 0.3;
 
     private int slidePosition = 0;
