@@ -31,7 +31,6 @@ public class GunnerFunction {
     private final double SWEEP_SERVO_CENTER = 0.5;
     private final double SWEEP_SERVO_POWER = 0.5; // Between 0 and 0.5
 
-    // TODO: Update the min/max positions
     private final int SLIDE_POSITION_MIN = 0;
     private final int SLIDE_POSITION_MAX = 3150;
     private final double SLIDE_MOTOR_POWER = 0.3;
@@ -68,7 +67,7 @@ public class GunnerFunction {
     public void resetEncoders() {
         armMotor.resetEncoder();
         winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        // winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); // TODO: Update winch motor to use RUN_TO_POSITION
+        // winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         winchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         chainMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         chainMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -213,7 +212,7 @@ public class GunnerFunction {
         telemetry.addData("Slide Motor Internal Target", slideMotor.getTargetPosition());
         telemetry.addData("Slide Motor External Target", slidePosition);
         telemetry.addData("isArmUp", isArmUp());
-        // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
+        telemetry.addData("lockServo Position", lockServo.getServo().getPosition());
     }
 
     /**
