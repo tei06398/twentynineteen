@@ -29,45 +29,82 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
-@TeleOp(name="RR2 Auton", group="Auton OpMode")
+@Autonomous(name = "RR2 Auton")
 public class RR2Auton extends LinearOpMode {
 
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DriverFunction driverFunction = new DriverFunction(hardwareMap, telemetry);
+    private ElapsedTime runtime;
+    private DriverFunction driverFunction;
+    private DriverFunction.Steering steering;
+    private  AutonFunction autonFunction;
+
+    public static final double LANDING_SPEED_RATIO = 0.3;
+    public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
 
     @Override
     public void runOpMode() {
+
+        // --- Init ---
+        runtime = new ElapsedTime();
+        driverFunction = new DriverFunction(hardwareMap, telemetry);
+        steering = driverFunction.getSteering();
+        autonFunction = new AutonFunction(hardwareMap, telemetry);
+
         telemetry.addData("Status", "Initialized");
+        autonFunction.writeTelemetry();
         telemetry.update();
 
+        driverFunction.resetAllEncoders();
+        autonFunction.resetAllEncoders();
+
+        autonFunction.lockServo();
+
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        autonFunction.writeTelemetry();
+        telemetry.update();
+
+        // --- Wait for start ---
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
+        autonFunction.unlockServo();
+
+        // Coast winch until winch position reaches a relatively steady state
+        while (opModeIsActive() && !autonFunction.winchCoastFinished()) {
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            autonFunction.writeTelemetry();
+            telemetry.update();
+        }
+
+        // Run winch to get us all the way down
+        while (opModeIsActive() && !autonFunction.winchRunFinished()) {
+            autonFunction.runWinch();
+
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            autonFunction.writeTelemetry();
+            telemetry.update();
+        }
+        autonFunction.stopWinch();
+
+        // Run drive motors to insure we are down
+        steering.moveDegrees(270, LANDING_SPEED_RATIO);
+        steering.finishSteering();
+        sleep(1000);
+        steering.stopAllMotors();
+
+        // Move to the side
+        steering.moveDegrees(270, LANDER_ESCAPE_SPEED_RATIO);
+        steering.finishSteering();
+        sleep(2000);
+        steering.stopAllMotors();
+
+        // run until driver presses stop
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            autonFunction.writeTelemetry();
             telemetry.update();
         }
     }
