@@ -30,15 +30,7 @@ public class RR2TeleOp extends OpMode {
 
         driverFunction = new DriverFunction(hardwareMap, telemetry);
         steering = driverFunction.getSteering();
-
-        gunnerFunction = new GunnerFunction(
-                hardwareMap.dcMotor.get("armMotor"),
-                hardwareMap.dcMotor.get("winchMotor"),
-                new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), .35, 0.9, 0, true),
-                hardwareMap.servo.get("sweepServo"),
-                hardwareMap.dcMotor.get("chainMotor"),
-                hardwareMap.dcMotor.get("slideMotor")
-        );
+        gunnerFunction = new GunnerFunction(hardwareMap, telemetry);
 
         gunnerFunction.sweepServoStop();
 
@@ -189,7 +181,7 @@ public class RR2TeleOp extends OpMode {
         gunnerFunction.runArmMotorIteration();
 
         // Update telemetry
-        gunnerFunction.doTelemetry(telemetry);
+        gunnerFunction.doTelemetry();
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();
     }

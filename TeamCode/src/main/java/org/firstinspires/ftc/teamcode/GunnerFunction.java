@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -37,6 +38,9 @@ public class GunnerFunction {
 
     private int slidePosition = 0;
 
+    private double LOCK_SERVO_LOCKED = 0.35;
+    private double LOCK_SERVO_UNLOCKED = 0.9;
+
     private boolean isLocked = false;
     private DcMotor winchMotor;
     private DcMotor chainMotor;
@@ -46,16 +50,19 @@ public class GunnerFunction {
 
     private SimplePositionMotor armMotor;
 
-    public GunnerFunction(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo, Servo sweepServo, DcMotor chainMotor, DcMotor slideMotor) {
-        this.armMotor = new SimplePositionMotor(armMotor);
+    private Telemetry telemetry;
+
+    public GunnerFunction(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.armMotor = new SimplePositionMotor(hardwareMap.dcMotor.get("armMotor"));
         this.armMotor.setMaxSpeedForward(ARM_MAX_SPEED_DOWN); // Going down
         this.armMotor.setMaxSpeedReverse(ARM_MAX_SPEED_UP); // Going up
-        this.winchMotor = winchMotor;
-        this.lockServo = lockServo;
-        this.sweepServo = sweepServo;
-        this.chainMotor = chainMotor;
-        this.slideMotor = slideMotor;
+        this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
+        this.lockServo = new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), LOCK_SERVO_LOCKED, LOCK_SERVO_UNLOCKED, 0, true);
+        this.sweepServo = hardwareMap.servo.get("sweepServo");
+        this.chainMotor = hardwareMap.dcMotor.get("chainMotor");
+        this.slideMotor = hardwareMap.dcMotor.get("slideMotor");
         resetEncoders();
+        this.telemetry = telemetry;
     }
 
     public void resetEncoders() {
@@ -199,7 +206,7 @@ public class GunnerFunction {
 
     // --- Telemetry ---
 
-    public void doTelemetry(Telemetry telemetry) {
+    public void doTelemetry() {
         telemetry.addData("Arm Motor", armMotor.getPosition());
         telemetry.addData("Winch Motor Powah", winchMotor.getPower());
         telemetry.addData("Slide Motor Current Position", slideMotor.getCurrentPosition());
