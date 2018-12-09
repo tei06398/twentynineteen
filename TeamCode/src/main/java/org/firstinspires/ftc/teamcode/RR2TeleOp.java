@@ -65,6 +65,22 @@ public class RR2TeleOp extends OpMode {
 
         // ----- Gamepad 1: Driving Functions -----
 
+        // D-Pad: Compass rose drive
+        if (this.gamepad1.dpad_right) {
+            // steering.moveDegrees(0, MIN_SPEED_RATIO);
+            steering.moveDegrees(180, MIN_SPEED_RATIO);
+        }
+        if (this.gamepad1.dpad_up) {
+            steering.moveDegrees(90, MIN_SPEED_RATIO);
+        }
+        if (this.gamepad1.dpad_left) {
+            // steering.moveDegrees(180, MIN_SPEED_RATIO);
+            steering.moveDegrees(0, MIN_SPEED_RATIO);
+        }
+        if (this.gamepad1.dpad_down) {
+            steering.moveDegrees(270, MIN_SPEED_RATIO);
+        }
+
         // Left/Right Triggers: Set driving speed ratio
         if (this.gamepad1.right_trigger > 0.5) {
             steering.setSpeedRatio(MAX_SPEED_RATIO); // Left trigger: minimum speed ratio
@@ -78,17 +94,19 @@ public class RR2TeleOp extends OpMode {
 
         // Right Stick: Turn/Rotate
         if (this.gamepad1.right_stick_x > 0.1) {
-            steering.turnClockwise();
+            // steering.turnClockwise();
+            steering.turnCounterclockwise();
             steering.setSpeedRatio(Math.min(1, steering.getSpeedRatio() + TURNING_SPEED_BOOST));
         }
         else if (this.gamepad1.right_stick_x < -0.1) {
-            steering.turnCounterclockwise();
+            // steering.turnCounterclockwise();
+            steering.turnClockwise();
             steering.setSpeedRatio(Math.min(1, steering.getSpeedRatio() + TURNING_SPEED_BOOST));
         }
 
         // Left Stick: Drive/Strafe
         if (Math.abs(this.gamepad1.left_stick_x) > 0.1 || Math.abs(this.gamepad1.left_stick_y) > 0.1) {
-            double angle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
+            double angle = Math.atan2(-gamepad1.left_stick_y, -gamepad1.left_stick_x);
             telemetry.addData("Angle", angle);
             steering.moveRadians(angle);
         }
