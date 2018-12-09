@@ -7,11 +7,13 @@ Troubleshooting the controller:
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.*;
 
+@Disabled
 @TeleOp(name="Winch Test TeleOp", group="TeleOp OpMode")
 public class WinchTestTeleOp extends OpMode {
 

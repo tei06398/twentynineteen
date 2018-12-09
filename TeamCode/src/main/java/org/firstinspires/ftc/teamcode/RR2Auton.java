@@ -51,7 +51,6 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="RR2 Auton", group="Auton OpMode")
-@Disabled
 public class RR2Auton extends LinearOpMode {
 
     // Declare OpMode members.

@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.*;
 
+@Disabled
 @TeleOp(name="Encoder Runmode Test Tele-Op", group="TeleOp OpMode")
 public class EncoderRunmodeTest extends OpMode {
 
