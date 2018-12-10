@@ -143,7 +143,7 @@ public class RR2Auton extends LinearOpMode {
 
     // Move to the side - try to escape from lander
     public void attemptLanderEscape() {
-        steering.moveDegrees(0, LANDER_ESCAPE_SPEED_RATIO);
+        steering.moveDegrees(180, LANDER_ESCAPE_SPEED_RATIO);
         steering.finishSteering();
         sleep(2000);
         steering.stopAllMotors();
