@@ -71,6 +71,10 @@ public class SimplePositionMotor {
         return motor.getCurrentPosition();
     }
 
+    public double getPower() {
+        return motor.getPower();
+    }
+
     public int getSetPoint() {
         return setPoint;
     }

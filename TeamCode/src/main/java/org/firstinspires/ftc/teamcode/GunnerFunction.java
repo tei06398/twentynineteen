@@ -21,6 +21,8 @@ public class GunnerFunction {
     private final int ARM_UP = ARM_UP_ABS + ARM_OFFSET;
     private final int ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
 
+    private final int IS_ARM_UP_THRESH = 5;
+
     private final double ARM_MAX_SPEED_UP = 0.1;
     private final double ARM_MAX_SPEED_DOWN = 0.05;
 
@@ -131,7 +133,7 @@ public class GunnerFunction {
     }
 
     public boolean isArmUp() {
-        return (Math.abs(armMotor.getPosition() - ARM_UP) < 5);
+        return (Math.abs(armMotor.getPosition() - ARM_UP) < IS_ARM_UP_THRESH);
     }
 
     public void toggleArm() {
@@ -206,8 +208,10 @@ public class GunnerFunction {
     // --- Telemetry ---
 
     public void doTelemetry() {
-        telemetry.addData("Arm Motor", armMotor.getPosition());
-        telemetry.addData("Winch Motor Powah", winchMotor.getPower());
+        telemetry.addData("Arm Motor Position", armMotor.getPosition());
+        telemetry.addData("Arm Motor Power", armMotor.getPower());
+        telemetry.addData("Winch Motor Position", winchMotor.getCurrentPosition());
+        telemetry.addData("Winch Motor Power", winchMotor.getPower());
         telemetry.addData("Slide Motor Current Position", slideMotor.getCurrentPosition());
         telemetry.addData("Slide Motor Internal Target", slideMotor.getTargetPosition());
         telemetry.addData("Slide Motor External Target", slidePosition);
