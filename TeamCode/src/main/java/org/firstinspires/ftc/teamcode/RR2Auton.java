@@ -45,7 +45,7 @@ public class RR2Auton extends LinearOpMode {
     public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
 
     // The arm has to move a long way for us to be confident it has retracted
-    public static final int ARM_RETRACT_SUCECSS_THRESHOLD = 50;
+    public static final int ARM_RETRACT_SUCCESS_THRESHOLD = 50;
 
     @Override
     public void runOpMode() {
@@ -126,7 +126,7 @@ public class RR2Auton extends LinearOpMode {
 
         int currentPosition = autonFunction.getArmPosition();
 
-        if (Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCECSS_THRESHOLD) {
+        if (Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCCESS_THRESHOLD) {
             autonFunction.setArmDefaultRunmode();
             return true;
         }
@@ -138,7 +138,7 @@ public class RR2Auton extends LinearOpMode {
         startPosition = currentPosition;
         currentPosition = autonFunction.getArmPosition();
 
-        return Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCECSS_THRESHOLD;
+        return Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCCESS_THRESHOLD;
     }
 
     // Move to the side - try to escape from lander

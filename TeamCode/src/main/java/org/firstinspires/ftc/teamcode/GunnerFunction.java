@@ -15,7 +15,7 @@ public class GunnerFunction {
     We should probably pass them in instead, but this is way easier...
     */
 
-    private final int ARM_UP_ABS = -225; // -313
+    private final int ARM_UP_ABS = -240; // -313
     private final int ARM_DOWN_ABS = 180;
     private final int ARM_OFFSET = 250; // -180 for fully down, 0 for level with top
     private final int ARM_UP = ARM_UP_ABS + ARM_OFFSET;
