@@ -13,6 +13,9 @@ public class SimplePositionMotor {
     private double maxSpeedReverse;
     private double marginOfError;
 
+    private int positionUp;
+    private int positionDown;
+
     private static final int DEFAULT_SETPOINT = 0;
     private static final double DEFAULT_MAX_SPEED_FORWARD = 0.2;
     private static final double DEFAULT_MAX_SPEED_REVERSE = 0.2;
@@ -20,12 +23,14 @@ public class SimplePositionMotor {
 
     private boolean reachedSetPoint = false;
 
-    public SimplePositionMotor(DcMotor motor) {
-        this(motor, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED_FORWARD, DEFAULT_MAX_SPEED_REVERSE, DEFAULT_MARGIN_OF_ERROR);
+    public SimplePositionMotor(DcMotor motor, int positionUp, int positionDown) {
+        this(motor, positionUp, positionDown, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED_FORWARD, DEFAULT_MAX_SPEED_REVERSE, DEFAULT_MARGIN_OF_ERROR);
     }
 
-    public SimplePositionMotor(DcMotor motor, int setPoint, double maxSpeedForward, double maxSpeedReverse, double marginOfError) {
+    public SimplePositionMotor(DcMotor motor, int positionUp, int positionDown, int setPoint, double maxSpeedForward, double maxSpeedReverse, double marginOfError) {
         this.motor = motor;
+        this.positionUp = positionUp;
+        this.positionDown = positionDown;
         this.setPoint = setPoint;
         this.maxSpeedForward = maxSpeedForward;
         this.maxSpeedReverse = maxSpeedReverse;
@@ -83,6 +88,19 @@ public class SimplePositionMotor {
         if (this.setPoint != setPoint)
             reachedSetPoint = false;
         this.setPoint = setPoint;
+    }
+
+    public void toggleSetPoint() {
+        if (setPoint == positionUp) {
+            setSetPoint(positionDown);
+        }
+        else if (setPoint == positionDown) {
+            setSetPoint(positionUp);
+        }
+        // If the arm is not currently in up or down position
+        else {
+            setSetPoint(positionUp);
+        }
     }
 
     public double getError() {

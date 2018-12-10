@@ -54,7 +54,7 @@ public class GunnerFunction {
     private Telemetry telemetry;
 
     public GunnerFunction(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.armMotor = new SimplePositionMotor(hardwareMap.dcMotor.get("armMotor"));
+        this.armMotor = new SimplePositionMotor(hardwareMap.dcMotor.get("armMotor"), ARM_UP, ARM_DOWN);
         this.armMotor.setMaxSpeedForward(ARM_MAX_SPEED_DOWN); // Going down
         this.armMotor.setMaxSpeedReverse(ARM_MAX_SPEED_UP); // Going up
         this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
@@ -132,25 +132,16 @@ public class GunnerFunction {
         armMotor.setSetPoint(0);
     }
 
-    public boolean isArmUp() {
-        return (Math.abs(armMotor.getPosition() - ARM_UP) < IS_ARM_UP_THRESH);
-    }
-
     public void toggleArm() {
-        if (armMotor.getSetPoint() == ARM_UP) {
-            armMotor.setSetPoint(ARM_DOWN);
-        }
-        else if (armMotor.getSetPoint() == ARM_DOWN) {
-            armMotor.setSetPoint(ARM_UP);
-        }
-        // If the arm is not currently in up or down position
-        else {
-            armMotor.setSetPoint(ARM_UP);
-        }
+        armMotor.toggleSetPoint();
     }
 
     public void runArmMotorIteration() {
         armMotor.runIteration();
+    }
+
+    public boolean isArmUp() {
+        return (Math.abs(armMotor.getPosition() - ARM_UP) < IS_ARM_UP_THRESH);
     }
 
     // --- Sweeper ---
