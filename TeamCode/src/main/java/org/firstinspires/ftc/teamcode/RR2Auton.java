@@ -95,7 +95,7 @@ public class RR2Auton extends LinearOpMode {
         // Run drive motors to insure we are down
         steering.moveDegrees(270, LANDING_SPEED_RATIO);
         steering.finishSteering();
-        sleep(1000);
+        sleep(2000);
         steering.stopAllMotors();
 
         int armPosition;
