@@ -45,7 +45,7 @@ public class RR2Auton extends LinearOpMode {
     public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
 
     // The arm has to move a long way for us to be confident it has retracted
-    public static final int ARM_RETRACT_SUCCESS_THRESHOLD = 50;
+    public static final int ARM_RETRACT_SUCCESS_THRESHOLD = 100;
 
     @Override
     public void runOpMode() {
@@ -98,14 +98,21 @@ public class RR2Auton extends LinearOpMode {
         sleep(2000);
         steering.stopAllMotors();
 
-        int armPosition;
+        int armPosition = autonFunction.getArmPosition(); // Get initial value in case arm falls after escape attempt
         boolean armRetractSuccess = false;
 
-        while (!armRetractSuccess) {
-            armPosition = autonFunction.getArmPosition(); // Get initial value in case arm falls after escape attempt
+        while (opModeIsActive() && !armRetractSuccess) {
             attemptLanderEscape();
             armRetractSuccess = attemptRetractArm(armPosition); // Attempt to retract arm
         }
+
+        // Move away from the lander
+        /*
+        steering.moveDegrees(270, LANDING_SPEED_RATIO);
+        steering.finishSteering();
+        sleep(2000);
+        steering.stopAllMotors();
+        */
 
         // run until driver presses stop
         while (opModeIsActive()) {
@@ -134,8 +141,8 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.runArm();
         sleep(1000);
         autonFunction.stopArm();
+        sleep(500);
 
-        startPosition = currentPosition;
         currentPosition = autonFunction.getArmPosition();
 
         return Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCCESS_THRESHOLD;
@@ -143,8 +150,13 @@ public class RR2Auton extends LinearOpMode {
 
     // Move to the side - try to escape from lander
     public void attemptLanderEscape() {
-        steering.moveDegrees(180, LANDER_ESCAPE_SPEED_RATIO);
+        steering.turnClockwise(LANDER_ESCAPE_SPEED_RATIO);
         steering.finishSteering();
+        sleep(2000);
+        steering.stopAllMotors();
+
+        driverFunction.rf.applyPower(-0.5);
+        driverFunction.rb.applyPower(-0.5);
         sleep(2000);
         steering.stopAllMotors();
     }

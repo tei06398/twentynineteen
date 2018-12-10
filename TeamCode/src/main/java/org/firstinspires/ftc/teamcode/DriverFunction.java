@@ -10,10 +10,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Encapsulates Robot Driving Functionality
  */
 public class DriverFunction {
-    private DrivingMotor lf; // stands for left front
-    private DrivingMotor lb; // stands for left back
-    private DrivingMotor rf; // stands for right front
-    private DrivingMotor rb; // stands for right back
+    public DrivingMotor lf; // stands for left front
+    public DrivingMotor lb; // stands for left back
+    public DrivingMotor rf; // stands for right front
+    public DrivingMotor rb; // stands for right back
 
     private Telemetry telemetry;
     
