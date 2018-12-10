@@ -61,12 +61,12 @@ public class SimplePositionMotor {
         // If we float to the other setpoint, change the setpoint to the other of the two positions
         if (reachedSetPoint) {
             if (setPoint == positionUp) {
-                if (Math.abs(getErrorDown()) < marginOfError) {
+                if (Math.abs(getErrorDown()) < 100) {
                     setPoint = positionDown;
                 }
             }
             else if (setPoint == positionDown) {
-                if (Math.abs(getErrorUp()) < marginOfError) {
+                if (Math.abs(getErrorUp()) < 100) {
                     setPoint = positionUp;
                 }
             }
@@ -99,8 +99,7 @@ public class SimplePositionMotor {
     }
 
     public void setSetPoint(int setPoint) {
-        if (this.setPoint != setPoint)
-            reachedSetPoint = false;
+        reachedSetPoint = false;
         this.setPoint = setPoint;
     }
 
@@ -127,6 +126,10 @@ public class SimplePositionMotor {
 
     public double getErrorDown() {
         return positionDown - motor.getCurrentPosition();
+    }
+
+    public boolean getReachedSetpoint() {
+        return reachedSetPoint;
     }
 
     // -------- Access Encapsulated Motor --------

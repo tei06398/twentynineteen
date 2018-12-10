@@ -199,14 +199,16 @@ public class GunnerFunction {
     // --- Telemetry ---
 
     public void doTelemetry() {
-        telemetry.addData("Arm Motor Position", armMotor.getPosition());
-        telemetry.addData("Arm Motor Power", armMotor.getPower());
         telemetry.addData("Winch Motor Position", winchMotor.getCurrentPosition());
         telemetry.addData("Winch Motor Power", winchMotor.getPower());
         telemetry.addData("Slide Motor Current Position", slideMotor.getCurrentPosition());
         telemetry.addData("Slide Motor Internal Target", slideMotor.getTargetPosition());
         telemetry.addData("Slide Motor External Target", slidePosition);
+        telemetry.addData("Arm Motor Position", armMotor.getPosition());
+        telemetry.addData("Arm Motor Power", armMotor.getPower());
         telemetry.addData("isArmUp", isArmUp());
+        telemetry.addData("Arm Setpoint", armMotor.getSetPoint());
+        telemetry.addData("Arm Reached Setpoint", armMotor.getReachedSetpoint());
         telemetry.addData("lockServo Position", lockServo.getServo().getPosition());
     }
 
