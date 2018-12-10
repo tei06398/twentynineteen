@@ -19,6 +19,8 @@ public class AutonFunction {
     private static final int WINCH_COAST_POSITION = 2000; // Two wheels hit ground after coasting, robot stops
     private static final int WINCH_RUN_POSITION = 2500; // All four wheels hit ground
 
+    private static final double ARM_POWER = 0.1;
+
     private DcMotor.RunMode ARM_MOTOR_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
     private DcMotor.RunMode WINCH_MOTOR_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
@@ -34,6 +36,8 @@ public class AutonFunction {
 
         this.armMotor.setMode(ARM_MOTOR_RUNMODE);
         this.winchMotor.setMode(WINCH_MOTOR_RUNMODE);
+
+        this.telemetry = telemetry;
 
         // Enable servo controller pwm
         ServoController servoController = hardwareMap.servoController.get("Servo Controller 1");
@@ -92,6 +96,26 @@ public class AutonFunction {
     }
 
      // --- Arm ---
+
+    public void runArm() {
+        armMotor.setPower(ARM_POWER);
+    }
+
+    public void runArmReverse() {
+        armMotor.setPower(-1 * ARM_POWER);
+    }
+
+    public void stopArm() {
+        armMotor.setPower(0);
+    }
+
+    public void setArmRunWithoutEncoders() {
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void setArmDefaultRunmode() {
+        armMotor.setMode(ARM_MOTOR_RUNMODE);
+    }
 
     public int getArmPosition() {
         return winchMotor.getCurrentPosition();

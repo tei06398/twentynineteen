@@ -44,6 +44,9 @@ public class RR2Auton extends LinearOpMode {
     public static final double LANDING_SPEED_RATIO = 0.3;
     public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
 
+    // The arm has to move a long way for us to be confident it has retracted
+    public static final int ARM_RETRACT_SUCECSS_THRESHOLD = 50;
+
     @Override
     public void runOpMode() {
 
@@ -95,11 +98,14 @@ public class RR2Auton extends LinearOpMode {
         sleep(1000);
         steering.stopAllMotors();
 
-        // Move to the side
-        steering.moveDegrees(270, LANDER_ESCAPE_SPEED_RATIO);
-        steering.finishSteering();
-        sleep(2000);
-        steering.stopAllMotors();
+        int armPosition;
+        boolean armRetractSuccess = false;
+
+        while (!armRetractSuccess) {
+            armPosition = autonFunction.getArmPosition(); // Get initial value in case arm falls after escape attempt
+            attemptLanderEscape();
+            armRetractSuccess = attemptRetractArm(armPosition); // Attempt to retract arm
+        }
 
         // run until driver presses stop
         while (opModeIsActive()) {
@@ -107,5 +113,39 @@ public class RR2Auton extends LinearOpMode {
             autonFunction.writeTelemetry();
             telemetry.update();
         }
+    }
+
+    // Return true if arm retract was successful
+    public boolean attemptRetractArm(int startPosition) {
+        /*
+        So that the arm doesn't move if it is not in fact released. If we used RUN_USING_ENCODERS,
+        the I-term would quickly increase, and the arm might move, even if we were still attached
+        to the lander.
+         */
+        autonFunction.setArmRunWithoutEncoders();
+
+        int currentPosition = autonFunction.getArmPosition();
+
+        if (Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCECSS_THRESHOLD) {
+            autonFunction.setArmDefaultRunmode();
+            return true;
+        }
+
+        autonFunction.runArm();
+        sleep(1000);
+        autonFunction.stopArm();
+
+        startPosition = currentPosition;
+        currentPosition = autonFunction.getArmPosition();
+
+        return Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCECSS_THRESHOLD;
+    }
+
+    // Move to the side - try to escape from lander
+    public void attemptLanderEscape() {
+        steering.moveDegrees(0, LANDER_ESCAPE_SPEED_RATIO);
+        steering.finishSteering();
+        sleep(2000);
+        steering.stopAllMotors();
     }
 }
