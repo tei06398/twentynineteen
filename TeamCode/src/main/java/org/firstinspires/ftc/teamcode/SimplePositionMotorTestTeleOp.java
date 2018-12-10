@@ -36,7 +36,7 @@ public class SimplePositionMotorTestTeleOp extends OpMode {
     public void init() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        simplePositionMotor = new SimplePositionMotor(this.hardwareMap.dcMotor.get("armMotor"));
+        simplePositionMotor = new SimplePositionMotor(this.hardwareMap.dcMotor.get("armMotor"), position1, position2);
         simplePositionMotor.setMaxSpeedForward(maxSpeedDown); // Going down
         simplePositionMotor.setMaxSpeedReverse(maxSpeedUp); // Going up
         simplePositionMotor.setSetPoint(position1);
