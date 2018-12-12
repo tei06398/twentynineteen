@@ -6,6 +6,7 @@ public class SimplePositionMotor {
 
     public DcMotor motor;
     private static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
+    private static final DcMotor.ZeroPowerBehavior DEFAULT_ZERO_POWER_BEHAVIOR = DcMotor.ZeroPowerBehavior.BRAKE;
 
     private int setPoint;
     private double maxSpeedForward;
@@ -30,6 +31,7 @@ public class SimplePositionMotor {
         this.maxSpeedReverse = maxSpeedReverse;
         this.marginOfError = marginOfError;
         motor.setMode(DEFAULT_RUNMODE);
+        motor.setZeroPowerBehavior(DEFAULT_ZERO_POWER_BEHAVIOR);
         resetEncoder();
     }
 
@@ -58,7 +60,7 @@ public class SimplePositionMotor {
 
     public void resetEncoder() {
         if (motor.getMode() == DEFAULT_RUNMODE) {
-            motor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DEFAULT_RUNMODE);
         }
     }
@@ -67,6 +69,10 @@ public class SimplePositionMotor {
 
     public int getPosition() {
         return motor.getCurrentPosition();
+    }
+
+    public double getPower() {
+        return motor.getPower();
     }
 
     public int getSetPoint() {

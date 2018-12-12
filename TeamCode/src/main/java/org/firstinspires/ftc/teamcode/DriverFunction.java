@@ -10,10 +10,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Encapsulates Robot Driving Functionality
  */
 public class DriverFunction {
-    private DrivingMotor lf; // stands for left front
-    private DrivingMotor lb; // stands for left back
-    private DrivingMotor rf; // stands for right front
-    private DrivingMotor rb; // stands for right back
+    public DrivingMotor lf; // stands for left front
+    public DrivingMotor lb; // stands for left back
+    public DrivingMotor rf; // stands for right front
+    public DrivingMotor rb; // stands for right back
 
     private Telemetry telemetry;
     
@@ -22,17 +22,17 @@ public class DriverFunction {
     public static final double MIN_SPEED_RATIO = 0.3;
 
     public static final double DEFAULT_SMOOTHNESS = 2;
-    // public static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
+    public static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
 
     public DriverFunction(HardwareMap hardwareMap, Telemetry telemetry) {
         this(hardwareMap, telemetry, DEFAULT_SMOOTHNESS);
     }
 
     public DriverFunction(HardwareMap hardwareMap, Telemetry telemetry, double smoothness) {
-        this.lf = new DrivingMotor(hardwareMap.dcMotor.get("lfMotor"), smoothness, DcMotor.RunMode.RUN_USING_ENCODER);
-        this.lb = new DrivingMotor(hardwareMap.dcMotor.get("lbMotor"), smoothness, DcMotor.RunMode.RUN_USING_ENCODER);
-        this.rf = new DrivingMotor(hardwareMap.dcMotor.get("rfMotor"), smoothness, DcMotor.RunMode.RUN_USING_ENCODER);
-        this.rb = new DrivingMotor(hardwareMap.dcMotor.get("rbMotor"), smoothness, DcMotor.RunMode.RUN_USING_ENCODER);
+        this.lf = new DrivingMotor(hardwareMap.dcMotor.get("lfMotor"), smoothness, DEFAULT_RUNMODE);
+        this.lb = new DrivingMotor(hardwareMap.dcMotor.get("lbMotor"), smoothness, DEFAULT_RUNMODE);
+        this.rf = new DrivingMotor(hardwareMap.dcMotor.get("rfMotor"), smoothness, DEFAULT_RUNMODE);
+        this.rb = new DrivingMotor(hardwareMap.dcMotor.get("rbMotor"), smoothness, DEFAULT_RUNMODE);
         this.telemetry = telemetry;
     }
 
@@ -68,7 +68,7 @@ public class DriverFunction {
          */
         public void resetEncoder() {
             if (motor.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
-                motor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
         }

@@ -3,177 +3,227 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoController;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
- * A utility class that controls all the gunner functions (opening and closing the glyphter, rotating the glypter, etc).
+ * A utility class that controls all gunner functions (arm, ball sweeper, etc.)
  */
 public class GunnerFunction {
-    // TODO Temporary, current # of motors and servos as of 10/15/18
-    private final TwoStateServo pusherServo;
-    private final TwoStateServo lockServo;
-    private final Telemetry telemetry;
 
-    GunnerFunction(HardwareMap hardwareMap, Telemetry telemetry) {
-        // Load the needed devices from the hardware map
-        ServoController servoController = hardwareMap.servoController.get("Servo Controller 1");
-        servoController.pwmDisable();
+    /*
+    All the power and position constants are place here, for convenience
+    We should probably pass them in instead, but this is way easier...
+    */
 
-        // TODO Template Initializations for Actual Motors and Servos
-        // TODO Put in actual positions in place of 0
-        this.pusherServo = new TwoStateServo(hardwareMap.servo.get("pusherServo"), 0, 0, 0, true);
-        this.lockServo = new TwoStateServo(hardwareMap.servo.get("lockServo"), 0, 0, 0, true);
+    private final int ARM_UP_ABS = -240; // -313
+    private final int ARM_DOWN_ABS = 180;
+    private final int ARM_OFFSET = 250; // -180 for fully down, 0 for level with top
+    private final int ARM_UP = ARM_UP_ABS + ARM_OFFSET;
+    private final int ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
 
+    private final int IS_ARM_UP_THRESH = 5;
+
+    private final double ARM_MAX_SPEED_UP = 0.1;
+    private final double ARM_MAX_SPEED_DOWN = 0.05;
+
+    private final double WINCH_POWER = 0.5;
+
+    private final double CHAIN_MOTOR_POWER = 0.15;
+
+    private final double SWEEP_SERVO_CENTER = 0.5;
+    private final double SWEEP_SERVO_POWER = 0.5; // Between 0 and 0.5
+
+    private final int SLIDE_POSITION_MIN = 0;
+    private final int SLIDE_POSITION_MAX = 3150;
+    private final double SLIDE_MOTOR_POWER = 0.3;
+
+    private int slidePosition = 0;
+
+    private double LOCK_SERVO_LOCKED = 0.35;
+    private double LOCK_SERVO_UNLOCKED = 0.9;
+
+    private boolean isLocked = false;
+    private DcMotor winchMotor;
+    private DcMotor chainMotor;
+    private DcMotor slideMotor;
+    private Servo sweepServo;
+    private TwoStateServo lockServo;
+
+    private SimplePositionMotor armMotor;
+
+    private Telemetry telemetry;
+
+    public GunnerFunction(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.armMotor = new SimplePositionMotor(hardwareMap.dcMotor.get("armMotor"));
+        this.armMotor.setMaxSpeedForward(ARM_MAX_SPEED_DOWN); // Going down
+        this.armMotor.setMaxSpeedReverse(ARM_MAX_SPEED_UP); // Going up
+        this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
+        this.lockServo = new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), LOCK_SERVO_LOCKED, LOCK_SERVO_UNLOCKED, 0, true);
+        this.sweepServo = hardwareMap.servo.get("sweepServo");
+        this.chainMotor = hardwareMap.dcMotor.get("chainMotor");
+        this.slideMotor = hardwareMap.dcMotor.get("slideMotor");
+        resetEncoders();
         this.telemetry = telemetry;
-
     }
 
-    public static class ArmController {
-        private final int WINCH_SLACKED = 0;
-        private final int ARM_UP = -313;
-        private final int ARM_DOWN = 180;
+    public void resetEncoders() {
+        armMotor.resetEncoder();
+        winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        winchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        chainMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        chainMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
-        private boolean isLocked = false;
-        private DcMotor armMotor;
-        private DcMotor winchMotor;
-        private DcMotor chainMotor;
-        private DcMotor slideMotor;
-        private Servo sweepServo;
-        private TwoStateServo lockServo;
+    // --- Winch Lock Servo ---
 
+    public void unlock() {
+        lockServo.active();
+        isLocked = false;
+    }
 
-        public ArmController(DcMotor armMotor, DcMotor winchMotor, TwoStateServo lockServo, Servo sweepServo, DcMotor chainMotor, DcMotor slideMotor) {
-            this.armMotor = armMotor;
-            this.winchMotor = winchMotor;
-            this.lockServo = lockServo;
-            this.sweepServo = sweepServo;
-            this.chainMotor = chainMotor;
-            this.slideMotor = slideMotor;
-            resetEncoders();
+    public void lock() {
+        lockServo.passive();
+        isLocked = true;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    // --- Winch Motor ---
+
+    public void winchForward() {
+        winchMotor.setPower(WINCH_POWER);
+    }
+
+    public void winchReverse() {
+        winchMotor.setPower(-1 * WINCH_POWER);
+    }
+
+    public void winchStop() {
+        winchMotor.setPower(0);
+    }
+
+    public void slackWinch() {
+        winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        winchMotor.setPower(0);
+    }
+
+    public void brakeWinch() {
+        winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        winchMotor.setPower(0);
+    }
+
+    // --- Arm Motor ---
+
+    public void armUp() {
+        armMotor.setSetPoint(ARM_UP);
+    }
+
+    public void armDown() {
+        armMotor.setSetPoint(ARM_DOWN);
+    }
+
+    public void armReset() {
+        armMotor.setSetPoint(0);
+    }
+
+    public boolean isArmUp() {
+        return (Math.abs(armMotor.getPosition() - ARM_UP) < IS_ARM_UP_THRESH);
+    }
+
+    public void toggleArm() {
+        if (armMotor.getSetPoint() == ARM_UP) {
+            armMotor.setSetPoint(ARM_DOWN);
         }
-
-        public void resetEncoders() {
-            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            chainMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            chainMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        else if (armMotor.getSetPoint() == ARM_DOWN) {
+            armMotor.setSetPoint(ARM_UP);
         }
-
-        public void unlock() {
-            lockServo.active();
-            isLocked = false;
-        }
-
-        public void lock() {
-            lockServo.passive();
-            isLocked = true;
-        }
-
-        // public boolean isArmUp() {
-        //     return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
-        // }
-
-        public void slackWinch() {
-            winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            winchMotor.setPower(0);
-        }
-
-        public void armUp() {
-            armMotor.setTargetPosition(ARM_UP);
-            armMotor.setPower(0.20);
-            // isArmUp = true;
-        }
-
-        public void armDown() {
-            armMotor.setTargetPosition(ARM_DOWN);
-            armMotor.setPower(0.20);
-            // isArmUp = false;
-        }
-
-        public void armReset() {
-            armMotor.setTargetPosition(0);
-            armMotor.setPower(0.20);
-        }
-
-        public void slackArm() {
-            armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            armMotor.setPower(0);
-        }
-
-        public void doTelemetry(Telemetry telemetry) {
-            telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
-            telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
-            telemetry.addData("isArmUp", isArmUp());
-            // telemetry.addData("lockServo Value", lockServo.getServo().getPosition());
-        }
-
-        public boolean isLocked() {
-            return isLocked;
-        }
-
-        public boolean isArmUp() {
-            return (armMotor.getCurrentPosition() >= ARM_UP - 5 && armMotor.getCurrentPosition() <= ARM_UP + 5);
+        // If the arm is not currently in up or down position
+        else {
+            armMotor.setSetPoint(ARM_UP);
         }
     }
 
-    // TODO Add actual code within setPower() and increment() functions
-
-    public void extendPusher() {
-        pusherServo.active();
-        telemetry.log().add("Open Pusher");
+    public void runArmMotorIteration() {
+        armMotor.runIteration();
     }
 
-    public void retractPusher() {
-        pusherServo.passive();
-        telemetry.log().add("Close Pusher");
+    // --- Sweeper ---
+
+    public void runChainMotor() {
+        chainMotor.setPower(-1 * CHAIN_MOTOR_POWER);
     }
 
-    public void extendPusherFully() {
-        pusherServo.getServo().setPosition(0);
-        pusherServo.getServo().setPosition(1);
+    public void runChainMotorReverse() {
+        chainMotor.setPower(CHAIN_MOTOR_POWER);
     }
 
-    public void extendPusherIncremental() {
-        pusherServo.incrementTowardsActive();
-        pusherServo.incrementTowardsActive();
-        telemetry.log().add("Extend Pusher Incremental");
+    public void stopChainMotor() {
+        chainMotor.setPower(0);
     }
 
-    public void retractPusherIncremental() {
-        pusherServo.incrementTowardsPassive();
-        pusherServo.incrementTowardsPassive();
-        telemetry.log().add("Retract Pusher Incremental");
+    public void runSlideMotor() {
+        if (slideMotor.getCurrentPosition() < SLIDE_POSITION_MAX) {
+            slideMotor.setPower(SLIDE_MOTOR_POWER);
+        }
+        else {
+            slideMotor.setPower(0);
+        }
     }
 
-    public void stopPusher() {
-        //pusherServo.getServo().setPosition();
-        //TODO: Revise the Jeffrey Code to make this method possible
+    public void runSlideMotorReverse() {
+        if (slideMotor.getCurrentPosition() > SLIDE_POSITION_MIN) {
+            slideMotor.setPower(-1 * SLIDE_MOTOR_POWER);
+        }
+        else {
+            slideMotor.setPower(0);
+        }
     }
 
-    public void reset() {
-        //closePusher();
-        pusherServo.passive();
-        lockServo.passive(); //TODO: Replace this with something that uses the ArmController Class
-        telemetry.log().add("Reset");
+    public void stopSlideMotor() {
+        slideMotor.setPower(0);
     }
 
-    public void disablePwm(HardwareMap hardwareMap) {
-        ServoController servoController = hardwareMap.servoController.get("Servo Controller 1");
-        servoController.pwmDisable();
+    public double getSlideMotorPosition() {
+        return slideMotor.getCurrentPosition();
     }
 
-    public void enablePwm(HardwareMap hardwareMap) {
-        ServoController servoController = hardwareMap.servoController.get("Servo Controller 1");
-        servoController.pwmEnable();
+    public void sweepServoForward() {
+        sweepServo.setPosition(SWEEP_SERVO_CENTER + SWEEP_SERVO_POWER);
     }
 
+    public void sweepServoReverse() {
+        sweepServo.setPosition(SWEEP_SERVO_CENTER - SWEEP_SERVO_POWER);
+    }
 
+    public void sweepServoStop() {
+        sweepServo.setPosition(SWEEP_SERVO_CENTER);
+    }
+
+    // --- Telemetry ---
+
+    public void doTelemetry() {
+        telemetry.addData("Arm Motor Position", armMotor.getPosition());
+        telemetry.addData("Arm Motor Power", armMotor.getPower());
+        telemetry.addData("Winch Motor Position", winchMotor.getCurrentPosition());
+        telemetry.addData("Winch Motor Power", winchMotor.getPower());
+        telemetry.addData("Slide Motor Current Position", slideMotor.getCurrentPosition());
+        telemetry.addData("Slide Motor Internal Target", slideMotor.getTargetPosition());
+        telemetry.addData("Slide Motor External Target", slidePosition);
+        telemetry.addData("isArmUp", isArmUp());
+        telemetry.addData("lockServo Position", lockServo.getServo().getPosition());
+    }
+
+    /**
+     * Nested class that provides a servo that toggles between two positions
+     */
     public static class TwoStateServo {
+
         private Servo servo;
         private double passivePosition;
         private double activePosition;
@@ -231,18 +281,12 @@ public class GunnerFunction {
         private void incrementTowards(double desiredValue) {
             double servoPos = servo.getPosition();
             if (servoPos > desiredValue) {
-                servo.setPosition(RobotUtil.clipRange(passivePosition, activePosition, servoPos - incrementalSpeed));
+                servo.setPosition(clipRange(passivePosition, activePosition, servoPos - incrementalSpeed));
             } else if (servoPos < desiredValue){
-                servo.setPosition(RobotUtil.clipRange(passivePosition, activePosition, servoPos + incrementalSpeed));
+                servo.setPosition(clipRange(passivePosition, activePosition, servoPos + incrementalSpeed));
             }
         }
 
-        public Servo getServo() {
-            return servo;
-        }
-    }
-
-    public static class RobotUtil {
         public static double clipRange(double min, double max, double value) {
             // Fix swapped ordering
             if (min > max) {
@@ -251,6 +295,10 @@ public class GunnerFunction {
                 min = oldMax;
             }
             return Math.min(max, Math.max(value, min));
+        }
+
+        public Servo getServo() {
+            return servo;
         }
     }
 }
