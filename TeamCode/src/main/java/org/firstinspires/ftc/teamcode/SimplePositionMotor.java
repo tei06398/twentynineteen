@@ -62,17 +62,19 @@ public class SimplePositionMotor {
         }
 
         // true if position order needs to be corrected
-        boolean positionReverseCorrector = positionDown > positionUp;
+        // boolean positionReverseCorrector = positionDown > positionUp;
 
         // If we float to the other setpoint, change the setpoint to the other of the two positions
         if (reachedSetPoint) {
             if (setPoint == positionUp) {
-                if (Math.abs(getErrorDown()) < setPointSwitchTolerance || (positionReverseCorrector ? getErrorDown() < 0 : getErrorDown() > 0)) {
+                // if (Math.abs(getErrorDown()) < setPointSwitchTolerance || (positionReverseCorrector ? getErrorDown() < 0 : getErrorDown() > 0)) {
+                if (Math.abs(getErrorDown()) < setPointSwitchTolerance) {
                     setPoint = positionDown;
                 }
             }
             else if (setPoint == positionDown) {
-                if (Math.abs(getErrorUp()) < setPointSwitchTolerance || (positionReverseCorrector ? getErrorUp() > 0 : getErrorUp() < 0)) {
+                // if (Math.abs(getErrorUp()) < setPointSwitchTolerance || (positionReverseCorrector ? getErrorUp() > 0 : getErrorUp() < 0)) {
+                if (Math.abs(getErrorUp()) < setPointSwitchTolerance) {
                     setPoint = positionUp;
                 }
             }
