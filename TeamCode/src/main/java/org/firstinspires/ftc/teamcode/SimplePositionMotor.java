@@ -12,7 +12,6 @@ public class SimplePositionMotor {
     private double maxSpeedForward;
     private double maxSpeedReverse;
     private double marginOfError;
-    private double setPointSwitchTolerance;
 
     private int positionUp;
     private int positionDown;
@@ -21,15 +20,14 @@ public class SimplePositionMotor {
     private static final double DEFAULT_MAX_SPEED_FORWARD = 0.2;
     private static final double DEFAULT_MAX_SPEED_REVERSE = 0.2;
     private static final double DEFAULT_MARGIN_OF_ERROR = 5;
-    private static final int DEFAULT_SETPOINT_SWITCH_TOLERANCE = 100;
 
     private boolean reachedSetPoint = false;
 
     public SimplePositionMotor(DcMotor motor, int positionUp, int positionDown) {
-        this(motor, positionUp, positionDown, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED_FORWARD, DEFAULT_MAX_SPEED_REVERSE, DEFAULT_MARGIN_OF_ERROR, DEFAULT_SETPOINT_SWITCH_TOLERANCE);
+        this(motor, positionUp, positionDown, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED_FORWARD, DEFAULT_MAX_SPEED_REVERSE, DEFAULT_MARGIN_OF_ERROR);
     }
 
-    public SimplePositionMotor(DcMotor motor, int positionUp, int positionDown, int setPoint, double maxSpeedForward, double maxSpeedReverse, double marginOfError, int setPointSwitchTolerance) {
+    public SimplePositionMotor(DcMotor motor, int positionUp, int positionDown, int setPoint, double maxSpeedForward, double maxSpeedReverse, double marginOfError) {
         this.motor = motor;
         this.positionUp = positionUp;
         this.positionDown = positionDown;
@@ -37,7 +35,6 @@ public class SimplePositionMotor {
         this.maxSpeedForward = maxSpeedForward;
         this.maxSpeedReverse = maxSpeedReverse;
         this.marginOfError = marginOfError;
-        this.setPointSwitchTolerance = setPointSwitchTolerance;
         motor.setMode(DEFAULT_RUNMODE);
         motor.setZeroPowerBehavior(DEFAULT_ZERO_POWER_BEHAVIOR);
         resetEncoder();
@@ -61,20 +58,15 @@ public class SimplePositionMotor {
             reachedSetPoint = true;
         }
 
-        // true if position order needs to be corrected
-        // boolean positionReverseCorrector = positionDown > positionUp;
-
         // If we float to the other setpoint, change the setpoint to the other of the two positions
         if (reachedSetPoint) {
             if (setPoint == positionUp) {
-                // if (Math.abs(getErrorDown()) < setPointSwitchTolerance || (positionReverseCorrector ? getErrorDown() < 0 : getErrorDown() > 0)) {
-                if (Math.abs(getErrorDown()) < setPointSwitchTolerance) {
+                if (Math.abs(getErrorDown()) < 100) {
                     setPoint = positionDown;
                 }
             }
             else if (setPoint == positionDown) {
-                // if (Math.abs(getErrorUp()) < setPointSwitchTolerance || (positionReverseCorrector ? getErrorUp() > 0 : getErrorUp() < 0)) {
-                if (Math.abs(getErrorUp()) < setPointSwitchTolerance) {
+                if (Math.abs(getErrorUp()) < 100) {
                     setPoint = positionUp;
                 }
             }
