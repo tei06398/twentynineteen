@@ -44,6 +44,8 @@ public class RR2Auton extends LinearOpMode {
     public static final double LANDING_SPEED_RATIO = 0.3;
     public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
 
+    public static final double MAX_COAST_SECONDS = 10;
+
     // The arm has to move a long way for us to be confident it has retracted
     public static final int ARM_RETRACT_SUCCESS_THRESHOLD = 100;
 
@@ -76,7 +78,7 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.unlockServo();
 
         // Coast winch until winch position reaches a relatively steady state
-        while (opModeIsActive() && !autonFunction.winchCoastFinished()) {
+        while (opModeIsActive() && !autonFunction.winchCoastFinished() && runtime.seconds() < MAX_COAST_SECONDS) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonFunction.writeTelemetry();
             telemetry.update();
@@ -138,7 +140,7 @@ public class RR2Auton extends LinearOpMode {
             return true;
         }
 
-        autonFunction.runArm();
+        autonFunction.runArm(); // TODO: Reverse?
         sleep(1000);
         autonFunction.stopArm();
         sleep(500);
@@ -150,11 +152,12 @@ public class RR2Auton extends LinearOpMode {
 
     // Move to the side - try to escape from lander
     public void attemptLanderEscape() {
+        /*
         steering.turnClockwise(LANDER_ESCAPE_SPEED_RATIO);
         steering.finishSteering();
         sleep(2000);
         steering.stopAllMotors();
-
+        */
         driverFunction.rf.applyPower(-0.5);
         driverFunction.rb.applyPower(-0.5);
         sleep(2000);
