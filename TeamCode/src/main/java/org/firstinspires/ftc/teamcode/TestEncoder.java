@@ -22,7 +22,7 @@ public class TestEncoder extends OpMode {
         armController = new GunnerFunction.ArmController(hardwareMap.dcMotor.get("armMotor"), hardwareMap.dcMotor.get("winchMotor"), new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), 1, 0), hardwareMap.servo.get("sweepServo"), hardwareMap.dcMotor.get("chainMotor"), hardwareMap.dcMotor.get("slideMotor"));
         driverFunction = new DriverFunction(hardwareMap, telemetry);
 
-        telemetry.addData("Status:", "Initialized:");
+        telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
@@ -41,22 +41,6 @@ public class TestEncoder extends OpMode {
 
     @Override
     public void loop() {
-
-        if (this.gamepad1.right_bumper) {
-            if (armController.isLocked()) {
-                armController.lock();
-            } else {
-                armController.unlock();
-            }
-        }
-
-        if (this.gamepad1.x) {
-            if (armController.isArmUp()) {
-                armController.armDown();
-            } else {
-                armController.armUp();
-            }
-        }
 
         telemetry.addData("LB", driverFunction.getLbPosition());
         telemetry.addData("LF", driverFunction.getLfPosition());
