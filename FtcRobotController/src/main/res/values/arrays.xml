@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="startPos">
+        <item>Landing Facing Crater</item>
+        <item>Landing Facing Depot</item>
+    </string-array>
+
+    <string-array name="startPosAlias">
+        <item>"CRATER"</item>
+        <item>"DEPOT"</item>
+    </string-array>
+</resources>
