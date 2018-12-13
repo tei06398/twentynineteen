@@ -21,7 +21,7 @@ public class SimplePositionMotor {
     private static final double DEFAULT_MAX_SPEED_FORWARD = 0.2;
     private static final double DEFAULT_MAX_SPEED_REVERSE = 0.2;
     private static final double DEFAULT_MARGIN_OF_ERROR = 5;
-    private static final double DEFAULT_SETPOINT_CHANGE_ERROR_MARGIN = 100;
+    private static final double DEFAULT_SETPOINT_CHANGE_ERROR_MARGIN = 200;
 
     private boolean reachedSetPoint = false;
 
