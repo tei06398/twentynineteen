@@ -152,15 +152,15 @@ public class RR2Auton extends LinearOpMode {
 
     // Move to the side - try to escape from lander
     public void attemptLanderEscape() {
-        /*
-        steering.turnClockwise(LANDER_ESCAPE_SPEED_RATIO);
+
+        steering.moveDegrees(0, LANDER_ESCAPE_SPEED_RATIO);
         steering.finishSteering();
         sleep(2000);
         steering.stopAllMotors();
-        */
-        driverFunction.rf.applyPower(-0.5);
-        driverFunction.rb.applyPower(-0.5);
-        sleep(2000);
+
+        driverFunction.rf.applyPower(-1 * LANDER_ESCAPE_SPEED_RATIO);
+        driverFunction.rb.applyPower(-1 * LANDER_ESCAPE_SPEED_RATIO);
+        sleep(1500);
         steering.stopAllMotors();
     }
 }
