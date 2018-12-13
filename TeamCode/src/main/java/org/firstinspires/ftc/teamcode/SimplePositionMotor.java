@@ -12,24 +12,32 @@ public class SimplePositionMotor {
     private double maxSpeedForward;
     private double maxSpeedReverse;
     private double marginOfError;
+    private double setpointChangeErrorMargin;
+
+    private int positionUp;
+    private int positionDown;
 
     private static final int DEFAULT_SETPOINT = 0;
     private static final double DEFAULT_MAX_SPEED_FORWARD = 0.2;
     private static final double DEFAULT_MAX_SPEED_REVERSE = 0.2;
     private static final double DEFAULT_MARGIN_OF_ERROR = 5;
+    private static final double DEFAULT_SETPOINT_CHANGE_ERROR_MARGIN = 100;
 
     private boolean reachedSetPoint = false;
 
-    public SimplePositionMotor(DcMotor motor) {
-        this(motor, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED_FORWARD, DEFAULT_MAX_SPEED_REVERSE, DEFAULT_MARGIN_OF_ERROR);
+    public SimplePositionMotor(DcMotor motor, int positionUp, int positionDown) {
+        this(motor, positionUp, positionDown, DEFAULT_SETPOINT, DEFAULT_MAX_SPEED_FORWARD, DEFAULT_MAX_SPEED_REVERSE, DEFAULT_MARGIN_OF_ERROR, DEFAULT_SETPOINT_CHANGE_ERROR_MARGIN);
     }
 
-    public SimplePositionMotor(DcMotor motor, int setPoint, double maxSpeedForward, double maxSpeedReverse, double marginOfError) {
+    public SimplePositionMotor(DcMotor motor, int positionUp, int positionDown, int setPoint, double maxSpeedForward, double maxSpeedReverse, double marginOfError, double setpointChangeErrorMargin) {
         this.motor = motor;
+        this.positionUp = positionUp;
+        this.positionDown = positionDown;
         this.setPoint = setPoint;
         this.maxSpeedForward = maxSpeedForward;
         this.maxSpeedReverse = maxSpeedReverse;
         this.marginOfError = marginOfError;
+        this.setpointChangeErrorMargin = setpointChangeErrorMargin;
         motor.setMode(DEFAULT_RUNMODE);
         motor.setZeroPowerBehavior(DEFAULT_ZERO_POWER_BEHAVIOR);
         resetEncoder();
@@ -51,6 +59,20 @@ public class SimplePositionMotor {
         }
         else if (!reachedSetPoint) {
             reachedSetPoint = true;
+        }
+
+        // If we float to the other setpoint, change the setpoint to the other of the two positions
+        if (reachedSetPoint) {
+            if (setPoint == positionUp) {
+                if (Math.abs(getErrorDown()) < setpointChangeErrorMargin) {
+                    setPoint = positionDown;
+                }
+            }
+            else if (setPoint == positionDown) {
+                if (Math.abs(getErrorUp()) < setpointChangeErrorMargin) {
+                    setPoint = positionUp;
+                }
+            }
         }
 
         motor.setPower(speed);
@@ -80,13 +102,37 @@ public class SimplePositionMotor {
     }
 
     public void setSetPoint(int setPoint) {
-        if (this.setPoint != setPoint)
-            reachedSetPoint = false;
+        reachedSetPoint = false;
         this.setPoint = setPoint;
     }
 
+    public void toggleSetPoint() {
+        if (setPoint == positionUp) {
+            setSetPoint(positionDown);
+        }
+        else if (setPoint == positionDown) {
+            setSetPoint(positionUp);
+        }
+        // If the arm is not currently in up or down position
+        else {
+            setSetPoint(positionUp);
+        }
+    }
+
     public double getError() {
-        return  setPoint - motor.getCurrentPosition();
+        return setPoint - motor.getCurrentPosition();
+    }
+
+    public double getErrorUp() {
+        return positionUp - motor.getCurrentPosition();
+    }
+
+    public double getErrorDown() {
+        return positionDown - motor.getCurrentPosition();
+    }
+
+    public boolean getReachedSetpoint() {
+        return reachedSetPoint;
     }
 
     // -------- Access Encapsulated Motor --------
