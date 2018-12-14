@@ -22,7 +22,7 @@ public class DriverFunction {
     public static final double MIN_SPEED_RATIO = 0.3;
 
     public static final double DEFAULT_SMOOTHNESS = 2;
-    public static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+    public static final DcMotor.RunMode DEFAULT_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
     public DriverFunction(HardwareMap hardwareMap, Telemetry telemetry) {
         this(hardwareMap, telemetry, DEFAULT_SMOOTHNESS);
@@ -46,11 +46,14 @@ public class DriverFunction {
      * the power is gradually shifted.
      */
     public static class DrivingMotor {
+
         public DcMotor motor;
         private WeightedValue acceleration;
+        private DcMotor.RunMode runMode;
         
         public DrivingMotor(DcMotor motor, double smoothness, DcMotor.RunMode runMode) {
             this.motor = motor;
+            this.runMode = runMode;
             motor.setMode(runMode);
             acceleration = new WeightedValue(smoothness);
         }
@@ -67,16 +70,13 @@ public class DriverFunction {
          * Toggle motor mode to reset encoder.
          */
         public void resetEncoder() {
-            if (motor.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
-                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(runMode);
         }
 
         public int getPosition() {
             return motor.getCurrentPosition();
         }
-
     }
 
     public int getLfPosition() {
