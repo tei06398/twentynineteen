@@ -49,14 +49,14 @@ public class GunnerFunction {
     private Servo sweepServo;
     private TwoStateServo lockServo;
 
-    private SimplePositionMotor armMotor;
+    private DcMotor armMotor;
+
+    private static final double ARM_MOTOR_POWER = 0.2;
 
     private Telemetry telemetry;
 
     public GunnerFunction(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.armMotor = new SimplePositionMotor(hardwareMap.dcMotor.get("armMotor"), ARM_UP, ARM_DOWN);
-        this.armMotor.setMaxSpeedForward(ARM_MAX_SPEED_DOWN); // Going down
-        this.armMotor.setMaxSpeedReverse(ARM_MAX_SPEED_UP); // Going up
+        this.armMotor = hardwareMap.dcMotor.get("armMotor");
         this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
         this.lockServo = new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), LOCK_SERVO_LOCKED, LOCK_SERVO_UNLOCKED, 0, true);
         this.sweepServo = hardwareMap.servo.get("sweepServo");
@@ -64,10 +64,12 @@ public class GunnerFunction {
         this.slideMotor = hardwareMap.dcMotor.get("slideMotor");
         resetEncoders();
         this.telemetry = telemetry;
+        armZero();
     }
 
     public void resetEncoders() {
-        armMotor.resetEncoder();
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // winchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         winchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -121,27 +123,39 @@ public class GunnerFunction {
     // --- Arm Motor ---
 
     public void armUp() {
-        armMotor.setSetPoint(ARM_UP);
+        armMotor.setTargetPosition(ARM_UP);
     }
 
     public void armDown() {
-        armMotor.setSetPoint(ARM_DOWN);
+        armMotor.setTargetPosition(ARM_DOWN);
     }
 
-    public void armReset() {
-        armMotor.setSetPoint(0);
+    public void armZero() {
+        armMotor.setTargetPosition(0);
     }
 
     public void toggleArm() {
-        armMotor.toggleSetPoint();
-    }
-
-    public void runArmMotorIteration() {
-        armMotor.runIteration();
+        if (armMotor.getTargetPosition() == ARM_UP) {
+            armMotor.setTargetPosition(ARM_DOWN);
+        }
+        else if (armMotor.getTargetPosition() == ARM_DOWN) {
+            armMotor.setTargetPosition(ARM_UP);
+        }
+        else {
+            armMotor.setTargetPosition(ARM_UP); // If we only just initialized
+        }
     }
 
     public boolean isArmUp() {
-        return (Math.abs(armMotor.getPosition() - ARM_UP) < IS_ARM_UP_THRESH);
+        return (Math.abs(armMotor.getCurrentPosition() - ARM_UP) < IS_ARM_UP_THRESH);
+    }
+
+    public void powerArmMotor() {
+        armMotor.setPower(ARM_MOTOR_POWER);
+    }
+
+    public void stopArmMotor() {
+        armMotor.setPower(0);
     }
 
     // --- Sweeper ---
@@ -204,11 +218,11 @@ public class GunnerFunction {
         telemetry.addData("Slide Motor Current Position", slideMotor.getCurrentPosition());
         telemetry.addData("Slide Motor Internal Target", slideMotor.getTargetPosition());
         telemetry.addData("Slide Motor External Target", slidePosition);
-        telemetry.addData("Arm Motor Position", armMotor.getPosition());
+        telemetry.addData("Arm Motor Position", armMotor.getCurrentPosition());
         telemetry.addData("Arm Motor Power", armMotor.getPower());
         telemetry.addData("isArmUp", isArmUp());
-        telemetry.addData("Arm Setpoint", armMotor.getSetPoint());
-        telemetry.addData("Arm Reached Setpoint", armMotor.getReachedSetpoint());
+        telemetry.addData("Arm Setpoint", armMotor.getTargetPosition());
+        telemetry.addData("Arm Reached Busy", armMotor.isBusy());
         telemetry.addData("lockServo Position", lockServo.getServo().getPosition());
     }
 
