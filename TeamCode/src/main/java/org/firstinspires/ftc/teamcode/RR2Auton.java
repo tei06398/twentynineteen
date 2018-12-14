@@ -44,6 +44,7 @@ public class RR2Auton extends LinearOpMode {
     public static final double LANDING_SPEED_RATIO = 0.3;
     public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
 
+
     // The arm has to move a long way for us to be confident it has retracted
     public static final int ARM_RETRACT_SUCCESS_THRESHOLD = 100;
 
@@ -113,6 +114,8 @@ public class RR2Auton extends LinearOpMode {
         sleep(2000);
         steering.stopAllMotors();
         */
+
+
 
         // run until driver presses stop
         while (opModeIsActive()) {
