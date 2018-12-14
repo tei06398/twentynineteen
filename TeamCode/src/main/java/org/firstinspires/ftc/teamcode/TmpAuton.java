@@ -86,17 +86,70 @@ public class TmpAuton extends LinearOpMode {
 
         sleep(1000);
 
-        int targetPosition1 = 1500;
+        // ------------------------------------------------
+
+        int targetPosition1 = 1700;
 
         lf.setTargetPosition(targetPosition1);
         lb.setTargetPosition(targetPosition1);
         rf.setTargetPosition(-1 * targetPosition1);
         rb.setTargetPosition(-1 * targetPosition1);
 
+        telemetry.addData("Motor Status", "Set target 1");
+        telemetry.update();
+
         while (lf.isBusy() || lb.isBusy() || rf.isBusy() || rb.isBusy()) {
             telemetry.addData("Motor status", "Busy");
+            telemetry.update();
         }
         telemetry.addData("Motor status", "GET HYPED!");
+        telemetry.update();
+
+        sleep(1000);
+
+        // ------------------------------------------------
+
+        int targetPosition2 = 2000;
+
+        lf.setTargetPosition(lf.getTargetPosition() - targetPosition2);
+        lb.setTargetPosition(lb.getTargetPosition() + targetPosition2);
+        rf.setTargetPosition(rf.getTargetPosition() - targetPosition2);
+        rb.setTargetPosition(rb.getTargetPosition() + targetPosition2);
+
+        telemetry.addData("Motor Status", "Set target 2");
+        telemetry.update();
+
+        while (lf.isBusy() || lb.isBusy() || rf.isBusy() || rb.isBusy()) {
+            telemetry.addData("Motor status", "Busy");
+            telemetry.update();
+        }
+        telemetry.addData("Motor status", "GET HYPED!");
+        telemetry.update();
+
+        sleep(1000);
+
+        // ------------------------------------------------
+
+        int targetPosition3 = 4000;
+
+        lf.setTargetPosition(lf.getTargetPosition() + targetPosition3);
+        lb.setTargetPosition(lb.getTargetPosition() - targetPosition3);
+        rf.setTargetPosition(rf.getTargetPosition() + targetPosition3);
+        rb.setTargetPosition(rb.getTargetPosition() - targetPosition3);
+
+        telemetry.addData("Motor Status", "Set target 3");
+        telemetry.update();
+
+        while (lf.isBusy() || lb.isBusy() || rf.isBusy() || rb.isBusy()) {
+            telemetry.addData("Motor status", "Busy");
+            telemetry.update();
+        }
+        telemetry.addData("Motor status", "GET HYPED!");
+        telemetry.update();
+
+        sleep(1000);
+
+        // ------------------------------------------------
 
         // run until driver presses stop
         while (opModeIsActive()) {
