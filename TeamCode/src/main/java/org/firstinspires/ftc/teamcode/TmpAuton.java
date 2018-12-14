@@ -37,10 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "Tmp Auton")
 public class TmpAuton extends LinearOpMode {
 
-    private DcMotor lf; // stands for left front
-    private DcMotor lb; // stands for left back
-    private DcMotor rf; // stands for right front
-    private DcMotor rb; // stands for right back
+    AutonDriving autonDriving;
 
     private static final double DRIVE_POWER = 0.3;
 
@@ -54,19 +51,9 @@ public class TmpAuton extends LinearOpMode {
 
         runtime = new ElapsedTime();
 
-        lf = hardwareMap.dcMotor.get("lfMotor");
-        lb = hardwareMap.dcMotor.get("lbMotor");
-        rf = hardwareMap.dcMotor.get("rfMotor");
-        rb = hardwareMap.dcMotor.get("rbMotor");
+        autonDriving = new AutonDriving(hardwareMap, telemetry);
 
-        lf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        autonDriving.resetEncoders();
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.update();
@@ -74,78 +61,31 @@ public class TmpAuton extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        lf.setPower(DRIVE_POWER);
-        lb.setPower(DRIVE_POWER);
-        rf.setPower(DRIVE_POWER);
-        rb.setPower(DRIVE_POWER);
-
-        lf.setTargetPosition(0);
-        lb.setTargetPosition(0);
-        rf.setTargetPosition(0);
-        rb.setTargetPosition(0);
+        autonDriving.setAllPowers(0.2);
 
         sleep(1000);
 
         // ------------------------------------------------
 
-        int targetPosition1 = 1700;
+        autonDriving.addTargetsForward(1700);
 
-        lf.setTargetPosition(targetPosition1);
-        lb.setTargetPosition(targetPosition1);
-        rf.setTargetPosition(-1 * targetPosition1);
-        rb.setTargetPosition(-1 * targetPosition1);
-
-        telemetry.addData("Motor Status", "Set target 1");
-        telemetry.update();
-
-        while (lf.isBusy() || lb.isBusy() || rf.isBusy() || rb.isBusy()) {
-            telemetry.addData("Motor status", "Busy");
-            telemetry.update();
-        }
-        telemetry.addData("Motor status", "GET HYPED!");
-        telemetry.update();
+        while (autonDriving.isBusy()) {}
 
         sleep(1000);
 
         // ------------------------------------------------
 
-        int targetPosition2 = 2000;
+        autonDriving.addTargetsRight(2000);
 
-        lf.setTargetPosition(lf.getTargetPosition() - targetPosition2);
-        lb.setTargetPosition(lb.getTargetPosition() + targetPosition2);
-        rf.setTargetPosition(rf.getTargetPosition() - targetPosition2);
-        rb.setTargetPosition(rb.getTargetPosition() + targetPosition2);
-
-        telemetry.addData("Motor Status", "Set target 2");
-        telemetry.update();
-
-        while (lf.isBusy() || lb.isBusy() || rf.isBusy() || rb.isBusy()) {
-            telemetry.addData("Motor status", "Busy");
-            telemetry.update();
-        }
-        telemetry.addData("Motor status", "GET HYPED!");
-        telemetry.update();
+        while (autonDriving.isBusy()) {}
 
         sleep(1000);
 
         // ------------------------------------------------
 
-        int targetPosition3 = 4000;
+        autonDriving.addTargetsLeft(4000);
 
-        lf.setTargetPosition(lf.getTargetPosition() + targetPosition3);
-        lb.setTargetPosition(lb.getTargetPosition() - targetPosition3);
-        rf.setTargetPosition(rf.getTargetPosition() + targetPosition3);
-        rb.setTargetPosition(rb.getTargetPosition() - targetPosition3);
-
-        telemetry.addData("Motor Status", "Set target 3");
-        telemetry.update();
-
-        while (lf.isBusy() || lb.isBusy() || rf.isBusy() || rb.isBusy()) {
-            telemetry.addData("Motor status", "Busy");
-            telemetry.update();
-        }
-        telemetry.addData("Motor status", "GET HYPED!");
-        telemetry.update();
+        while (autonDriving.isBusy()) {}
 
         sleep(1000);
 
