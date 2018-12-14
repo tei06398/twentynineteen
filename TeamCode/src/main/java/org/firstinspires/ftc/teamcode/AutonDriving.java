@@ -14,7 +14,9 @@ public class AutonDriving {
     private DcMotor rf;
     private DcMotor rb;
 
-    public AutonDriving() {
+    public AutonDriving(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
         lf = hardwareMap.dcMotor.get("lfMotor");
         lb = hardwareMap.dcMotor.get("lbMotor");
         rf = hardwareMap.dcMotor.get("rfMotor");
