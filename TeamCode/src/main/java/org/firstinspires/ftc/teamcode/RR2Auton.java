@@ -45,9 +45,6 @@ public class RR2Auton extends LinearOpMode {
     public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
     public static final double MAX_COAST_SECONDS = 10;
 
-    // The arm has to move a long way for us to be confident it has retracted
-    public static final int ARM_RETRACT_SUCCESS_THRESHOLD = 100;
-
     @Override
     public void runOpMode() {
 
@@ -65,6 +62,7 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.resetAllEncoders();
 
         autonFunction.lockServo();
+        autonFunction.zeroPowerArm(); // We don't want to power the arm until we've retracted all the way
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         autonFunction.writeTelemetry();
@@ -99,21 +97,16 @@ public class RR2Auton extends LinearOpMode {
         sleep(2000);
         steering.stopAllMotors();
 
-        int armPosition = autonFunction.getArmPosition(); // Get initial value in case arm falls after escape attempt
-        boolean armRetractSuccess = false;
+        autonFunction.powerArm();
+        // Get the arm to hold its position
+        autonFunction.setArmTargetPosition(autonFunction.getArmPosition());
 
-        while (opModeIsActive() && !armRetractSuccess) {
-            attemptLanderEscape();
-            armRetractSuccess = attemptRetractArm(armPosition); // Attempt to retract arm
-        }
+        sleep(500);
 
-        // Move away from the lander
-        /*
-        steering.moveDegrees(270, LANDING_SPEED_RATIO);
-        steering.finishSteering();
-        sleep(2000);
-        steering.stopAllMotors();
-        */
+        attemptLanderEscape();
+
+        // TODO: Drive against lander to align with it after escape, and then go get those minerals
+        // TODO: Replace all the driving stuff here with AutonDriving, if that seems like the right decision
 
         // run until driver presses stop
         while (opModeIsActive()) {
@@ -123,37 +116,10 @@ public class RR2Auton extends LinearOpMode {
         }
     }
 
-    // Return true if arm retract was successful
-    public boolean attemptRetractArm(int startPosition) {
-        /*
-        So that the arm doesn't move if it is not in fact released. If we used RUN_USING_ENCODERS,
-        the I-term would quickly increase, and the arm might move, even if we were still attached
-        to the lander.
-         */
-        autonFunction.setArmRunWithoutEncoders();
-
-        int currentPosition = autonFunction.getArmPosition();
-
-        if (Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCCESS_THRESHOLD) {
-            autonFunction.setArmDefaultRunmode();
-            return true;
-        }
-
-        autonFunction.runArm();
-        sleep(1000);
-        autonFunction.stopArm();
-        sleep(500);
-
-        currentPosition = autonFunction.getArmPosition();
-
-        return Math.abs(currentPosition - startPosition) > ARM_RETRACT_SUCCESS_THRESHOLD;
-    }
-
     // Move to the side - try to escape from lander
     public void attemptLanderEscape() {
-        steering.turnClockwise(LANDER_ESCAPE_SPEED_RATIO);
-        steering.finishSteering();
-        sleep(2000);
+        steering.moveDegrees(0, LANDER_ESCAPE_SPEED_RATIO);
+        sleep(1500);
         steering.stopAllMotors();
 
         driverFunction.rf.applyPower(-1 * LANDER_ESCAPE_SPEED_RATIO);
