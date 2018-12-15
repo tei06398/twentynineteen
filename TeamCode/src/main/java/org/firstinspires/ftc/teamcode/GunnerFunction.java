@@ -30,7 +30,7 @@ public class GunnerFunction {
 
     private final double CHAIN_MOTOR_POWER = 0.15;
 
-    private final double SWEEP_SERVO_CENTER = 0.5;
+    private final double SWEEP_SERVO_CENTER = 0.55;
     private final double SWEEP_SERVO_POWER = 0.5; // Between 0 and 0.5
 
     private final int SLIDE_POSITION_MIN = 0;
@@ -185,11 +185,11 @@ public class GunnerFunction {
     }
 
     public void sweepServoForward() {
-        sweepServo.setPosition(SWEEP_SERVO_CENTER + SWEEP_SERVO_POWER);
+        sweepServo.setPosition(Math.min(SWEEP_SERVO_CENTER + SWEEP_SERVO_POWER, 1));
     }
 
     public void sweepServoReverse() {
-        sweepServo.setPosition(SWEEP_SERVO_CENTER - SWEEP_SERVO_POWER);
+        sweepServo.setPosition(Math.max(SWEEP_SERVO_CENTER - SWEEP_SERVO_POWER, 0));
     }
 
     public void sweepServoStop() {
