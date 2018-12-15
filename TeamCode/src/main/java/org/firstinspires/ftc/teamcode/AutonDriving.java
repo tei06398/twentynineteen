@@ -51,8 +51,7 @@ public class AutonDriving {
     }
 
     public boolean isMostlyBusy() {
-        return isBusy();
-        /*int count = 0;
+        int count = 0;
         if (lf.isBusy())
             count++;
         if (lb.isBusy())
@@ -61,8 +60,9 @@ public class AutonDriving {
             count++;
         if (rb.isBusy())
             count++;
-        return count >= 3;*/
+        return count >= 3;
     }
+
 
     public boolean isBusy() {
         return lf.isBusy() || lb.isBusy() || rf.isBusy() || rb.isBusy();

@@ -64,7 +64,7 @@ public class TmpAuton extends LinearOpMode {
 
         autonDriving.setAllPowers(0.4);
 
-        while (autonDriving.isMostlyBusy() && opModeIsActive()) {
+        while (autonDriving.isBusy() && opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
             telemetry.update();
@@ -76,7 +76,7 @@ public class TmpAuton extends LinearOpMode {
 
         autonDriving.addTargetsForward(1500);
 
-        while (autonDriving.isMostlyBusy() && opModeIsActive()) {
+        while (autonDriving.isBusy() && opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
             telemetry.update();
@@ -88,7 +88,7 @@ public class TmpAuton extends LinearOpMode {
 
         autonDriving.addTargetsRight(2000);
 
-        while (autonDriving.isMostlyBusy() && opModeIsActive()) {
+        while (autonDriving.isBusy() && opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
             telemetry.update();
@@ -100,7 +100,7 @@ public class TmpAuton extends LinearOpMode {
 
         autonDriving.addTargetsLeft(4000);
 
-        while (autonDriving.isMostlyBusy() && opModeIsActive()) {
+        while (autonDriving.isBusy() && opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
             telemetry.update();
