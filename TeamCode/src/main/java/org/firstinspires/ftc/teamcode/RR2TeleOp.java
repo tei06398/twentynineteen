@@ -189,6 +189,10 @@ public class RR2TeleOp extends OpMode {
         telemetry.addData("RF", driverFunction.getRfPosition());
         gunnerFunction.doTelemetry();
         telemetry.addData("Runtime", runtime.toString());
+        telemetry.addData("LB", driverFunction.getLbPosition());
+        telemetry.addData("LF", driverFunction.getLfPosition());
+        telemetry.addData("RB", driverFunction.getRbPosition());
+        telemetry.addData("RF", driverFunction.getRfPosition());
         telemetry.update();
     }
 
