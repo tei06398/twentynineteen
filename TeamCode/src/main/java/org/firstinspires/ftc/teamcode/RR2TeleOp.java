@@ -105,18 +105,17 @@ public class RR2TeleOp extends OpMode {
             telemetry.addData("Angle", 0);
         }
 
-        // ----- Gamepad 2: Gunner Functions -----
+        // Y Button: Arm Up
+        if (this.gamepad1.y) {
+            gunnerFunction.armUp();
+        }
 
-        // Y Button: Toggle Arm Up/Down
-        if (this.gamepad2.y) {
-            if (!gamepad2YToggleLock) {
-                gamepad2YToggleLock = true;
-                gunnerFunction.toggleArm();
-            }
+        // A Button: Arm Down
+        if (this.gamepad1.a) {
+            gunnerFunction.armDown();
         }
-        else {
-            gamepad2YToggleLock = false;
-        }
+
+        // ----- Gamepad 2: Gunner Functions -----
 
         // Right Joystick Y: Move sweeper slide in/out
         if (this.gamepad2.right_stick_y > 0.5) {
