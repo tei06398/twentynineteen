@@ -34,7 +34,6 @@ public class AutonDriving {
         lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        telemetry.update();
     }
 
     public void setAllPowers(double power) {
@@ -49,7 +48,6 @@ public class AutonDriving {
         lb.setTargetPosition(target);
         rf.setTargetPosition(target);
         rb.setTargetPosition(target);
-        telemetry.update();
     }
 
     public boolean isBusy() {
@@ -61,7 +59,6 @@ public class AutonDriving {
         lb.setTargetPosition(lb.getTargetPosition() + distance);
         rf.setTargetPosition(rf.getTargetPosition() - distance);
         rb.setTargetPosition(rf.getTargetPosition() - distance);
-        telemetry.update();
     }
 
     public void addTargetsBackwards(int distance) {
@@ -69,7 +66,6 @@ public class AutonDriving {
         lb.setTargetPosition(lb.getTargetPosition() - distance);
         rf.setTargetPosition(rf.getTargetPosition() + distance);
         rb.setTargetPosition(rf.getTargetPosition() + distance);
-        telemetry.update();
     }
 
     public void addTargetsRight(int distance) {
@@ -77,7 +73,6 @@ public class AutonDriving {
         lb.setTargetPosition(lb.getTargetPosition() + distance);
         rf.setTargetPosition(rf.getTargetPosition() - distance);
         rb.setTargetPosition(rf.getTargetPosition() + distance);
-        telemetry.update();
     }
 
     public void addTargetsLeft(int distance) {
@@ -85,7 +80,6 @@ public class AutonDriving {
         lb.setTargetPosition(lb.getTargetPosition() - distance);
         rf.setTargetPosition(rf.getTargetPosition() + distance);
         rb.setTargetPosition(rf.getTargetPosition() - distance);
-        telemetry.update();
     }
 
     public void writeTelemetry() {
