@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "Tmp Auton")
@@ -53,8 +52,6 @@ public class TmpAuton extends LinearOpMode {
 
         autonDriving = new AutonDriving(hardwareMap, telemetry);
 
-        autonDriving.resetEncoders();
-
         while (!this.isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
@@ -62,9 +59,12 @@ public class TmpAuton extends LinearOpMode {
         }
         runtime.reset();
 
+        autonDriving.resetEncoders();
+        autonDriving.resetTargets();
+
         autonDriving.setAllPowers(0.4);
 
-        while (autonDriving.isBusy()) {
+        while (autonDriving.isMostlyBusy() && opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
             telemetry.update();
@@ -76,7 +76,7 @@ public class TmpAuton extends LinearOpMode {
 
         autonDriving.addTargetsForward(1500);
 
-        while (autonDriving.isBusy()) {
+        while (autonDriving.isMostlyBusy() && opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
             telemetry.update();
@@ -88,7 +88,7 @@ public class TmpAuton extends LinearOpMode {
 
         autonDriving.addTargetsRight(2000);
 
-        while (autonDriving.isBusy()) {
+        while (autonDriving.isMostlyBusy() && opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
             telemetry.update();
@@ -100,13 +100,15 @@ public class TmpAuton extends LinearOpMode {
 
         autonDriving.addTargetsLeft(4000);
 
-        while (autonDriving.isBusy()) {
+        while (autonDriving.isMostlyBusy() && opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonDriving.writeTelemetry();
             telemetry.update();
         }
 
         sleep(1000);
+
+        autonDriving.setAllPowers(0);
 
         // ------------------------------------------------
 

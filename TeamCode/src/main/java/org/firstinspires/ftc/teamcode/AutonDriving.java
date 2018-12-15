@@ -50,36 +50,57 @@ public class AutonDriving {
         rb.setTargetPosition(target);
     }
 
+    public boolean isMostlyBusy() {
+        return isBusy();
+        /*int count = 0;
+        if (lf.isBusy())
+            count++;
+        if (lb.isBusy())
+            count++;
+        if (rf.isBusy())
+            count++;
+        if (rb.isBusy())
+            count++;
+        return count >= 3;*/
+    }
+
     public boolean isBusy() {
         return lf.isBusy() || lb.isBusy() || rf.isBusy() || rb.isBusy();
+    }
+
+    public void resetTargets() {
+        lf.setTargetPosition(lf.getCurrentPosition());
+        lb.setTargetPosition(lb.getCurrentPosition());
+        rf.setTargetPosition(rf.getCurrentPosition());
+        rb.setTargetPosition(rb.getCurrentPosition());
     }
 
     public void addTargetsForward(int distance) {
         lf.setTargetPosition(lf.getTargetPosition() + distance);
         lb.setTargetPosition(lb.getTargetPosition() + distance);
         rf.setTargetPosition(rf.getTargetPosition() - distance);
-        rb.setTargetPosition(rf.getTargetPosition() - distance);
+        rb.setTargetPosition(rb.getTargetPosition() - distance);
     }
 
     public void addTargetsBackwards(int distance) {
         lf.setTargetPosition(lf.getTargetPosition() - distance);
         lb.setTargetPosition(lb.getTargetPosition() - distance);
         rf.setTargetPosition(rf.getTargetPosition() + distance);
-        rb.setTargetPosition(rf.getTargetPosition() + distance);
+        rb.setTargetPosition(rb.getTargetPosition() + distance);
     }
 
     public void addTargetsRight(int distance) {
         lf.setTargetPosition(lf.getTargetPosition() - distance);
         lb.setTargetPosition(lb.getTargetPosition() + distance);
         rf.setTargetPosition(rf.getTargetPosition() - distance);
-        rb.setTargetPosition(rf.getTargetPosition() + distance);
+        rb.setTargetPosition(rb.getTargetPosition() + distance);
     }
 
     public void addTargetsLeft(int distance) {
         lf.setTargetPosition(lf.getTargetPosition() + distance);
         lb.setTargetPosition(lb.getTargetPosition() - distance);
         rf.setTargetPosition(rf.getTargetPosition() + distance);
-        rb.setTargetPosition(rf.getTargetPosition() - distance);
+        rb.setTargetPosition(rb.getTargetPosition() - distance);
     }
 
     public void writeTelemetry() {
