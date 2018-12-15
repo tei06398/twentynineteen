@@ -61,13 +61,13 @@ public class TmpAuton extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        autonDriving.setAllPowers(0.2);
+        autonDriving.setAllPowers(0.4);
 
         sleep(1000);
 
         // ------------------------------------------------
 
-        autonDriving.addTargetsForward(1700);
+        autonDriving.addTargetsForward(1500);
 
         while (autonDriving.isBusy()) {}
 
@@ -94,6 +94,7 @@ public class TmpAuton extends LinearOpMode {
         // run until driver presses stop
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            autonDriving.writeTelemetry();
             telemetry.update();
         }
     }

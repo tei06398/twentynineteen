@@ -34,6 +34,7 @@ public class AutonDriving {
         lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        telemetry.update();
     }
 
     public void setAllPowers(double power) {
@@ -43,11 +44,12 @@ public class AutonDriving {
         rb.setPower(power);
     }
 
-    public void setAllTargets(int target) {
+    public void setAllTargets(int target) {lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lf.setTargetPosition(target);
         lb.setTargetPosition(target);
         rf.setTargetPosition(target);
         rb.setTargetPosition(target);
+        telemetry.update();
     }
 
     public boolean isBusy() {
@@ -59,6 +61,7 @@ public class AutonDriving {
         lb.setTargetPosition(lb.getTargetPosition() + distance);
         rf.setTargetPosition(rf.getTargetPosition() - distance);
         rb.setTargetPosition(rf.getTargetPosition() - distance);
+        telemetry.update();
     }
 
     public void addTargetsBackwards(int distance) {
@@ -66,6 +69,7 @@ public class AutonDriving {
         lb.setTargetPosition(lb.getTargetPosition() - distance);
         rf.setTargetPosition(rf.getTargetPosition() + distance);
         rb.setTargetPosition(rf.getTargetPosition() + distance);
+        telemetry.update();
     }
 
     public void addTargetsRight(int distance) {
@@ -73,6 +77,7 @@ public class AutonDriving {
         lb.setTargetPosition(lb.getTargetPosition() + distance);
         rf.setTargetPosition(rf.getTargetPosition() - distance);
         rb.setTargetPosition(rf.getTargetPosition() + distance);
+        telemetry.update();
     }
 
     public void addTargetsLeft(int distance) {
@@ -80,16 +85,17 @@ public class AutonDriving {
         lb.setTargetPosition(lb.getTargetPosition() - distance);
         rf.setTargetPosition(rf.getTargetPosition() + distance);
         rb.setTargetPosition(rf.getTargetPosition() - distance);
+        telemetry.update();
     }
 
     public void writeTelemetry() {
         telemetry.addData("LF Target", lf.getTargetPosition());
-        telemetry.addData("LB Target", lf.getTargetPosition());
-        telemetry.addData("RF Target", lf.getTargetPosition());
-        telemetry.addData("RB Target", lf.getTargetPosition());
+        telemetry.addData("LB Target", lb.getTargetPosition());
+        telemetry.addData("RF Target", rf.getTargetPosition());
+        telemetry.addData("RB Target", rb.getTargetPosition());
         telemetry.addData("LF Current", lf.getCurrentPosition());
-        telemetry.addData("LB Current", lf.getCurrentPosition());
-        telemetry.addData("RF Current", lf.getCurrentPosition());
-        telemetry.addData("RB Current", lf.getCurrentPosition());
+        telemetry.addData("LB Current", lb.getCurrentPosition());
+        telemetry.addData("RF Current", rf.getCurrentPosition());
+        telemetry.addData("RB Current", rb.getCurrentPosition());
     }
 }
