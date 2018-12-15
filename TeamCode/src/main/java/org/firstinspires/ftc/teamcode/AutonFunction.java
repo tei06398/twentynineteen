@@ -21,7 +21,7 @@ public class AutonFunction {
 
     private static final double ARM_POWER = 0.1;
 
-    private DcMotor.RunMode ARM_MOTOR_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
+    private DcMotor.RunMode ARM_MOTOR_RUNMODE = DcMotor.RunMode.RUN_TO_POSITION;
     private DcMotor.RunMode WINCH_MOTOR_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
     private Servo lockServo;
@@ -97,36 +97,20 @@ public class AutonFunction {
 
      // --- Arm ---
 
-    public void runArm() {
+    public void powerArm() {
         armMotor.setPower(ARM_POWER);
     }
 
-    public void runArmReverse() {
-        armMotor.setPower(-1 * ARM_POWER);
-    }
-
-    public void stopArm() {
+    public void zeroPowerArm() {
         armMotor.setPower(0);
     }
 
-    public void setArmRunWithoutEncoders() {
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-
-    public void setArmDefaultRunmode() {
-        armMotor.setMode(ARM_MOTOR_RUNMODE);
-    }
-
     public int getArmPosition() {
-        return winchMotor.getCurrentPosition();
+        return armMotor.getCurrentPosition();
     }
 
-    public void slackArm() {
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-    }
-
-    public void brakeArm() {
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public void setArmTargetPosition(int target) {
+        armMotor.setTargetPosition(target);
     }
 
     // --- Util ---
