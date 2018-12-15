@@ -161,13 +161,13 @@ public class RR2TeleOp extends OpMode {
         }
 
         // A/B: Start/Reverse/Stop chainMotor
-        if (this.gamepad2.a) {
+        if (this.gamepad2.right_bumper) {
             if (!gamepad2ABToggleLock) {
                 gamepad2ABToggleLock = true;
                 gunnerFunction.runChainMotor();
             }
         }
-        else if (this.gamepad2.b) {
+        else if (this.gamepad2.left_bumper) {
             if (!gamepad2ABToggleLock) {
                 gamepad2ABToggleLock = true;
                 gunnerFunction.runChainMotorReverse();
@@ -182,6 +182,10 @@ public class RR2TeleOp extends OpMode {
         steering.finishSteering();
 
         // Update telemetry
+        telemetry.addData("LB", driverFunction.getLbPosition());
+        telemetry.addData("LF", driverFunction.getLfPosition());
+        telemetry.addData("RB", driverFunction.getRbPosition());
+        telemetry.addData("RF", driverFunction.getRfPosition());
         gunnerFunction.doTelemetry();
         telemetry.addData("Runtime", runtime.toString());
         telemetry.addData("LB", driverFunction.getLbPosition());

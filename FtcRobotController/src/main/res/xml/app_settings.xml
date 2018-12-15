@@ -87,6 +87,13 @@ See https://developer.android.com/guide/topics/ui/settings.html
         android:targetPackage="@string/packageName"
         android:targetClass="com.qualcomm.ftccommon.ViewLogsActivity" />
     </PreferenceScreen>
+      <ListPreference
+              android:key="auton_start_position"
+              android:title="Start Position"
+              android:summary="Select a Starting Position for the Auton OpMode"
+              android:entries="@array/startPos"
+              android:defaultValue="CRATER"
+              android:entryValues="@array/startPosAlias"/>
 
   </PreferenceCategory>
 

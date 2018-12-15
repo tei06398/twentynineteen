@@ -17,7 +17,7 @@ public class TestEncoder extends OpMode {
 
         driverFunction = new DriverFunction(hardwareMap, telemetry);
 
-        telemetry.addData("Status:", "Initialized:");
+        telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
