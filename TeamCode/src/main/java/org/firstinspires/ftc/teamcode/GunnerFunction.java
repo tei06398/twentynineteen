@@ -51,7 +51,7 @@ public class GunnerFunction {
 
     private DcMotor armMotor;
 
-    private static final double ARM_MOTOR_POWER = 0.2;
+    private static final double ARM_MOTOR_POWER = 0.05;
 
     private Telemetry telemetry;
 
