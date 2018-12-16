@@ -116,6 +116,7 @@ public class RR2TeleOp extends OpMode {
             gunnerFunction.armDown();
         }
 
+        /*
         // TODO: WARNING: This will lock up the tele-op for ~4 seconds
         // TODO: Fix this semi-issue
         // Left Bumper: Re-zero the arm position
@@ -129,6 +130,7 @@ public class RR2TeleOp extends OpMode {
         else {
             gamepad1LBumperToggleLock = false;
         }
+        */
 
         // TODO: Insure this works - the gunner will need to be very careful to keep this held down until we can power off the robot
         // A: Toggle the pivot arm motor power
