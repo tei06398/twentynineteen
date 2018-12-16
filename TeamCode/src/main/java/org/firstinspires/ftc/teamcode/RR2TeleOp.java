@@ -21,7 +21,7 @@ public class RR2TeleOp extends OpMode {
     private GunnerFunction gunnerFunction;
 
     // Toggle locks
-    private boolean gamepad2AToggleLock = false;
+    private boolean gamepad1BToggleLock = false;
     private boolean gamepad2RlBumperToggleLock = false;
     private boolean gamepad1LBumperToggleLock = false;
 
@@ -130,6 +130,21 @@ public class RR2TeleOp extends OpMode {
             gamepad1LBumperToggleLock = false;
         }
 
+        // TODO: Insure this works - the gunner will need to be very careful to keep this held down until we can power off the robot
+        // A: Toggle the pivot arm motor power
+        if (this.gamepad1.b) {
+            if (!gamepad1BToggleLock) {
+                gamepad1BToggleLock = true;
+                // gunnerFunction.toggleArmPower();
+                gunnerFunction.zeroPowerArmMotor();
+            }
+            telemetry.addData("PIVOT MOTOR: ", "ZERO POWER");
+        }
+        else {
+            gamepad1BToggleLock = false;
+            gunnerFunction.powerArmMotor();
+            telemetry.addData("PIVOT MOTOR: ", "POWERED");
+        }
 
         // ----- Gamepad 2: Gunner Functions -----
 
@@ -191,22 +206,6 @@ public class RR2TeleOp extends OpMode {
         else {
             gamepad2RlBumperToggleLock = false;
             gunnerFunction.stopChainMotor();
-        }
-
-        // TODO: Insure this works - the gunner will need to be very careful to keep this held down until we can power off the robot
-        // A: Toggle the winch power
-        if (this.gamepad2.a) {
-            if (!gamepad2AToggleLock) {
-                gamepad2AToggleLock = true;
-                // gunnerFunction.toggleArmPower();
-                gunnerFunction.zeroPowerArmMotor();
-            }
-            telemetry.addData("PIVOT MOTOR: ", "ZERO POWER");
-        }
-        else {
-            gamepad2AToggleLock = false;
-            gunnerFunction.powerArmMotor();
-            telemetry.addData("PIVOT MOTOR: ", "POWERED");
         }
 
         // Finish steering, putting power into hardware
