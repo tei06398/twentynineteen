@@ -118,9 +118,6 @@ public class RR2Auton extends LinearOpMode {
 
         attemptLanderEscape();
 
-
-        // TODO: Drive against lander to align with it after escape, and then go get those minerals
-
         if (startPos == AutonPosition.DEPOT) {
             //Forward up to just before Depot, knocking off the center Mineral
             steering.move(90);
@@ -171,13 +168,22 @@ public class RR2Auton extends LinearOpMode {
 
     // Move to the side - try to escape from lander
     public void attemptLanderEscape() {
-        steering.moveDegrees(0, LANDER_ESCAPE_SPEED_RATIO);
+        //Ram into Lander
+        steering.move(270);
+        steering.finishSteering();
         sleep(1500);
-        steering.stopAllMotors();
-
-        driverFunction.rf.applyPower(-1 * LANDER_ESCAPE_SPEED_RATIO);
-        driverFunction.rb.applyPower(-1 * LANDER_ESCAPE_SPEED_RATIO);
+        //Move away from Lander
+        steering.move(90);
+        steering.finishSteering();
+        sleep(500);
+        //Strafe out of Lander
+        steering.move(180);
+        steering.finishSteering();
         sleep(1500);
+        //Centrally align to Lander
+        steering.move(315);
+        steering.finishSteering();
+        sleep(500);
         steering.stopAllMotors();
     }
 
