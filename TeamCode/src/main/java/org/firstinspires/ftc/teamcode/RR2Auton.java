@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -44,11 +46,22 @@ public class RR2Auton extends LinearOpMode {
     public static final double LANDING_SPEED_RATIO = 0.3;
     public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
     public static final double MAX_COAST_SECONDS = 10;
+    private static SharedPreferences sharedPrefs;
+    private static AutonPosition startPos;
 
     @Override
     public void runOpMode() {
 
         // --- Init ---
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.hardwareMap.appContext);
+        String position = sharedPrefs.getString("auton_start_position", "ERROR");
+        if (position.equals("CRATER")) {
+            startPos = AutonPosition.CRATER;
+        } else if (position.equals("DEPOT")) {
+            startPos = AutonPosition.DEPOT;
+        } else {
+            startPos = AutonPosition.NULL;
+        }
         runtime = new ElapsedTime();
         driverFunction = new DriverFunction(hardwareMap, telemetry);
         steering = driverFunction.getSteering();
@@ -105,7 +118,47 @@ public class RR2Auton extends LinearOpMode {
 
         attemptLanderEscape();
 
+
         // TODO: Drive against lander to align with it after escape, and then go get those minerals
+
+        if (startPos == AutonPosition.DEPOT) {
+            //Forward up to just before Depot, knocking off the center Mineral
+            steering.move(90);
+            steering.finishSteering();
+            sleep(2000);
+            //Turn to be Parallel to Depot
+            steering.turnClockwise(0.5);
+            steering.finishSteering();
+            sleep(500);
+            //Move deeper towards Depot
+            steering.move(90);
+            steering.finishSteering();
+            sleep(500);
+            //Drop Team Marker
+            autonFunction.dropMarker();
+            sleep(100);
+            //Move shallower out of Depot
+            steering.move(270);
+            steering.finishSteering();
+            sleep(500);
+            //Move left along Depot towards Wall
+            steering.move(0);
+            steering.finishSteering();
+            sleep(1500);
+            //Move backwards towards Crater
+            steering.move(270);
+            steering.finishSteering();
+            sleep(4000);
+        } else if (startPos == AutonPosition.CRATER) {
+            //Drive forward, knocking off the center Mineral and parking in the Crater
+            steering.move(90);
+            steering.finishSteering();
+            sleep(1000);
+            steering.stopAllMotors();
+            steering.finishSteering();
+        } else {
+            telemetry.addData("HURR", "DURR");
+        }
         // TODO: Replace all the driving stuff here with AutonDriving, if that seems like the right decision
 
         // run until driver presses stop
@@ -126,5 +179,9 @@ public class RR2Auton extends LinearOpMode {
         driverFunction.rb.applyPower(-1 * LANDER_ESCAPE_SPEED_RATIO);
         sleep(1500);
         steering.stopAllMotors();
+    }
+
+    private enum AutonPosition {
+        CRATER, DEPOT, NULL
     }
 }

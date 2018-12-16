@@ -46,7 +46,8 @@ public class GunnerFunction {
     private DcMotor winchMotor;
     private DcMotor chainMotor;
     private DcMotor slideMotor;
-    private Servo sweepServo;
+    private Servo rightSweepServo;
+    private Servo leftSweepServo;
     private TwoStateServo lockServo;
 
     private DcMotor armMotor;
@@ -59,7 +60,8 @@ public class GunnerFunction {
         this.armMotor = hardwareMap.dcMotor.get("armMotor");
         this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
         this.lockServo = new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), LOCK_SERVO_LOCKED, LOCK_SERVO_UNLOCKED, 0, true);
-        this.sweepServo = hardwareMap.servo.get("sweepServo");
+        this.rightSweepServo = hardwareMap.servo.get("leftSweepServo");
+        this.leftSweepServo = hardwareMap.servo.get("rightSweepServo");
         this.chainMotor = hardwareMap.dcMotor.get("chainMotor");
         this.slideMotor = hardwareMap.dcMotor.get("slideMotor");
         resetEncoders();
@@ -199,15 +201,17 @@ public class GunnerFunction {
     }
 
     public void sweepServoForward() {
-        sweepServo.setPosition(Math.min(SWEEP_SERVO_CENTER + SWEEP_SERVO_POWER, 1));
-    }
+        rightSweepServo.setPosition(Math.min(SWEEP_SERVO_POWER, 1));
+        leftSweepServo.setPosition(Math.min(-SWEEP_SERVO_POWER, -1));    }
 
     public void sweepServoReverse() {
-        sweepServo.setPosition(Math.max(SWEEP_SERVO_CENTER - SWEEP_SERVO_POWER, 0));
+        rightSweepServo.setPosition(Math.max(-SWEEP_SERVO_POWER, 0));
+        leftSweepServo.setPosition(Math.max(SWEEP_SERVO_POWER, 0));
     }
 
     public void sweepServoStop() {
-        sweepServo.setPosition(SWEEP_SERVO_CENTER);
+        rightSweepServo.setPosition(0);
+        leftSweepServo.setPosition(0);
     }
 
     // --- Telemetry ---
