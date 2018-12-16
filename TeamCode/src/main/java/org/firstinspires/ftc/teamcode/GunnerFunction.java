@@ -150,7 +150,7 @@ public class GunnerFunction {
         armMotor.setPower(ARM_MOTOR_POWER);
     }
 
-    public void stopArmMotor() {
+    public void zeroPowerArmMotor() {
         armMotor.setPower(0);
     }
 

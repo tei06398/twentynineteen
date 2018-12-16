@@ -197,11 +197,15 @@ public class RR2TeleOp extends OpMode {
         if (this.gamepad2.a) {
             if (!gamepad2AToggleLock) {
                 gamepad2AToggleLock = true;
-                gunnerFunction.toggleArmPower();
+                // gunnerFunction.toggleArmPower();
+                gunnerFunction.zeroPowerArmMotor();
             }
+            telemetry.addData("PIVOT MOTOR: ", "ZERO POWER");
         }
         else {
             gamepad2AToggleLock = false;
+            gunnerFunction.powerArmMotor();
+            telemetry.addData("PIVOT MOTOR: ", "POWERED");
         }
 
         // Finish steering, putting power into hardware
@@ -214,10 +218,6 @@ public class RR2TeleOp extends OpMode {
         telemetry.addData("RF", driverFunction.getRfPosition());
         gunnerFunction.doTelemetry();
         telemetry.addData("Runtime", runtime.toString());
-        telemetry.addData("LB", driverFunction.getLbPosition());
-        telemetry.addData("LF", driverFunction.getLfPosition());
-        telemetry.addData("RB", driverFunction.getRbPosition());
-        telemetry.addData("RF", driverFunction.getRfPosition());
         telemetry.update();
     }
 
