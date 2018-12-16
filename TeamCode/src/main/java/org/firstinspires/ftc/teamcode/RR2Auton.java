@@ -85,6 +85,9 @@ public class RR2Auton extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        //  TODO: Grab an encoder position here, then add an empirical constant to obtain a reliable target position for arm up
+        // TODO: Alternatively, test out the arm reset method in tele-op (ideally, we would have both)
+
         autonFunction.unlockServo();
 
         // Coast winch until winch position reaches a relatively steady state
