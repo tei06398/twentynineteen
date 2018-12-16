@@ -23,6 +23,7 @@ public class RR2TeleOp extends OpMode {
     // Toggle locks
     private boolean gamepad2AToggleLock = false;
     private boolean gamepad2RlBumperToggleLock = false;
+    private boolean gamepad1LBumperToggleLock = false;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -114,6 +115,21 @@ public class RR2TeleOp extends OpMode {
         if (this.gamepad1.a) {
             gunnerFunction.armDown();
         }
+
+        // TODO: WARNING: This will lock up the tele-op for ~4 seconds
+        // TODO: Fix this semi-issue
+        // Left Bumper: Re-zero the arm position
+        if (this.gamepad1.left_bumper) {
+            if (!gamepad1LBumperToggleLock) {
+                gamepad1LBumperToggleLock = true;
+
+                gunnerFunction.reZeroArm(this);
+            }
+        }
+        else {
+            gamepad1LBumperToggleLock = false;
+        }
+
 
         // ----- Gamepad 2: Gunner Functions -----
 

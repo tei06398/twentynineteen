@@ -17,9 +17,9 @@ public class GunnerFunction {
 
     private final int ARM_UP_ABS = -240; // -313
     private final int ARM_DOWN_ABS = 180;
-    private final int ARM_OFFSET = 250; // -180 for fully down, 0 for level with top
-    private final int ARM_UP = ARM_UP_ABS + ARM_OFFSET;
-    private final int ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
+    private int ARM_OFFSET = 250; // -180 for fully down, 0 for level with top
+    private int ARM_UP = ARM_UP_ABS + ARM_OFFSET;
+    private int ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
 
     private final int IS_ARM_UP_THRESH = 5;
 
@@ -161,6 +161,42 @@ public class GunnerFunction {
         else {
             armMotor.setPower(0);
         }
+    }
+
+    /*
+    Drive the arm all the way down, and then reset the encoder
+    This is pretty janky - will probably lock up the tele-op for ~4s if it works
+     */
+    public void reZeroArm(RR2TeleOp rr2TeleOp) {
+        // Set arm runmode to RUN_WITHOUT_ENCODERS
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Drive arm down
+        armMotor.setPower(0.5);
+
+        try {
+            rr2TeleOp.wait(4000);
+        }
+        // If this happened, there would be a problem...
+        catch (java.lang.InterruptedException e) {
+            e.printStackTrace();
+            armMotor.setPower(0);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor.setPower(ARM_MOTOR_POWER);
+            return;
+        }
+
+        // Set new arm offset
+        ARM_OFFSET = -180; // TODO: Get better value
+
+        // Update arm positions
+        ARM_UP = ARM_UP_ABS + ARM_OFFSET;
+        ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
+
+        // Revert mode and hold position
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(ARM_MOTOR_POWER);
+        armMotor.setTargetPosition(armMotor.getCurrentPosition());
     }
 
     // --- Sweeper ---
