@@ -45,7 +45,7 @@ public class RR2Auton extends LinearOpMode {
 
     public static final double LANDING_SPEED_RATIO = 0.3;
     public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
-    public static final double MAX_COAST_SECONDS = 10;
+    public static final double MAX_COAST_SECONDS = 6;
     private static SharedPreferences sharedPrefs;
     private static AutonPosition startPos;
 
@@ -105,20 +105,54 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.stopWinch();
 
         // Run drive motors to insure we are down
-        steering.moveDegrees(270, LANDING_SPEED_RATIO);
-        steering.finishSteering();
-        sleep(2000);
+        //steering.moveDegrees(270, LANDING_SPEED_RATIO);
+        //steering.finishSteering();
+        //sleep(2000);
         steering.stopAllMotors();
 
-        autonFunction.powerArm();
         // Get the arm to hold its position
+        autonFunction.powerArm();
         autonFunction.setArmTargetPosition(autonFunction.getArmPosition());
 
         sleep(500);
 
-        attemptLanderEscape();
+        // ----- ESCAPE FROM LANDER -----
 
-        if (startPos == AutonPosition.DEPOT) {
+        //Ram into Lander
+        /*
+        steering.move(270);
+        steering.finishSteering();
+        sleep(1500);
+        */
+        // Move away from Lander
+        steering.move(90);
+        steering.finishSteering();
+        sleep(350);
+
+        // Strafe out of Lander
+        steering.move(180);
+        steering.finishSteering();
+        sleep(1500); //TODO: Maybe 2000?
+
+        // Get uncaught from nut
+        steering.move(0);
+        steering.finishSteering();
+        sleep(250);
+
+//        steering.stopAllMotors();
+//        sleep(5000); //TODO Remember to Comment this Out!!
+
+        //Centrally align to Lander
+        /*
+        steering.move(315);
+        steering.finishSteering();
+        sleep(500);
+        steering.stopAllMotors();
+        */
+
+        // ----- Perform other auton functions -----
+
+        /*if (startPos == AutonPosition.DEPOT) {
             //Forward up to just before Depot, knocking off the center Mineral
             steering.move(90);
             steering.finishSteering();
@@ -163,28 +197,7 @@ public class RR2Auton extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             autonFunction.writeTelemetry();
             telemetry.update();
-        }
-    }
-
-    // Move to the side - try to escape from lander
-    public void attemptLanderEscape() {
-        //Ram into Lander
-        steering.move(270);
-        steering.finishSteering();
-        sleep(1500);
-        //Move away from Lander
-        steering.move(90);
-        steering.finishSteering();
-        sleep(500);
-        //Strafe out of Lander
-        steering.move(180);
-        steering.finishSteering();
-        sleep(1500);
-        //Centrally align to Lander
-        steering.move(315);
-        steering.finishSteering();
-        sleep(500);
-        steering.stopAllMotors();
+        }*/
     }
 
     private enum AutonPosition {
