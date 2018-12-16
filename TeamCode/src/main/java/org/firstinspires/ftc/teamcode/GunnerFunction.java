@@ -201,17 +201,17 @@ public class GunnerFunction {
     }
 
     public void sweepServoForward() {
-        rightSweepServo.setPosition(Math.min(SWEEP_SERVO_POWER, 1));
-        leftSweepServo.setPosition(Math.min(-SWEEP_SERVO_POWER, -1));    }
+        rightSweepServo.setPosition(1);
+        leftSweepServo.setPosition(0);    }
 
     public void sweepServoReverse() {
-        rightSweepServo.setPosition(Math.max(-SWEEP_SERVO_POWER, 0));
-        leftSweepServo.setPosition(Math.max(SWEEP_SERVO_POWER, 0));
+        rightSweepServo.setPosition(0);
+        leftSweepServo.setPosition(1);
     }
 
     public void sweepServoStop() {
-        rightSweepServo.setPosition(0);
-        leftSweepServo.setPosition(0);
+        rightSweepServo.setPosition(0.46);
+        leftSweepServo.setPosition(0.54);
     }
 
     // --- Telemetry ---
