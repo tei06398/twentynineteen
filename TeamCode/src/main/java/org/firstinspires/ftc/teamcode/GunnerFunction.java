@@ -173,6 +173,7 @@ public class GunnerFunction {
 
         // Drive arm down
         armMotor.setPower(0.5);
+        // TODO: This may need need the sign reversed or the power reduced, or both
 
         try {
             rr2TeleOp.wait(4000);

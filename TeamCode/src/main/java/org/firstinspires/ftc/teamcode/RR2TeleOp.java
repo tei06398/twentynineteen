@@ -193,6 +193,7 @@ public class RR2TeleOp extends OpMode {
             gunnerFunction.stopChainMotor();
         }
 
+        // TODO: Insure this works - the gunner will need to be very careful to keep this held down until we can power off the robot
         // A: Toggle the winch power
         if (this.gamepad2.a) {
             if (!gamepad2AToggleLock) {
