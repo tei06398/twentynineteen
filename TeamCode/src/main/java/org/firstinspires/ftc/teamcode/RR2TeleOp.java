@@ -21,8 +21,8 @@ public class RR2TeleOp extends OpMode {
     private GunnerFunction gunnerFunction;
 
     // Toggle locks
-    private boolean gamepad2YToggleLock = false;
-    private boolean gamepad2ABToggleLock = false;
+    private boolean gamepad2AToggleLock = false;
+    private boolean gamepad2RlBumperToggleLock = false;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -146,7 +146,6 @@ public class RR2TeleOp extends OpMode {
         }
         else {
             gunnerFunction.winchStop();
-
         }
 
         // D-pad Y: Increment/Decrement sweep servo
@@ -160,22 +159,33 @@ public class RR2TeleOp extends OpMode {
             gunnerFunction.sweepServoStop();
         }
 
-        // A/B: Start/Reverse/Stop chainMotor
+        // Left/Right Bumper: Start/Reverse/Stop chainMotor
         if (this.gamepad2.right_bumper) {
-            if (!gamepad2ABToggleLock) {
-                gamepad2ABToggleLock = true;
+            if (!gamepad2RlBumperToggleLock) {
+                gamepad2RlBumperToggleLock = true;
                 gunnerFunction.runChainMotor();
             }
         }
         else if (this.gamepad2.left_bumper) {
-            if (!gamepad2ABToggleLock) {
-                gamepad2ABToggleLock = true;
+            if (!gamepad2RlBumperToggleLock) {
+                gamepad2RlBumperToggleLock = true;
                 gunnerFunction.runChainMotorReverse();
             }
         }
         else {
-            gamepad2ABToggleLock = false;
+            gamepad2RlBumperToggleLock = false;
             gunnerFunction.stopChainMotor();
+        }
+
+        // A: Toggle the winch power
+        if (this.gamepad2.a) {
+            if (!gamepad2AToggleLock) {
+                gamepad2AToggleLock = true;
+                gunnerFunction.toggleArmPower();
+            }
+        }
+        else {
+            gamepad2AToggleLock = false;
         }
 
         // Finish steering, putting power into hardware

@@ -23,15 +23,9 @@ public class GunnerFunction {
 
     private final int IS_ARM_UP_THRESH = 5;
 
-    private final double ARM_MAX_SPEED_UP = 0.1;
-    private final double ARM_MAX_SPEED_DOWN = 0.05;
-
     private final double WINCH_POWER = 0.5;
 
     private final double CHAIN_MOTOR_POWER = 0.15;
-
-    private final double SWEEP_SERVO_CENTER = 0.55;
-    private final double SWEEP_SERVO_POWER = 0.5; // Between 0 and 0.5
 
     private final int SLIDE_POSITION_MIN = 0;
     private final int SLIDE_POSITION_MAX = 3150;
@@ -158,6 +152,15 @@ public class GunnerFunction {
 
     public void stopArmMotor() {
         armMotor.setPower(0);
+    }
+
+    public void toggleArmPower() {
+        if (armMotor.getPower() == 0) {
+            armMotor.setPower(ARM_MOTOR_POWER);
+        }
+        else {
+            armMotor.setPower(0);
+        }
     }
 
     // --- Sweeper ---
