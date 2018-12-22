@@ -54,6 +54,13 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
             sleep(DELAY_MS);
 
+            steering.move(0);
+            steering.finishSteering();
+            sleep(1000);
+            steering.stopAllMotors();
+
+            sleep(DELAY_MS);
+
             steering.turnCounterclockwise();
             steering.finishSteering();
             sleep(950);
@@ -63,7 +70,7 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
             steering.move(0);
             steering.finishSteering();
-            sleep(3500);
+            sleep(1500);
             steering.stopAllMotors();
 
             sleep(DELAY_MS);
@@ -88,14 +95,14 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
             steering.move(270);
             steering.finishSteering();
-            sleep(2800);
+            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 6000));
             steering.stopAllMotors();
 
             sleep(DELAY_MS);
 
             steering.move(90);
             steering.finishSteering();
-            sleep(3000);
+            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 7500));
             steering.stopAllMotors();
 
             sleep(20_000);
