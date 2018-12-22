@@ -59,15 +59,13 @@ public class RR2TeleOp extends OpMode {
 
         // D-Pad: Compass rose drive
         if (this.gamepad1.dpad_right) {
-            // steering.moveDegrees(0, MIN_SPEED_RATIO);
-            steering.moveDegrees(180, MIN_SPEED_RATIO);
+            steering.moveDegrees(0, MIN_SPEED_RATIO);
         }
         if (this.gamepad1.dpad_up) {
             steering.moveDegrees(90, MIN_SPEED_RATIO);
         }
         if (this.gamepad1.dpad_left) {
-            // steering.moveDegrees(180, MIN_SPEED_RATIO);
-            steering.moveDegrees(0, MIN_SPEED_RATIO);
+            steering.moveDegrees(180, MIN_SPEED_RATIO);
         }
         if (this.gamepad1.dpad_down) {
             steering.moveDegrees(270, MIN_SPEED_RATIO);
@@ -98,7 +96,7 @@ public class RR2TeleOp extends OpMode {
 
         // Left Stick: Drive/Strafe
         if (Math.abs(this.gamepad1.left_stick_x) > 0.1 || Math.abs(this.gamepad1.left_stick_y) > 0.1) {
-            double angle = Math.atan2(-gamepad1.left_stick_y, -gamepad1.left_stick_x);
+            double angle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
             telemetry.addData("Angle", angle);
             steering.moveRadians(angle);
         }
