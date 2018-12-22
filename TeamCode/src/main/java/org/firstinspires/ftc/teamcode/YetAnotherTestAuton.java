@@ -31,10 +31,9 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
         steering.setSpeedRatio(SPEED_RATIO);
 
-        steering.move(90);
-        steering.finishSteering();
-        sleep(2000);
-        steering.stopAllMotors();
+        // ------------------------------------------------
+
+        knockRight();
 
         // ------------------------------------------------
 
@@ -43,5 +42,38 @@ public class YetAnotherTestAuton extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
+    }
+
+    public void knockCenter() {
+        steering.move(90);
+        steering.finishSteering();
+        sleep(2500);
+        steering.stopAllMotors();
+    }
+
+    public void knockRight() {
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1500);
+        steering.stopAllMotors();
+
+        sleep(500);
+
+        steering.move(0);
+        steering.finishSteering();
+        sleep(2500);
+        steering.stopAllMotors();
+
+        sleep(500);
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1000);
+        steering.stopAllMotors();
+    }
+
+
+    public void knockLeft() {
+
     }
 }
