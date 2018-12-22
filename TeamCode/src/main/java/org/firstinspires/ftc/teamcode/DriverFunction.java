@@ -195,7 +195,7 @@ public class DriverFunction {
         /* ROTATION */
 
         public void turn(boolean isClockwise, double power) {
-            addToAllPowers(isClockwise ? -power : power);
+            addToAllPowers(isClockwise ? power : -power);
         }
 
         public void turn(double power) { addToAllPowers(power);}

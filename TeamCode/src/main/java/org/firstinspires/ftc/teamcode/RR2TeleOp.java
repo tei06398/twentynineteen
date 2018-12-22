@@ -84,13 +84,11 @@ public class RR2TeleOp extends OpMode {
 
         // Right Stick: Turn/Rotate
         if (this.gamepad1.right_stick_x > 0.1) {
-            // steering.turnClockwise();
-            steering.turnCounterclockwise();
+            steering.turnClockwise();
             steering.setSpeedRatio(Math.min(1, steering.getSpeedRatio() + TURNING_SPEED_BOOST));
         }
         else if (this.gamepad1.right_stick_x < -0.1) {
-            // steering.turnCounterclockwise();
-            steering.turnClockwise();
+            steering.turnCounterclockwise();
             steering.setSpeedRatio(Math.min(1, steering.getSpeedRatio() + TURNING_SPEED_BOOST));
         }
 
