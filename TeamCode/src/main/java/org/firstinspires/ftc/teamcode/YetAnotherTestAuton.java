@@ -35,6 +35,13 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
         knockRight();
 
+        sleep(500);
+
+        steering.move(270);
+        steering.finishSteering();
+        sleep(1000);
+        steering.stopAllMotors();
+
         // ------------------------------------------------
 
         // run until driver presses stop
@@ -47,7 +54,7 @@ public class YetAnotherTestAuton extends LinearOpMode {
     public void knockCenter() {
         steering.move(90);
         steering.finishSteering();
-        sleep(2500);
+        sleep(2800);
         steering.stopAllMotors();
     }
 
@@ -61,17 +68,16 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
         steering.move(0);
         steering.finishSteering();
-        sleep(2500);
+        sleep(1500);
         steering.stopAllMotors();
 
         sleep(500);
 
         steering.move(90);
         steering.finishSteering();
-        sleep(1000);
+        sleep(1300);
         steering.stopAllMotors();
     }
-
 
     public void knockLeft() {
 
