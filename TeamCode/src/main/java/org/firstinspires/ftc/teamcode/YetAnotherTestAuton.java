@@ -73,7 +73,7 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
             steering.move(0);
             steering.finishSteering();
-            sleep(1800); // 1500
+            sleep(2000); // 1500
             steering.stopAllMotors();
 
             sleep(DELAY_MS);
@@ -107,6 +107,11 @@ public class YetAnotherTestAuton extends LinearOpMode {
             steering.finishSteering();
             sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 7800));
             steering.stopAllMotors();
+
+            /*
+            TODO: ~1-2 seconds before end of return to crater, stop and re-butt against the wall, and then
+            TODO: move towards the crater, to insure we don't hit the farthest right mineral
+             */
 
             sleep(20_000);
         }
