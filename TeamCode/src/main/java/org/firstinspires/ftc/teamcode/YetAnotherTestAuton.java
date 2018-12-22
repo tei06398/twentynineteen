@@ -13,7 +13,11 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
     private static final double SPEED_RATIO = 0.3;
 
+    private static final double FAST_SPEED_RATIO = 0.7;
+
     private static final long RETREAT_MS = 1300;
+
+    private static final long DELAY_MS = 100;
 
     @Override
     public void runOpMode() {
@@ -48,32 +52,50 @@ public class YetAnotherTestAuton extends LinearOpMode {
                     break;
             }
 
-            sleep(500);
+            sleep(DELAY_MS);
 
             steering.turnCounterclockwise();
             steering.finishSteering();
-            sleep(500);
+            sleep(950);
             steering.stopAllMotors();
 
-            sleep(500);
+            sleep(DELAY_MS);
 
             steering.move(0);
             steering.finishSteering();
-            sleep(3000);
+            sleep(3500);
             steering.stopAllMotors();
 
-            sleep(500);
+            sleep(DELAY_MS);
 
+            // --- option 1 ---
+            /*
             steering.move(270);
             steering.finishSteering();
-            sleep(7000);
+            sleep(6700);
             steering.stopAllMotors();
 
-            sleep(500);
+            sleep(DELAY_MS);
 
             steering.move(90);
             steering.finishSteering();
-            sleep(7500);
+            sleep(7000);
+            steering.stopAllMotors();
+            */
+            // --- option 2 ---
+
+            steering.setSpeedRatio(FAST_SPEED_RATIO);
+
+            steering.move(270);
+            steering.finishSteering();
+            sleep(2800);
+            steering.stopAllMotors();
+
+            sleep(DELAY_MS);
+
+            steering.move(90);
+            steering.finishSteering();
+            sleep(3000);
             steering.stopAllMotors();
 
             sleep(20_000);
@@ -95,7 +117,7 @@ public class YetAnotherTestAuton extends LinearOpMode {
         sleep(2800);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         // Retreat
 
@@ -104,7 +126,7 @@ public class YetAnotherTestAuton extends LinearOpMode {
         sleep(RETREAT_MS);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         // Common right
 
@@ -120,21 +142,21 @@ public class YetAnotherTestAuton extends LinearOpMode {
         sleep(1500);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         steering.move(0);
         steering.finishSteering();
         sleep(1500);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         steering.move(90);
         steering.finishSteering();
         sleep(1300);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         // Retreat
 
@@ -155,21 +177,21 @@ public class YetAnotherTestAuton extends LinearOpMode {
         sleep(1500);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         steering.move(180);
         steering.finishSteering();
         sleep(1700);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         steering.move(90);
         steering.finishSteering();
         sleep(1300);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         // Retreat
 
@@ -178,7 +200,7 @@ public class YetAnotherTestAuton extends LinearOpMode {
         sleep(RETREAT_MS);
         steering.stopAllMotors();
 
-        sleep(500);
+        sleep(DELAY_MS);
 
         // Common right
 
