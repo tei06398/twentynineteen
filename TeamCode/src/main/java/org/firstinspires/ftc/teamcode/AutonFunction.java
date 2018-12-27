@@ -13,13 +13,15 @@ public class AutonFunction {
     private DcMotor armMotor;
     private DcMotor winchMotor;
 
-    private static final double WINCH_POWER = 0.2;
+    private static final double WINCH_POWER = 0.3; // 0.2
 
     // TODO: Get values
-    private static final int WINCH_COAST_POSITION = 3000; // Two wheels hit ground after coasting, robot stops
+    private static final int WINCH_COAST_POSITION = 1000; // 3000 // Two wheels hit ground after coasting, robot stops
     private static final int WINCH_RUN_POSITION = 5000; // All four wheels hit ground
 
     private static final double ARM_POWER = 0.1;
+
+    private static final int ARM_POSITION_DOWN = 180;
 
     private DcMotor.RunMode ARM_MOTOR_RUNMODE = DcMotor.RunMode.RUN_TO_POSITION;
     private DcMotor.RunMode WINCH_MOTOR_RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
@@ -123,6 +125,10 @@ public class AutonFunction {
 
     public void setArmTargetPosition(int target) {
         armMotor.setTargetPosition(target);
+    }
+
+    public void armDown() {
+        armMotor.setTargetPosition(ARM_POSITION_DOWN);
     }
 
     // --- Util ---

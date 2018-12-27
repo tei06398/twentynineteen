@@ -67,6 +67,8 @@ public class LandingTestAuton extends LinearOpMode {
 
         long tmpDelay = 500;
 
+        sleep(tmpDelay);
+
         // Move against lander
         steering.moveDegrees(270);
         steering.finishSteering();
@@ -78,7 +80,7 @@ public class LandingTestAuton extends LinearOpMode {
         // Move away slightly
         steering.moveDegrees(90);
         steering.finishSteering();
-        sleep(300);
+        sleep(200); // 300
         steering.stopAllMotors();
 
         sleep(tmpDelay);
@@ -86,7 +88,7 @@ public class LandingTestAuton extends LinearOpMode {
         // Strafe out
         steering.moveDegrees(0);
         steering.finishSteering();
-        sleep(1000);
+        sleep(350); // 500
         steering.stopAllMotors();
 
         sleep(tmpDelay);
@@ -94,11 +96,24 @@ public class LandingTestAuton extends LinearOpMode {
         // Re-align with lander
         steering.moveDegrees(270);
         steering.finishSteering();
-        sleep(500);
+        sleep(400); // 500
         steering.stopAllMotors();
 
-        sleep(tmpDelay);
+        sleep(550); // NEEDS TO BE LONGISH
 
+        // Negative -> arm above flat, positive -> arm below flat
+        if (autonFunction.getArmPosition() < 0) {
+            autonFunction.powerArm();
+            autonFunction.armDown();
+        }
+
+        sleep(550); // NEEDS TO BE LONGISH
+
+        // Strafe to align center of lander
+        steering.moveDegrees(180);
+        steering.finishSteering();
+        sleep(350); // 500
+        steering.stopAllMotors();
 
         // Get the arm to hold its position
         // autonFunction.powerArm();
