@@ -224,4 +224,9 @@ public class YetAnotherTestAuton extends LinearOpMode {
         sleep(3300); // 3000
         steering.stopAllMotors();
     }
+
+    // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying
+    public long convertDelay(long originalDelay) {
+        return (long) (originalDelay * (SPEED_RATIO / steering.getSpeedRatio()));
+    }
 }
