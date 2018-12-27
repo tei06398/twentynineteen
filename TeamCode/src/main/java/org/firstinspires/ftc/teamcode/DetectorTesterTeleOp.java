@@ -11,8 +11,8 @@ import org.opencv.imgproc.Imgproc;
 import java.util.List;
 import java.util.Locale;
 
-@TeleOp(name="Rowechen's Detector Algorithm")
-public class DetectorTester extends OpMode {
+@TeleOp(name="Ian's/Rowechen's Detector Algorithm")
+public class DetectorTesterTeleOp extends OpMode {
 
     private WhiteYellowDetector rr2detector;
 
