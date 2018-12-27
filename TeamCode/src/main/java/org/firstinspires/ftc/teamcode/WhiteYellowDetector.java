@@ -294,12 +294,13 @@ public class WhiteYellowDetector extends OpenCVPipeline {
         telemetry.addLine("---Detection Algorithm Ends---");
         System.out.println("---Detection Algorithm Ends---");
 
-        return rgba; // display image seen by the camera
-
         /*
-        TODO: Figure out why the telemetry is bad...
-        I suspect it is because in loop-based opmodes, update() is called automatically
-        at the end of OpMode.loop() and OpMode.init_loop()
+        Telemetry will only work properly in a linear opmode, where this pipeline is the only thing updating telemetry
+        (In loop-based opmodes, telemetry.update() is automatically called at the end of the loop)
+        However, this prevents the opmode from providing any telemetry
         */
+        telemetry.update();
+
+        return rgba; // display image seen by the camera
     }
 }

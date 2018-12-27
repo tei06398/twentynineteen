@@ -1,27 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 
-@TeleOp(name="Detector Tester TeleOp")
-public class DetectorTesterTeleOp extends OpMode {
+@Autonomous(name = "Detector Tester Auton")
+public class DetectorTesterAuton extends LinearOpMode {
 
     private WhiteYellowDetector rr2detector;
 
     @Override
-    public void init() {
+    public void runOpMode() {
+
         rr2detector = new WhiteYellowDetector(telemetry,true);
         rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
         rr2detector.enable(); // start vision system
-    }
 
-    @Override
-    public void loop() {
-    }
+        while (!this.isStarted()) {}
 
-    public void stop() {
-        rr2detector.disable(); // stop vision system
+        while (opModeIsActive()) {}
     }
 }
