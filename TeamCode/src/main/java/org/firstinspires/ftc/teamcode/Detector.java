@@ -128,6 +128,8 @@ public class Detector extends OpenCVPipeline {
 
             }
             yellow_final=avgtmp/goodYellowContours.size();
+        }else{
+            yellow_final=Integer.MAX_VALUE;
         }
         if(showUI) {
             Imgproc.putText(rgba, "Yellow: " + goodYellowContours.size(), new Point(0, 30), 1, 2.5, new Scalar(255, 0, 255), 3);
@@ -180,7 +182,11 @@ public class Detector extends OpenCVPipeline {
                 if(showUI) {
                     Imgproc.circle(rgba, c1, (int) radii_sorted[1] + 10, new Scalar(0, 255, 255), 2);
                 }
-                result=yellow_final<=c0.x?yellow_final>c1.x?1:0:yellow_final<c1.x?1:2; //Ordering; only happens if both circles present.
+                result=yellow_final<=c0.x?yellow_final>c1.x?1:0:yellow_final<c1.x?1:2; //Ordering.
+            }else{
+                if(yellow_final!=Integer.MAX_VALUE){
+                    result=yellow_final<=c0.x?0:1; //Ordering.
+                }
             }
         }
         if(showUI) {
