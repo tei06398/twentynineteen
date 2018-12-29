@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "DEPOT KNOCK AUTON")
 public class DepotKnockTestAuton extends LinearOpMode {
-    
+
     private ElapsedTime runtime;
     private DriverFunction driverFunction;
     private DriverFunction.Steering steering;
@@ -61,8 +61,11 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
             steering.moveDegrees(90);
             steering.finishSteering();
-            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 7000));
+            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 6500));
             steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
 
             sleep(20_000);
         }
@@ -155,13 +158,6 @@ public class DepotKnockTestAuton extends LinearOpMode {
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
-
-        /*
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(300);
-        steering.stopAllMotors();
-        */
 
     }
 

@@ -297,6 +297,9 @@ public class RR2Auton extends LinearOpMode {
     }
 
     public void knockRightCrater() {
+
+        // Knock
+
         steering.move(90);
         steering.finishSteering();
         sleep(1500);
