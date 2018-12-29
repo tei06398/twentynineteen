@@ -120,7 +120,7 @@ public class RR2Auton extends LinearOpMode {
         // Move against lander
         steering.moveDegrees(270);
         steering.finishSteering();
-        sleep(1000);
+        sleep(1300);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
