@@ -23,10 +23,13 @@ public class RR2Auton extends LinearOpMode {
     public static final double MAX_COAST_SECONDS = 6;
 
     public static final double NORMAL_SPEED_RATIO = 0.3;
+    public static final double FAST_SPEED_RATIO = 0.7;
 
-    public static final long MOVE_DELAY_MS = 500; // TODO: Make smaller
+    public static final long MOVE_DELAY_MS = 500;
     public static final long LONG_DELAY_MS = 550;
     private static final long RETREAT_MS = 1300;
+    private static final long DEPOT_TURN_MS = 3000;
+    private static final long MARKER_DROP_DELAY_MS = 800;
 
     private static final int CV_ITERATIONS = 5;
     private static final long CV_LOOP_DELAY = 200;
@@ -189,6 +192,7 @@ public class RR2Auton extends LinearOpMode {
         // BALL KNOCKING
 
         if (startPos == AutonPosition.CRATER) {
+
             if (mineralPosition == MineralPosition.LEFT) {
                 knockLeftCrater();
             }
@@ -198,9 +202,47 @@ public class RR2Auton extends LinearOpMode {
             else {
                 knockRightCrater();
             }
-            // TODO
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.move(0);
+            steering.finishSteering();
+            sleep(1500);
+            steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.turnCounterclockwise();
+            steering.finishSteering();
+            sleep(950);
+            steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.move(0);
+            steering.finishSteering();
+            sleep(2000); // 1500
+            steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.setSpeedRatio(FAST_SPEED_RATIO);
+
+            steering.move(270);
+            steering.finishSteering();
+            sleep(convertDelay(6000));
+            steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.move(90);
+            steering.finishSteering();
+            sleep(convertDelay(7800));
+            steering.stopAllMotors();
+
         }
         else if (startPos == AutonPosition.DEPOT) {
+
             if (mineralPosition == MineralPosition.LEFT) {
                 knockLeftDepot();
             }
@@ -210,7 +252,27 @@ public class RR2Auton extends LinearOpMode {
             else {
                 knockRightDepot();
             }
-            // TODO
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.moveDegrees(0);
+            steering.finishSteering();
+            sleep(1000);
+            steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
+            autonFunction.dropMarker();
+
+            sleep(MARKER_DROP_DELAY_MS);
+
+            steering.setSpeedRatio(FAST_SPEED_RATIO);
+
+            steering.moveDegrees(90);
+            steering.finishSteering();
+            sleep(convertDelay(6500));
+            steering.stopAllMotors();
+
         }
         else {
             telemetry.addLine("Error: no start position specified");
@@ -335,12 +397,137 @@ public class RR2Auton extends LinearOpMode {
     // --- Depot Side Knocking Methods ---
 
     public void knockLeftDepot() {
+
+        // Knock
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1500);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.move(180);
+        steering.finishSteering();
+        sleep(1900);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1300);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Common Position
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1500); // 1000
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.turnCounterclockwise();
+        steering.finishSteering();
+        sleep(DEPOT_TURN_MS);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.moveDegrees(270);
+        steering.finishSteering();
+        sleep(1000);
+        steering.stopAllMotors();
     }
 
     public void knockCenterDepot() {
+
+        // Knock
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(2800);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Common position
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1500);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.turnCounterclockwise();
+        steering.finishSteering();
+        sleep(DEPOT_TURN_MS);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.moveDegrees(0);
+        steering.finishSteering();
+        sleep(1100);
+        steering.stopAllMotors();
     }
 
     public void knockRightDepot() {
+
+        // Knock
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1500);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.move(0);
+        steering.finishSteering();
+        sleep(1500);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1300);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Common position
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1200);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.turnCounterclockwise();
+        steering.finishSteering();
+        sleep(DEPOT_TURN_MS);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.moveDegrees(0);
+        steering.finishSteering();
+        sleep(2500);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.moveDegrees(90);
+        steering.finishSteering();
+        sleep(500);
+        steering.stopAllMotors();
     }
 
     // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying

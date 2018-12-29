@@ -99,7 +99,7 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
         steering.move(180);
         steering.finishSteering();
-        sleep(1900); // TODO
+        sleep(1900);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
