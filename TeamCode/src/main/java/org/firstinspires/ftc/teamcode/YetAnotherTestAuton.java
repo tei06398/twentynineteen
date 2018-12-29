@@ -10,6 +10,7 @@ public class YetAnotherTestAuton extends LinearOpMode {
     private ElapsedTime runtime;
     private DriverFunction driverFunction;
     private DriverFunction.Steering steering;
+    private AutonFunction autonFunction;
 
     private static final double SPEED_RATIO = 0.3;
 
@@ -18,6 +19,8 @@ public class YetAnotherTestAuton extends LinearOpMode {
     private static final long RETREAT_MS = 1300;
 
     private static final long DELAY_MS = 100;
+
+    private static final long MARKER_DROP_DELAY_MS = 800;
 
     @Override
     public void runOpMode() {
@@ -28,6 +31,9 @@ public class YetAnotherTestAuton extends LinearOpMode {
         runtime = new ElapsedTime();
         driverFunction = new DriverFunction(hardwareMap, telemetry);
         steering = driverFunction.getSteering();
+        autonFunction = new AutonFunction(hardwareMap, telemetry);
+
+        autonFunction.undropMarker();
 
         while (!this.isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -42,6 +48,7 @@ public class YetAnotherTestAuton extends LinearOpMode {
         for (int i = 0; i < 3; i++) {
 
             steering.setSpeedRatio(SPEED_RATIO);
+            autonFunction.undropMarker();
 
             switch (i) {
                 case 0:
@@ -98,14 +105,15 @@ public class YetAnotherTestAuton extends LinearOpMode {
 
             steering.move(270);
             steering.finishSteering();
-            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 6000));
+            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 4800));
             steering.stopAllMotors();
 
-            sleep(DELAY_MS);
+            autonFunction.dropMarker();
+            sleep(MARKER_DROP_DELAY_MS);
 
             steering.move(90);
             steering.finishSteering();
-            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 7800));
+            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 6700));
             steering.stopAllMotors();
 
             /*

@@ -70,7 +70,6 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
             steering.setSpeedRatio(FAST_SPEED_RATIO);
 
-            // Strafe into wall slightly
             steering.moveDegrees(90);
             steering.finishSteering();
             sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 6500));
