@@ -32,7 +32,7 @@ public class Detector extends OpenCVPipeline {
     private int minDist = 50;
     private int cannyUpperThreshold = 120;
     private int accumulator = 10;
-    private int minRadius = 30;
+    private int minRadius = 10;
     private int maxRadius = 80;
     
     private static final double[] y_bounds={0.35,0.65};
@@ -98,28 +98,40 @@ public class Detector extends OpenCVPipeline {
         Imgproc.fillPoly(thresholdedWhite, whiteContours, new Scalar(255, 255, 255));
 
         // Yellow threshold, erode, and dilate
-        Core.inRange(hsv, new Scalar(10, 180, 200), new Scalar(35, 255, 255), thresholdedYellow); // Conservative
-        // Core.inRange(hsv, new Scalar(0, 160, 180), new Scalar(40, 255, 255), thresholdedYellow); // Liberal
+        //Core.inRange(hsv, new Scalar(10, 180, 200), new Scalar(35, 255, 255), thresholdedYellow); // Conservative
+        Core.inRange(hsv, new Scalar(0, 160, 160), new Scalar(40, 255, 255), thresholdedYellow); // Liberal
         Imgproc.erode(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
         Imgproc.dilate(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
         // Preliminary block location algorithm
         Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         Collections.sort(yellowContours, (c1, c2) -> Double.compare(Imgproc.contourArea(c1), Imgproc.contourArea(c2)));
-        for (int i = 0; i < Math.min(1, yellowContours.size()); i++) {
-            goodYellowContours.add(yellowContours.get(yellowContours.size() - 1 - i));
+        for (int i = 0; i < yellowContours.size(); i++) {
+            Moments moments = Imgproc.moments(yellowContours.get(yellowContours.size() - 1 - i));
+            //int centerX = (int) (moments.get_m10() / moments.get_m00());
+            int centerY = (int) (moments.get_m01() / moments.get_m00());
+            if(y_bounds[0]*h<=centerY&&y_bounds[1]*h>=centerY) {
+                goodYellowContours.add(yellowContours.get(yellowContours.size() - 1 - i));
+            }
         }
+
+        if(goodYellowContours.size()>0) {
+            goodYellowContours = goodYellowContours.subList(0, 1); //gets largest contour within y bounds
+        }
+
         if(showUI) {
             Imgproc.drawContours(rgba, goodYellowContours, -1, new Scalar(255, 0, 0), 2, 15);
         }
         int avgtmp=0;// avg tmp variable
         int yellow_final= (int)w/2;
+        int yellow_count = 0;
         if (goodYellowContours.size() > 0) {
             for (MatOfPoint cont : goodYellowContours) {
                 Moments moments = Imgproc.moments(cont);
                 int centerX = (int) (moments.get_m10() / moments.get_m00());
                 int centerY = (int) (moments.get_m01() / moments.get_m00());
                 if(y_bounds[0]*h<=centerY&&y_bounds[1]*h>=centerY) {
+                    yellow_count++;
                     Point center = new Point(centerX, centerY);
 
                     avgtmp+=centerX;
@@ -127,8 +139,11 @@ public class Detector extends OpenCVPipeline {
                 }
 
             }
-            yellow_final=avgtmp/goodYellowContours.size();
-        }else{
+            if (yellow_count > 0) {
+                yellow_final = avgtmp / yellow_count;
+            }
+        }
+        if(yellow_count == 0){
             yellow_final=Integer.MAX_VALUE;
         }
         if(showUI) {
@@ -145,7 +160,7 @@ public class Detector extends OpenCVPipeline {
             Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(0, 60), 1, 2.5, new Scalar(0, 255, 0), 3);
         }
         dTelemetry.addData("Circles", circles.cols());
-        System.out.println("Circles"+goodYellowContours.size());
+        //System.out.println("Circles"+goodYellowContours.size());
 
         TreeMap<Integer, Point> sorted_circles= new TreeMap<>();//Treemaps are basically python lists but worse.
         int[] tmp=new int[2];
