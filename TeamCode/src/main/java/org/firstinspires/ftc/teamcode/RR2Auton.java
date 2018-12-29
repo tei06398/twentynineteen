@@ -164,6 +164,16 @@ public class RR2Auton extends LinearOpMode {
         sleep(350);
         steering.stopAllMotors();
 
+        sleep(MOVE_DELAY_MS);
+
+        // Re-align with lander
+        steering.moveDegrees(270);
+        steering.finishSteering();
+        sleep(600);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
         // COLOR DETECTION
 
         int[] blockPositions = new int[CV_ITERATIONS];
