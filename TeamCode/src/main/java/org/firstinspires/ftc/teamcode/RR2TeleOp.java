@@ -20,10 +20,13 @@ public class RR2TeleOp extends OpMode {
 
     private GunnerFunction gunnerFunction;
 
+    // 0 is normal, 1 is reverse
+    int robotDirection = 0;
+
     // Toggle locks
     private boolean gamepad1BToggleLock = false;
     private boolean gamepad2RlBumperToggleLock = false;
-    private boolean gamepad1LBumperToggleLock = false;
+    private boolean gamepad1XToggleLock = false;
 
     // Code to run ONCE when the driver hits INIT
     @Override
@@ -57,18 +60,51 @@ public class RR2TeleOp extends OpMode {
 
         // ----- Gamepad 1: Driving Functions -----
 
+        // X Button: Toggle forwards direction
+
+        if (this.gamepad1.x) {
+            if (!gamepad1XToggleLock) {
+                gamepad1XToggleLock = true;
+                if (robotDirection == 0) {
+                    robotDirection = 1;
+                }
+                else {
+                    robotDirection = 0;
+                }
+            }
+        }
+        else {
+            gamepad1XToggleLock = false;
+        }
+
         // D-Pad: Compass rose drive
-        if (this.gamepad1.dpad_right) {
-            steering.moveDegrees(0, MIN_SPEED_RATIO);
+        if (robotDirection == 0) {
+            if (this.gamepad1.dpad_right) {
+                steering.moveDegrees(0, MIN_SPEED_RATIO);
+            }
+            if (this.gamepad1.dpad_up) {
+                steering.moveDegrees(90, MIN_SPEED_RATIO);
+            }
+            if (this.gamepad1.dpad_left) {
+                steering.moveDegrees(180, MIN_SPEED_RATIO);
+            }
+            if (this.gamepad1.dpad_down) {
+                steering.moveDegrees(270, MIN_SPEED_RATIO);
+            }
         }
-        if (this.gamepad1.dpad_up) {
-            steering.moveDegrees(90, MIN_SPEED_RATIO);
-        }
-        if (this.gamepad1.dpad_left) {
-            steering.moveDegrees(180, MIN_SPEED_RATIO);
-        }
-        if (this.gamepad1.dpad_down) {
-            steering.moveDegrees(270, MIN_SPEED_RATIO);
+        else {
+            if (this.gamepad1.dpad_right) {
+                steering.moveDegrees(180, MIN_SPEED_RATIO);
+            }
+            if (this.gamepad1.dpad_up) {
+                steering.moveDegrees(270, MIN_SPEED_RATIO);
+            }
+            if (this.gamepad1.dpad_left) {
+                steering.moveDegrees(0, MIN_SPEED_RATIO);
+            }
+            if (this.gamepad1.dpad_down) {
+                steering.moveDegrees(90, MIN_SPEED_RATIO);
+            }
         }
 
         // Left/Right Triggers: Set driving speed ratio
@@ -94,7 +130,13 @@ public class RR2TeleOp extends OpMode {
 
         // Left Stick: Drive/Strafe
         if (Math.abs(this.gamepad1.left_stick_x) > 0.1 || Math.abs(this.gamepad1.left_stick_y) > 0.1) {
-            double angle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
+            double angle;
+            if (robotDirection == 0) {
+                angle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
+            }
+            else {
+                angle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x);
+            }
             telemetry.addData("Angle", angle);
             steering.moveRadians(angle);
         }
@@ -128,7 +170,7 @@ public class RR2TeleOp extends OpMode {
         }
         */
 
-        // TODO: Insure this works - the gunner will need to be very careful to keep this held down until we can power off the robot
+        // TODO: Insure this works - the driver will need to be very careful to keep this held down until we can power off the robot
         // A: Toggle the pivot arm motor power
         if (this.gamepad1.b) {
             if (!gamepad1BToggleLock) {
