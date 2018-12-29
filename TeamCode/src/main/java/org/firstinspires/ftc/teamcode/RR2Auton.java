@@ -23,6 +23,7 @@ public class RR2Auton extends LinearOpMode {
     public static final double MAX_COAST_SECONDS = 6;
 
     public static final double NORMAL_SPEED_RATIO = 0.3;
+    public static final double MEDIUM_SPEED_RATIO = 0.5;
     public static final double FAST_SPEED_RATIO = 0.7;
 
     public static final long MOVE_DELAY_MS = 50;
@@ -202,25 +203,27 @@ public class RR2Auton extends LinearOpMode {
                 knockRightCrater();
             }
 
+            steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
+
             sleep(MOVE_DELAY_MS);
 
             steering.move(0);
             steering.finishSteering();
-            sleep(1500);
+            sleep(convertDelay(1500));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
             steering.turnCounterclockwise();
             steering.finishSteering();
-            sleep(950);
+            sleep(convertDelay(950));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
             steering.move(0);
             steering.finishSteering();
-            sleep(2000); // 1500
+            sleep(convertDelay(2000)); // 1500
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
@@ -326,9 +329,11 @@ public class RR2Auton extends LinearOpMode {
 
         // Common right
 
+        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
+
         steering.move(0);
         steering.finishSteering();
-        sleep(3300); // 3000
+        sleep(convertDelay(3300)); // 3000
         steering.stopAllMotors();
     }
 
@@ -354,9 +359,11 @@ public class RR2Auton extends LinearOpMode {
 
         // Common right
 
+        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
+
         steering.move(0);
         steering.finishSteering();
-        sleep(1800); // 1500
+        sleep(convertDelay(1800)); // 1500
         steering.stopAllMotors();
     }
 
