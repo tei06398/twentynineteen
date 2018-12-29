@@ -25,18 +25,14 @@ public class RR2Auton extends LinearOpMode {
     public static final double NORMAL_SPEED_RATIO = 0.3;
     public static final double FAST_SPEED_RATIO = 0.7;
 
-    public static final long MOVE_DELAY_MS = 500;
-    public static final long LONG_DELAY_MS = 550;
+    public static final long MOVE_DELAY_MS = 50;
+    public static final long LONG_DELAY_MS = 800;
     private static final long RETREAT_MS = 1300;
     private static final long DEPOT_TURN_MS = 3000;
     private static final long MARKER_DROP_DELAY_MS = 800;
 
     private static final int CV_ITERATIONS = 5;
     private static final long CV_LOOP_DELAY = 200;
-
-    // TODO: Needed?
-    public static final double LANDING_SPEED_RATIO = 0.3;
-    public static final double LANDER_ESCAPE_SPEED_RATIO = 0.5;
 
     @Override
     public void runOpMode() {
@@ -149,7 +145,7 @@ public class RR2Auton extends LinearOpMode {
         sleep(400);
         steering.stopAllMotors();
 
-        sleep(LONG_DELAY_MS);
+        sleep(MOVE_DELAY_MS);
 
         // Negative means arm above flat, positive means arm below flat
         if (autonFunction.getArmPosition() < 0) {
@@ -167,10 +163,10 @@ public class RR2Auton extends LinearOpMode {
 
         // COLOR DETECTION
 
-        int[] blockPositions = new int[5];
+        int[] blockPositions = new int[CV_ITERATIONS];
         for (int i = 0; i < blockPositions.length; i++) {
             blockPositions[i] = colorDetector.getPosition();
-            sleep(200);
+            sleep(CV_LOOP_DELAY);
         }
         int[] counts = new int[3];
         for (int blockPosition : blockPositions) {
