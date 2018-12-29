@@ -75,6 +75,7 @@ public class RR2Auton extends LinearOpMode {
         // Set motors to initial positions/powers
         autonFunction.lockServo();
         autonFunction.zeroPowerArm(); // We don't want to power the arm until we've retracted all the way
+        autonFunction.undropMarker();
 
         while (!this.isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());

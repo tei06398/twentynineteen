@@ -9,6 +9,7 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
     private ElapsedTime runtime;
     private DriverFunction driverFunction;
+    private AutonFunction autonFunction;
     private DriverFunction.Steering steering;
 
     private static final double SPEED_RATIO = 0.3;
@@ -17,6 +18,8 @@ public class DepotKnockTestAuton extends LinearOpMode {
     private static final long MOVE_DELAY_MS = 100;
 
     private static final long DEPOT_TURN_MS = 3000;
+
+    private static final long MARKER_DROP_DELAY_MS = 800;
 
     @Override
     public void runOpMode() {
@@ -27,6 +30,9 @@ public class DepotKnockTestAuton extends LinearOpMode {
         runtime = new ElapsedTime();
         driverFunction = new DriverFunction(hardwareMap, telemetry);
         steering = driverFunction.getSteering();
+        autonFunction = new AutonFunction(hardwareMap, telemetry);
+
+        autonFunction.undropMarker();
 
         while (!this.isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -37,6 +43,7 @@ public class DepotKnockTestAuton extends LinearOpMode {
         for (int i = 0; i < 3; i++) {
 
             steering.setSpeedRatio(SPEED_RATIO);
+            autonFunction.undropMarker();
 
             switch (i) {
                 case 0:
@@ -57,25 +64,16 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
             sleep(MOVE_DELAY_MS);
 
+            autonFunction.dropMarker();
+
+            sleep(MARKER_DROP_DELAY_MS);
+
             steering.setSpeedRatio(FAST_SPEED_RATIO);
 
+            // Strafe into wall slightly
             steering.moveDegrees(90);
             steering.finishSteering();
-            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 5500));
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            steering.moveDegrees(0);
-            steering.finishSteering();
-            sleep(convertDelay(1000));
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            steering.moveDegrees(90);
-            steering.finishSteering();
-            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 1000));
+            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 6500));
             steering.stopAllMotors();
 
             sleep(20_000);

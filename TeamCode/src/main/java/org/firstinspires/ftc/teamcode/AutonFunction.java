@@ -29,18 +29,17 @@ public class AutonFunction {
     private Servo lockServo;
     private Servo markerDropperServo;
 
-    private static final double SERVO_LOCK_POSITION = .35;
-    private static final double SERVO_UNLOCK_POSITION = 0.9;
+    private static final double WINCH_SERVO_LOCK_POSITION = .35;
+    private static final double WINCH_SERVO_UNLOCK_POSITION = 0.9;
 
-    private static final double SERVO_OPEN_POSITION = 0.0; //TODO
-    private static final double SERVO_CLOSED_POSITION = 0.0; //TODO
+    private static final double DROPPER_OPEN_POSITION = 0.6;
+    private static final double DROPPER_CLOSED_POSITION = 1.0;
 
     public AutonFunction(HardwareMap hardwareMap, Telemetry telemetry) {
         this.armMotor = hardwareMap.dcMotor.get("armMotor");
         this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
         this.lockServo = hardwareMap.servo.get("lockServo");
         this.markerDropperServo = hardwareMap.servo.get("markerDropperServo");
-        markerDropperServo.setPosition(SERVO_CLOSED_POSITION);
 
         this.armMotor.setMode(ARM_MOTOR_RUNMODE);
         this.winchMotor.setMode(WINCH_MOTOR_RUNMODE);
@@ -55,18 +54,22 @@ public class AutonFunction {
     // --- Lock Servo ---
 
     public void lockServo() {
-        lockServo.setPosition(SERVO_LOCK_POSITION);
+        lockServo.setPosition(WINCH_SERVO_LOCK_POSITION);
     }
 
     public void unlockServo() {
-        lockServo.setPosition(SERVO_UNLOCK_POSITION);
+        lockServo.setPosition(WINCH_SERVO_UNLOCK_POSITION);
     }
 
     // --- Team Marker Dropper Servo ---
 
-    public void dropMarker() { markerDropperServo.setPosition(SERVO_OPEN_POSITION);}
+    public void dropMarker() {
+        markerDropperServo.setPosition(DROPPER_OPEN_POSITION);
+    }
 
-    public void undropMarker() { markerDropperServo.setPosition(SERVO_CLOSED_POSITION);}
+    public void undropMarker() {
+        markerDropperServo.setPosition(DROPPER_CLOSED_POSITION);
+    }
 
     // --- Winch ---
 
@@ -146,5 +149,4 @@ public class AutonFunction {
         telemetry.addData("Winch Position", winchMotor.getCurrentPosition());
         telemetry.addData("Arm Position", armMotor.getCurrentPosition());
     }
-
 }
