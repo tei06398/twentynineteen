@@ -168,6 +168,7 @@ public class RR2Auton extends LinearOpMode {
             blockPositions[i] = colorDetector.getPosition();
             sleep(CV_LOOP_DELAY);
         }
+        colorDetector.disable();
         int[] counts = new int[3];
         for (int blockPosition : blockPositions) {
             if (blockPosition >= 0 && blockPosition <= 2) {
@@ -280,7 +281,6 @@ public class RR2Auton extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        colorDetector.disable();
     }
 
     // --- Crater Side Knocking Methods ---
