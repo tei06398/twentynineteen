@@ -41,6 +41,8 @@ public class AutonFunction {
         this.lockServo = hardwareMap.servo.get("lockServo");
         this.markerDropperServo = hardwareMap.servo.get("markerDropperServo");
 
+        undropMarker();
+
         this.armMotor.setMode(ARM_MOTOR_RUNMODE);
         this.winchMotor.setMode(WINCH_MOTOR_RUNMODE);
 
