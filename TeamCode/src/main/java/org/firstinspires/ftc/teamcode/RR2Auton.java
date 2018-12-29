@@ -26,7 +26,7 @@ public class RR2Auton extends LinearOpMode {
     public static final double FAST_SPEED_RATIO = 0.7;
 
     public static final long MOVE_DELAY_MS = 50;
-    public static final long LONG_DELAY_MS = 800;
+    public static final long LONG_DELAY_MS = 300;
     private static final long RETREAT_MS = 1300;
     private static final long DEPOT_TURN_MS = 3000;
     private static final long MARKER_DROP_DELAY_MS = 800;
@@ -83,6 +83,8 @@ public class RR2Auton extends LinearOpMode {
         // waitForStart();
 
         // --- Start ---
+
+        // Potentially reset the encoders here
 
         runtime.reset();
 
@@ -281,6 +283,9 @@ public class RR2Auton extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
+
+        // To attempt to prevent the auton from dropping the marker if we don't reach the depot
+        autonFunction.undropMarker();
     }
 
     // --- Crater Side Knocking Methods ---
