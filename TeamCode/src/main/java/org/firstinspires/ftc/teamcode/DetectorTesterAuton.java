@@ -7,12 +7,12 @@ import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 @Autonomous(name = "Detector Tester Auton")
 public class DetectorTesterAuton extends LinearOpMode {
 
-    private WhiteYellowDetector rr2detector;
+    private Detector rr2detector;
 
     @Override
     public void runOpMode() {
 
-        rr2detector = new WhiteYellowDetector(telemetry,true);
+        rr2detector = new Detector(telemetry,true);
         rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
         rr2detector.enable(); // start vision system
 

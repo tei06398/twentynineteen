@@ -8,11 +8,11 @@ import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 @TeleOp(name="Detector Tester TeleOp")
 public class DetectorTesterTeleOp extends OpMode {
 
-    private WhiteYellowDetector rr2detector;
+    private Detector rr2detector;
 
     @Override
     public void init() {
-        rr2detector = new WhiteYellowDetector(telemetry,true);
+        rr2detector = new Detector(telemetry,true);
         rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
         rr2detector.enable(); // start vision system
     }

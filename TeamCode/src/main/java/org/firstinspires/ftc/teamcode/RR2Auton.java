@@ -18,7 +18,7 @@ public class RR2Auton extends LinearOpMode {
     private DriverFunction.Steering steering;
     private  AutonFunction autonFunction;
 
-    private WhiteYellowDetector colorDetector;
+    private Detector colorDetector;
 
     public static final double MAX_COAST_SECONDS = 6;
 
@@ -67,7 +67,7 @@ public class RR2Auton extends LinearOpMode {
         autonFunction = new AutonFunction(hardwareMap, telemetry);
 
         // Initialize CV
-        colorDetector = new WhiteYellowDetector(telemetry, true);
+        colorDetector = new Detector(telemetry, true);
         colorDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         colorDetector.enable();
 
