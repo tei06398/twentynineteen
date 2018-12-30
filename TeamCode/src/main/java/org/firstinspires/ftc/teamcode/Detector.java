@@ -32,27 +32,27 @@ public class Detector extends OpenCVPipeline {
     private int minDist = 50;
     private int cannyUpperThreshold = 120;
     private int accumulator = 10;
-    private int minRadius = 10;
+    private int minRadius = 30;
     private int maxRadius = 80;
-    
-    private static final double[] y_bounds={0.35,0.65};
-    private static int history= 1;
 
-    private int Position; //Final Output
+    private static final double[] y_bounds = {0.35, 0.65};
+    private static int history = 1;
 
-    //UI
-    private Telemetry dTelemetry;
+    // Final output
+    private int position;
 
+    // Display data on driver phone
+    private Telemetry telemetry;
     private boolean showUI;
 
-    Detector(Telemetry tele,boolean ui){
+    Detector(Telemetry telemetry, boolean showUI) {
         super();
-        dTelemetry=tele;
-        showUI=ui;
+        this.telemetry = telemetry;
+        this.showUI = showUI;
     }
 
+    // Copy contour list so client class doesn't throw errors if actual contour list gets updated
     public synchronized List<MatOfPoint> getContours() {
-        // Copy the contour list so that the client class doesn't throw errors if the actual contour list gets updated
         List<MatOfPoint> whiteContoursCopy = new ArrayList<>();
         for (MatOfPoint contourMat : whiteContours) {
             MatOfPoint tempMat = new MatOfPoint();
@@ -61,20 +61,22 @@ public class Detector extends OpenCVPipeline {
         }
         return whiteContoursCopy;
     }
+
+    // Called from the Auton/TeleOp every time we need output
     public int getPosition(){
-        // Called every time we need output
-        // Called from the Auton/TeleOp.
-        return Position;
+        return position;
     }
-    // Called every camera frame.
-    // Used within the OCV pipeline.
+
+    // Called every camera frame, used within the OCV pipeline
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
-        dTelemetry.addLine("---Detection Algorithm Begins---");
+
+        telemetry.addLine("---Detection Algorithm Begins---");
         System.out.println("---Detection Algorithm Begins---");
-        Size this_size=rgba.size();
-        double w=this_size.width;
-        double h=this_size.height;
+
+        Size imageSize = rgba.size();
+        double w = imageSize.width;
+        double h = imageSize.height;
 
         // Clear contour lists
         yellowContours.clear();
@@ -92,146 +94,213 @@ public class Detector extends OpenCVPipeline {
         Imgproc.erode(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
         Imgproc.dilate(thresholdedWhite,  thresholdedWhite, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
-        // Modify mask to fill holes
-        // Use Imgproc.RETR_EXTERNAL instead of Imgproc.RETR_LIST to find only external contours
+        // Modify mask to fill holes (use Imgproc.RETR_EXTERNAL instead of Imgproc.RETR_LIST to find only external contours)
         Imgproc.findContours(thresholdedWhite, whiteContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.fillPoly(thresholdedWhite, whiteContours, new Scalar(255, 255, 255));
 
         // Yellow threshold, erode, and dilate
-        //Core.inRange(hsv, new Scalar(10, 180, 200), new Scalar(35, 255, 255), thresholdedYellow); // Conservative
-        Core.inRange(hsv, new Scalar(0, 160, 160), new Scalar(40, 255, 255), thresholdedYellow); // Liberal
+        Core.inRange(hsv, new Scalar(10, 180, 200), new Scalar(35, 255, 255), thresholdedYellow); // Conservative
+        // Core.inRange(hsv, new Scalar(0, 160, 180), new Scalar(40, 255, 255), thresholdedYellow); // Liberal
         Imgproc.erode(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
         Imgproc.dilate(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
-        // Preliminary block location algorithm
-        Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-        Collections.sort(yellowContours, (c1, c2) -> Double.compare(Imgproc.contourArea(c1), Imgproc.contourArea(c2)));
-        for (int i = 0; i < yellowContours.size(); i++) {
-            Moments moments = Imgproc.moments(yellowContours.get(yellowContours.size() - 1 - i));
-            //int centerX = (int) (moments.get_m10() / moments.get_m00());
-            int centerY = (int) (moments.get_m01() / moments.get_m00());
-            if(y_bounds[0]*h<=centerY&&y_bounds[1]*h>=centerY) {
-                goodYellowContours.add(yellowContours.get(yellowContours.size() - 1 - i));
-            }
-        }
-
-        if(goodYellowContours.size()>0) {
-            goodYellowContours = goodYellowContours.subList(0, 1); //gets largest contour within y bounds
-        }
-
-        if(showUI) {
-            Imgproc.drawContours(rgba, goodYellowContours, -1, new Scalar(255, 0, 0), 2, 15);
-        }
-        int avgtmp=0;// avg tmp variable
-        int yellow_final= (int)w/2;
-        int yellow_count = 0;
-        if (goodYellowContours.size() > 0) {
-            for (MatOfPoint cont : goodYellowContours) {
-                Moments moments = Imgproc.moments(cont);
-                int centerX = (int) (moments.get_m10() / moments.get_m00());
-                int centerY = (int) (moments.get_m01() / moments.get_m00());
-                if(y_bounds[0]*h<=centerY&&y_bounds[1]*h>=centerY) {
-                    yellow_count++;
-                    Point center = new Point(centerX, centerY);
-
-                    avgtmp+=centerX;
-                    Imgproc.circle(rgba, center, 3, new Scalar(255, 0, 255), 2);
-                }
-
-            }
-            if (yellow_count > 0) {
-                yellow_final = avgtmp / yellow_count;
-            }
-        }
-        if(yellow_count == 0){
-            yellow_final=Integer.MAX_VALUE;
-        }
-        if(showUI) {
-            Imgproc.putText(rgba, "Yellow: " + goodYellowContours.size(), new Point(0, 30), 1, 2.5, new Scalar(255, 0, 255), 3);
-        }
-        dTelemetry.addData("Yellow", goodYellowContours.size());
-        System.out.println("Yellow"+goodYellowContours.size());
-
-        // --- Hough Circles ---
-
-        circles = new Mat();
-        Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
-        if(showUI) {
-            Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(0, 60), 1, 2.5, new Scalar(0, 255, 0), 3);
-        }
-        dTelemetry.addData("Circles", circles.cols());
-        //System.out.println("Circles"+goodYellowContours.size());
-
-        TreeMap<Integer, Point> sorted_circles= new TreeMap<>();//Treemaps are basically python lists but worse.
-        int[] tmp=new int[2];
-        if(showUI) {
+        // Draw bounding lines on image
+        if (showUI) {
             Imgproc.line(rgba, new Point(0, y_bounds[0] * h), new Point(w, y_bounds[0] * h), new Scalar(255, 255, 255));
             Imgproc.line(rgba, new Point(0, y_bounds[1] * h), new Point(w, y_bounds[1] * h), new Scalar(255, 255, 255));
         }
+
+        // --- Cube Detection (Largest Contour Area) ---
+
+        // If it exists, add largest yellow contour (only one) to list of good yellow contours
+        Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+        Collections.sort(yellowContours, (c1, c2) -> Double.compare(Imgproc.contourArea(c1), Imgproc.contourArea(c2)));
+        for (int i = 0; i < Math.min(1, yellowContours.size()); i++) {
+            goodYellowContours.add(yellowContours.get(yellowContours.size() - 1 - i));
+        }
+
+        // Draw yellow contour on original image
+        if (showUI) {
+            Imgproc.drawContours(rgba, goodYellowContours, -1, new Scalar(255, 0, 0), 2, 15);
+        }
+
+        // TODO: Since there will only every be 0 or 1 good yellow contours, the averaging is unnecessary
+        // Average of all yellow positions
+        int yellowCenterAverage = 0;
+        // If there are no good yellow contours, we guess that the yellow position is at the center of the screen
+        int yellowCenterFinal = (int) w / 2;
+
+        if (goodYellowContours.size() > 0) {
+            for (MatOfPoint cont : goodYellowContours) {
+
+                // Find mass center of contour
+                Moments moments = Imgproc.moments(cont);
+                int centerX = (int) (moments.get_m10() / moments.get_m00());
+                int centerY = (int) (moments.get_m01() / moments.get_m00());
+
+                // If contour center is within boundaries, add center to average and draw the center on the image
+                if (y_bounds[0] * h <= centerY && y_bounds[1] * h >= centerY) {
+                    yellowCenterAverage += centerX;
+                    if (showUI) {
+                        Point center = new Point(centerX, centerY);
+                        Imgproc.circle(rgba, center, 3, new Scalar(255, 0, 255), 2);
+                    }
+                }
+
+            }
+            yellowCenterFinal = yellowCenterAverage / goodYellowContours.size();
+        }
+
+        // Write number of yellow contours on image
+        if (showUI) {
+            Imgproc.putText(rgba, "Yellow: " + goodYellowContours.size(), new Point(0, 30), 1, 2.5, new Scalar(255, 0, 255), 3);
+        }
+
+        telemetry.addData("Yellow", goodYellowContours.size());
+        System.out.println("Yellow: " + goodYellowContours.size());
+
+        // --- Ball Detection (Hough Circles) ---
+
+        // Reset circle mat every loop (otherwise circles persist when the mat is not updated in a loop)
+        circles = new Mat();
+
+        // Create list of circles within specified parameters
+        Imgproc.HoughCircles(thresholdedWhite, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minDist, cannyUpperThreshold, accumulator, minRadius, maxRadius);
+
+        // Write number of circles on image
+        if (showUI) {
+            Imgproc.putText(rgba, "Circles: " + circles.cols(), new Point(0, 60), 1, 2.5, new Scalar(0, 255, 0), 3);
+        }
+
+        telemetry.addData("Circles", circles.cols());
+        System.out.println("Circles: " + circles.cols());
+
+        // List of circles, sorted by radius
+        TreeMap<Integer, Point> sortedCircles = new TreeMap<>();
+
         if (circles.cols() > 0) {
             for (int x = 0; x < circles.cols(); x++) {
+
                 double currentCircle[] = circles.get(0, x);
+
                 if (currentCircle != null) {
+
+                    // Get center point and radius of current circle
                     Point center = new Point(Math.round(currentCircle[0]), Math.round(currentCircle[1]));
                     int radius = (int) Math.round(currentCircle[2]);
-                    if(y_bounds[0]*h<=center.y&&y_bounds[1]*h>=center.y) {
-                        sorted_circles.put(radius, center);
+
+                    // If center of current circle is within bounds, add to list of circles
+                    if (y_bounds[0] * h <= center.y && y_bounds[1] * h >= center.y) {
+                        sortedCircles.put(radius, center);
                     }
-                    // Draw circle perimeter
-                    Imgproc.circle(rgba, center, radius, new Scalar(0, 255, 0), 2);
-                    // Draw small circle to indicate center
-                    Imgproc.circle(rgba, center, 3, new Scalar(0, 0, 255), 2);
+
+                    // Draw circle perimeter and center
+                    if (showUI) {
+                        Imgproc.circle(rgba, center, radius, new Scalar(0, 255, 0), 2);
+                        Imgproc.circle(rgba, center, 3, new Scalar(0, 0, 255), 2);
+                    }
                 }
             }
         }
-        Object[] radii_sorted= sorted_circles.descendingKeySet().toArray(); //Sort the circles by radii
 
-        int result=-1;//none
-        if(radii_sorted.length > 0) {
-            Point c0=sorted_circles.get(radii_sorted[0]);
-            if(showUI) {
-                Imgproc.circle(rgba, c0, (int) radii_sorted[0] + 10, new Scalar(0, 255, 255), 2);
+        // Sort the circles by radii
+        Object[] radiiSorted = sortedCircles.descendingKeySet().toArray();
+
+        // Result if no circles are present
+        int result = -1;
+
+        if (radiiSorted.length > 0) {
+
+            // Circle of largest radius
+            Point c0 = sortedCircles.get(radiiSorted[0]);
+
+            // Draw perimeter of largest circle in white, slightly larger radius
+            if (showUI) {
+                Imgproc.circle(rgba, c0, (int) radiiSorted[0] + 10, new Scalar(0, 255, 255), 2);
             }
-            if (radii_sorted.length > 1) {
-                Point c1=sorted_circles.get(radii_sorted[1]);
-                if(showUI) {
-                    Imgproc.circle(rgba, c1, (int) radii_sorted[1] + 10, new Scalar(0, 255, 255), 2);
+
+            if (radiiSorted.length > 1) {
+
+                // Circle of second largest radius
+                Point c1 = sortedCircles.get(radiiSorted[1]);
+
+                // Draw perimeter of second largest circle in white, slightly larger radius
+                if (showUI) {
+                    Imgproc.circle(rgba, c1, (int) radiiSorted[1] + 10, new Scalar(0, 255, 255), 2);
                 }
-                result=yellow_final<=c0.x?yellow_final>c1.x?1:0:yellow_final<c1.x?1:2; //Ordering.
-            }else{
-                if(yellow_final!=Integer.MAX_VALUE){
-                    result=yellow_final<=c0.x?0:1; //Ordering.
+
+                // Determine object ordering; only happens if both circles present
+
+                // "What on earth is happening?" version
+                // result = yellowCenterFinal <= c0.x ? yellowCenterFinal > c1.x ? 1 : 0 : yellowCenterFinal < c1.x ? 1 : 2;
+
+                // De-obfuscated version
+                if (yellowCenterFinal <= c0.x) {
+                    if (yellowCenterFinal > c1.x) {
+                        result = 1;
+                    }
+                    else {
+                        result = 0;
+                    }
+                }
+                else {
+                    if (yellowCenterFinal < c1.x) {
+                        result = 1;
+                    }
+                    else {
+                        result = 2;
+                    }
                 }
             }
         }
-        if(showUI) {
-            Imgproc.putText(rgba, "Y-bound: " + radii_sorted.length, new Point(0, 90), 1, 2.5, new Scalar(0, 255, 255), 3);
+
+        // Draw number of circles within the y-bound
+        if (showUI) {
+            Imgproc.putText(rgba, "Y-bound: " + radiiSorted.length, new Point(0, 90), 1, 2.5, new Scalar(0, 255, 255), 3);
         }
 
-        dTelemetry.addData("Y-Bound", radii_sorted.length);
-        System.out.println("Y-Bound"+radii_sorted.length);
+        telemetry.addData("Y-Bound", radiiSorted.length);
+        System.out.println("Y-Bound: " + radiiSorted.length);
 
-        //---CIRCLE GUI---
-        if(showUI) {
+        //--- Circle GUI ---
+
+        // Draw white ordering visualization circles
+        if (showUI) {
             Imgproc.circle(rgba, new Point(45, h - 45), 30, new Scalar(255, 255, 255), 30);
             Imgproc.circle(rgba, new Point(w / 2, h - 45), 30, new Scalar(255, 255, 255), 30);
             Imgproc.circle(rgba, new Point(w - 45, h - 45), 30, new Scalar(255, 255, 255), 30);
         }
-        dTelemetry.addData("Detector Result",result);
-        System.out.println("Detector Result"+result);
 
-        if(result==-1) {result = history;}else{history=result;}//History-result swap.
+        // Show ordering prediction
+        telemetry.addData("Detector Result", result);
+        System.out.println("Detector Result: " + result);
 
-        Position=result;//After history. May change.
-
-        if(showUI) {
-            Imgproc.circle(rgba, new Point(result == 0 ? 45 : result == 1 ? w / 2 : w - 45, h - 45), 30, new Scalar(255, 255, 0), 30);
+        // If no objects detected, keep the old result, else update history
+        if (result == -1) {
+            result = history;
         }
-        dTelemetry.addLine("---Detection Algorithm Ends---");
+        else {
+            history = result;
+        }
+
+        // Update current position
+        position = result;
+
+        // Draw the yellow ordering visualization circles
+        if (showUI) {
+            Imgproc.circle(rgba, new Point(result == 0 ? 45 : (result == 1 ? w / 2 : w - 45), h - 45), 30, new Scalar(255, 255, 0), 30);
+        }
+
+        telemetry.addLine("---Detection Algorithm Ends---");
         System.out.println("---Detection Algorithm Ends---");
 
+        /*
+        Telemetry will only work properly in a linear opmode, where this pipeline is the only thing updating telemetry
+        (In loop-based opmodes, telemetry.update() is automatically called at the end of the loop)
+        However, this prevents the opmode from providing any telemetry
+        */
+        telemetry.update();
+
         return rgba; // display image seen by the camera
-
     }
-
 }
