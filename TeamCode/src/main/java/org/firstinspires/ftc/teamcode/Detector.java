@@ -150,6 +150,9 @@ public class Detector extends OpenCVPipeline {
             }
             yellowCenterFinal = yellowCenterAverage / goodYellowContours.size();
         }
+        else {
+            yellowCenterFinal = Integer.MAX_VALUE;
+        }
 
         // Write number of yellow contours on image
         if (showUI) {
@@ -229,7 +232,7 @@ public class Detector extends OpenCVPipeline {
                     Imgproc.circle(rgba, c1, (int) radiiSorted[1] + 10, new Scalar(0, 255, 255), 2);
                 }
 
-                // Determine object ordering; only happens if both circles present
+                // Determine object ordering
 
                 // "What on earth is happening?" version
                 // result = yellowCenterFinal <= c0.x ? yellowCenterFinal > c1.x ? 1 : 0 : yellowCenterFinal < c1.x ? 1 : 2;
@@ -238,17 +241,31 @@ public class Detector extends OpenCVPipeline {
                 if (yellowCenterFinal <= c0.x) {
                     if (yellowCenterFinal > c1.x) {
                         result = 1;
-                    }
-                    else {
+                    } else {
                         result = 0;
                     }
-                }
-                else {
+                } else {
                     if (yellowCenterFinal < c1.x) {
                         result = 1;
+                    } else {
+                        result = 2;
+                    }
+                }
+            }
+            else {
+                if (yellowCenterFinal != Integer.MAX_VALUE) {
+
+                    // Determine object ordering
+
+                    // One-liner
+                    // result = yellowCenterFinal <= c0.x ? 0 : 1;
+
+                    // More verbose
+                    if (yellowCenterFinal <= c0.x) {
+                        result = 0;
                     }
                     else {
-                        result = 2;
+                        result = 1;
                     }
                 }
             }
