@@ -170,7 +170,6 @@ public class RR2TeleOp extends OpMode {
         }
         */
 
-        // TODO: Insure this works - the driver will need to be very careful to keep this held down until we can power off the robot
         // A: Toggle the pivot arm motor power
         if (this.gamepad1.b) {
             if (!gamepad1BToggleLock) {
@@ -256,6 +255,7 @@ public class RR2TeleOp extends OpMode {
         telemetry.addData("LF", driverFunction.getLfPosition());
         telemetry.addData("RB", driverFunction.getRbPosition());
         telemetry.addData("RF", driverFunction.getRfPosition());
+        telemetry.addData("Orientation", robotDirection == 0 ? "Normal" : "Reversed");
         gunnerFunction.doTelemetry();
         telemetry.addData("Runtime", runtime.toString());
         telemetry.update();

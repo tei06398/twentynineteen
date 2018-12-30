@@ -132,7 +132,6 @@ public class Detector extends OpenCVPipeline {
             Imgproc.drawContours(rgba, goodYellowContours, -1, new Scalar(255, 0, 0), 2, 15);
         }
 
-        // TODO: Since there will only every be 0 or 1 good yellow contours, the averaging is unnecessary
         // Average of all yellow positions
         int yellowCenterAverage = 0;
         // If there are no good yellow contours, we guess that the yellow position is at the center of the screen
@@ -326,7 +325,7 @@ public class Detector extends OpenCVPipeline {
         /*
         Telemetry will only work properly in a linear opmode, where this pipeline is the only thing updating telemetry
         (In loop-based opmodes, telemetry.update() is automatically called at the end of the loop)
-        However, this prevents the opmode from providing any telemetry
+        However, this prevents the opmode from effectively providing any telemetry
         */
         telemetry.update();
 
