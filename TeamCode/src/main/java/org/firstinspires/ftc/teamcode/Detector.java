@@ -32,7 +32,7 @@ public class Detector extends OpenCVPipeline {
     private int minDist = 50;
     private int cannyUpperThreshold = 120;
     private int accumulator = 10;
-    private int minRadius = 30;
+    private int minRadius = 10;
     private int maxRadius = 80;
 
     private static final double[] y_bounds = {0.35, 0.65};
@@ -99,8 +99,8 @@ public class Detector extends OpenCVPipeline {
         Imgproc.fillPoly(thresholdedWhite, whiteContours, new Scalar(255, 255, 255));
 
         // Yellow threshold, erode, and dilate
-        Core.inRange(hsv, new Scalar(10, 180, 200), new Scalar(35, 255, 255), thresholdedYellow); // Conservative
-        // Core.inRange(hsv, new Scalar(0, 160, 180), new Scalar(40, 255, 255), thresholdedYellow); // Liberal
+        // Core.inRange(hsv, new Scalar(10, 180, 200), new Scalar(35, 255, 255), thresholdedYellow); // Conservative
+        Core.inRange(hsv, new Scalar(0, 160, 160), new Scalar(40, 255, 255), thresholdedYellow); // Liberal
         Imgproc.erode(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
         Imgproc.dilate(thresholdedYellow, thresholdedYellow, new Mat(), new Point(-1, -1), 5, Core.BORDER_CONSTANT);
 
@@ -112,11 +112,19 @@ public class Detector extends OpenCVPipeline {
 
         // --- Cube Detection (Largest Contour Area) ---
 
-        // If it exists, add largest yellow contour (only one) to list of good yellow contours
+        // Add all contours within y-bounds to list of good yellow contours
         Imgproc.findContours(thresholdedYellow, yellowContours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         Collections.sort(yellowContours, (c1, c2) -> Double.compare(Imgproc.contourArea(c1), Imgproc.contourArea(c2)));
-        for (int i = 0; i < Math.min(1, yellowContours.size()); i++) {
-            goodYellowContours.add(yellowContours.get(yellowContours.size() - 1 - i));
+        for (int i = 0; i < yellowContours.size(); i++) {
+            Moments moments = Imgproc.moments(yellowContours.get(yellowContours.size() - 1 - i));
+            int centerY = (int) (moments.get_m01() / moments.get_m00());
+            if (y_bounds[0] * h <= centerY && y_bounds[1] * h >= centerY) {
+                goodYellowContours.add(yellowContours.get(yellowContours.size() - 1 - i));
+            }
+        }
+        // Get largest contour within y bounds
+        if (goodYellowContours.size() > 0) {
+            goodYellowContours = goodYellowContours.subList(0, 1);
         }
 
         // Draw yellow contour on original image
@@ -129,6 +137,7 @@ public class Detector extends OpenCVPipeline {
         int yellowCenterAverage = 0;
         // If there are no good yellow contours, we guess that the yellow position is at the center of the screen
         int yellowCenterFinal = (int) w / 2;
+        int yellowCount = 0;
 
         if (goodYellowContours.size() > 0) {
             for (MatOfPoint cont : goodYellowContours) {
@@ -141,6 +150,7 @@ public class Detector extends OpenCVPipeline {
                 // If contour center is within boundaries, add center to average and draw the center on the image
                 if (y_bounds[0] * h <= centerY && y_bounds[1] * h >= centerY) {
                     yellowCenterAverage += centerX;
+                    yellowCount++;
                     if (showUI) {
                         Point center = new Point(centerX, centerY);
                         Imgproc.circle(rgba, center, 3, new Scalar(255, 0, 255), 2);
@@ -148,9 +158,11 @@ public class Detector extends OpenCVPipeline {
                 }
 
             }
-            yellowCenterFinal = yellowCenterAverage / goodYellowContours.size();
+            if (yellowCount > 0) {
+                yellowCenterFinal = yellowCenterAverage / yellowCount;
+            }
         }
-        else {
+        if(yellowCount == 0){
             yellowCenterFinal = Integer.MAX_VALUE;
         }
 
