@@ -36,13 +36,9 @@ public class GunnerFunction {
     private double LOCK_SERVO_LOCKED = 0.35;
     private double LOCK_SERVO_UNLOCKED = 0.9;
 
-    private double LEFT_SWEEP_SERVO_FORWARD = 0;
+    private double SWEEP_SERVO_POWER = 0.3;
     private double LEFT_SWEEP_SERVO_STOP = 0.54;
-    private double LEFT_SWEEP_SERVO_REVERSE = 1;
-
-    private double RIGHT_SWEEP_SERVO_FORWARD = 1;
     private double RIGHT_SWEEP_SERVO_STOP = 0.46;
-    private double RIGHT_SWEEP_SERVO_REVERSE = 0;
 
     private boolean isLocked = false;
     private DcMotor winchMotor;
@@ -247,8 +243,8 @@ public class GunnerFunction {
     }
 
     public void sweepServoForward() {
-        leftSweepServo.setPosition(LEFT_SWEEP_SERVO_FORWARD);
-        rightSweepServo.setPosition(RIGHT_SWEEP_SERVO_FORWARD);
+        leftSweepServo.setPosition(Math.min(LEFT_SWEEP_SERVO_STOP - SWEEP_SERVO_POWER, 0));
+        rightSweepServo.setPosition(Math.max(RIGHT_SWEEP_SERVO_STOP + SWEEP_SERVO_POWER, 1));
     }
 
     public void sweepServoStop() {
@@ -257,8 +253,8 @@ public class GunnerFunction {
     }
 
     public void sweepServoReverse() {
-        leftSweepServo.setPosition(LEFT_SWEEP_SERVO_REVERSE);
-        rightSweepServo.setPosition(RIGHT_SWEEP_SERVO_REVERSE);
+        leftSweepServo.setPosition(Math.max(LEFT_SWEEP_SERVO_STOP + SWEEP_SERVO_POWER, 1));
+        rightSweepServo.setPosition(Math.min(RIGHT_SWEEP_SERVO_STOP - SWEEP_SERVO_POWER, 0));
     }
 
     // --- Telemetry ---
