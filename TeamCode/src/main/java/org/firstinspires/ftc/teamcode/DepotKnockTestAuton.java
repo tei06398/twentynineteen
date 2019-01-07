@@ -18,7 +18,8 @@ public class DepotKnockTestAuton extends LinearOpMode {
     public static final double MEDIUM_SPEED_RATIO = 0.5;
     public static final double FAST_SPEED_RATIO = 0.7;
 
-    public static final long MOVE_DELAY_MS = 50;
+    public static final long MOVE_DELAY_MS = 500; // TODO: Changed
+
     public static final long LONG_DELAY_MS = 300;
     private static final long RETREAT_MS = 1300;
     private static final long DEPOT_TURN_MS = 3000;
@@ -77,10 +78,12 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
             steering.setSpeedRatio(FAST_SPEED_RATIO);
 
+            /*
             steering.moveDegrees(90);
             steering.finishSteering();
             sleep(convertDelay(6500));
             steering.stopAllMotors();
+            */
 
             sleep(20_000);
         }
