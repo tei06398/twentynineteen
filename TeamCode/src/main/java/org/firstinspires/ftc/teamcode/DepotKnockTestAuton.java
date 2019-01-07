@@ -9,17 +9,23 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
     private ElapsedTime runtime;
     private DriverFunction driverFunction;
-    private AutonFunction autonFunction;
     private DriverFunction.Steering steering;
+    private  AutonFunction autonFunction;
 
-    private static final double SPEED_RATIO = 0.3;
-    private static final double FAST_SPEED_RATIO = 0.7;
+    public static final double MAX_COAST_SECONDS = 6;
 
-    private static final long MOVE_DELAY_MS = 100;
+    public static final double NORMAL_SPEED_RATIO = 0.3;
+    public static final double MEDIUM_SPEED_RATIO = 0.5;
+    public static final double FAST_SPEED_RATIO = 0.7;
 
+    public static final long MOVE_DELAY_MS = 50;
+    public static final long LONG_DELAY_MS = 300;
+    private static final long RETREAT_MS = 1300;
     private static final long DEPOT_TURN_MS = 3000;
-
     private static final long MARKER_DROP_DELAY_MS = 800;
+
+    private static final int CV_ITERATIONS = 5;
+    private static final long CV_LOOP_DELAY = 200;
 
     @Override
     public void runOpMode() {
@@ -42,20 +48,22 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
         for (int i = 0; i < 3; i++) {
 
-            steering.setSpeedRatio(SPEED_RATIO);
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
             autonFunction.undropMarker();
 
             switch (i) {
                 case 0:
-                    knockLeft();
+                    knockLeftDepot();
                     break;
                 case 1:
-                    knockCenter();
+                    knockCenterDepot();
                     break;
                 case 2:
-                    knockRight();
+                    knockRightDepot();
                     break;
             }
+
+            sleep(MOVE_DELAY_MS);
 
             steering.moveDegrees(0);
             steering.finishSteering();
@@ -65,14 +73,13 @@ public class DepotKnockTestAuton extends LinearOpMode {
             sleep(MOVE_DELAY_MS);
 
             autonFunction.dropMarker();
-
             sleep(MARKER_DROP_DELAY_MS);
 
             steering.setSpeedRatio(FAST_SPEED_RATIO);
 
             steering.moveDegrees(90);
             steering.finishSteering();
-            sleep((long) ((SPEED_RATIO / steering.getSpeedRatio()) * 6500));
+            sleep(convertDelay(6500));
             steering.stopAllMotors();
 
             sleep(20_000);
@@ -85,7 +92,7 @@ public class DepotKnockTestAuton extends LinearOpMode {
         }
     }
 
-    public void knockLeft() {
+    public void knockLeftDepot() {
 
         // Knock
 
@@ -130,10 +137,9 @@ public class DepotKnockTestAuton extends LinearOpMode {
         steering.finishSteering();
         sleep(1000);
         steering.stopAllMotors();
-
     }
 
-    public void knockCenter() {
+    public void knockCenterDepot() {
 
         // Knock
 
@@ -164,12 +170,9 @@ public class DepotKnockTestAuton extends LinearOpMode {
         steering.finishSteering();
         sleep(1100);
         steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
     }
 
-    public void knockRight() {
+    public void knockRightDepot() {
 
         // Knock
 
@@ -225,6 +228,6 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
     // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying
     public long convertDelay(long originalDelay) {
-        return (long) (originalDelay * (SPEED_RATIO / steering.getSpeedRatio()));
+        return (long) (originalDelay * (NORMAL_SPEED_RATIO / steering.getSpeedRatio()));
     }
 }
