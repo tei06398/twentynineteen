@@ -233,4 +233,18 @@ public class DepotKnockTestAuton extends LinearOpMode {
     public long convertDelay(long originalDelay) {
         return (long) (originalDelay * (NORMAL_SPEED_RATIO / steering.getSpeedRatio()));
     }
+
+    public static double angleConvert(double angle) {
+        angle = angle % 360;
+        angle = angle < 0 ? angle + 360 : angle;
+        if (0 <= angle && angle < 180) {
+            return 180 - angle;
+        }
+        else if (180 <= angle && angle <= 360) {
+            return 540 - angle;
+        }
+        else {
+            return angle;
+        }
+    }
 }
