@@ -73,6 +73,7 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.resetAllEncoders();
 
         // Set motors to initial positions/powers
+        autonFunction.centerSweepServos();
         autonFunction.lockServo();
         autonFunction.zeroPowerArm(); // We don't want to power the arm until we've retracted all the way
         autonFunction.undropMarker();
@@ -166,10 +167,11 @@ public class RR2Auton extends LinearOpMode {
 
         sleep(MOVE_DELAY_MS);
 
+        // TODO: Consider if this should be commented, or the time adjusted again
         // Re-align with lander
         steering.moveDegrees(270);
         steering.finishSteering();
-        sleep(600);
+        sleep(200); // 600
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);

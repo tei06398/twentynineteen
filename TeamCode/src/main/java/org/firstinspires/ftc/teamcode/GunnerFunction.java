@@ -39,6 +39,7 @@ public class GunnerFunction {
     private double SWEEP_SERVO_POWER = 0.3;
     private double LEFT_SWEEP_SERVO_STOP = 0.54;
     private double RIGHT_SWEEP_SERVO_STOP = 0.46;
+    // TODO: Add a bias term for the +/- 0.04 on the stop differences
 
     private boolean isLocked = false;
     private DcMotor winchMotor;
@@ -56,6 +57,7 @@ public class GunnerFunction {
         this.armMotor = hardwareMap.dcMotor.get("armMotor");
         this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
         this.lockServo = new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), LOCK_SERVO_LOCKED, LOCK_SERVO_UNLOCKED, 0, true);
+        // TODO: Fix this swappage...
         this.rightSweepServo = hardwareMap.servo.get("leftSweepServo");
         this.leftSweepServo = hardwareMap.servo.get("rightSweepServo");
         this.chainMotor = hardwareMap.dcMotor.get("chainMotor");
