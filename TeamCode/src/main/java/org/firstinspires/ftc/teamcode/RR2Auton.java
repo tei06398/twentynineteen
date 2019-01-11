@@ -215,6 +215,8 @@ public class RR2Auton extends LinearOpMode {
                 knockRightCrater();
             }
 
+            // TODO: Comment this section to make it more readable
+
             steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
             sleep(MOVE_DELAY_MS);
@@ -236,6 +238,13 @@ public class RR2Auton extends LinearOpMode {
             steering.move(0);
             steering.finishSteering();
             sleep(convertDelay(2000)); // 1500
+            steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.move(180);
+            steering.finishSteering();
+            sleep(convertDelay(200));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
