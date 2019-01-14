@@ -35,13 +35,24 @@ public class AutonFunction {
     private static final double DROPPER_OPEN_POSITION = 0.6;
     private static final double DROPPER_CLOSED_POSITION = 1.0;
 
+    private Servo rightSweepServo;
+    private Servo leftSweepServo;
+
+    // TODO: (Potentially) better zero-movement values
+    private double RIGHT_SWEEP_CENTER = 0.5;
+    private double LEFT_SWEEP_CENTER = 0.5;
+
     public AutonFunction(HardwareMap hardwareMap, Telemetry telemetry) {
         this.armMotor = hardwareMap.dcMotor.get("armMotor");
         this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
         this.lockServo = hardwareMap.servo.get("lockServo");
         this.markerDropperServo = hardwareMap.servo.get("markerDropperServo");
 
+        // This is also called in RR2Auton... for redundancy (or so we tell ourselves)
         undropMarker();
+
+        this.leftSweepServo = hardwareMap.servo.get("leftSweepServo");
+        this.rightSweepServo = hardwareMap.servo.get("rightSweepServo");
 
         this.armMotor.setMode(ARM_MOTOR_RUNMODE);
         this.winchMotor.setMode(WINCH_MOTOR_RUNMODE);
@@ -134,6 +145,13 @@ public class AutonFunction {
 
     public void armDown() {
         armMotor.setTargetPosition(ARM_POSITION_DOWN);
+    }
+
+    // --- Sweeper servo ---
+
+    public void centerSweepServos() {
+        leftSweepServo.setPosition(LEFT_SWEEP_CENTER);
+        rightSweepServo.setPosition(RIGHT_SWEEP_CENTER);
     }
 
     // --- Util ---

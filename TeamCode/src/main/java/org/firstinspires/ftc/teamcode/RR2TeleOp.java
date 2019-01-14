@@ -20,8 +20,8 @@ public class RR2TeleOp extends OpMode {
 
     private GunnerFunction gunnerFunction;
 
-    // 0 is normal, 1 is reverse
-    int robotDirection = 0;
+    // Change the orientation of the robot for the driver
+    boolean directionReverse = false;
 
     // Toggle locks
     private boolean gamepad1BToggleLock = false;
@@ -65,12 +65,7 @@ public class RR2TeleOp extends OpMode {
         if (this.gamepad1.x) {
             if (!gamepad1XToggleLock) {
                 gamepad1XToggleLock = true;
-                if (robotDirection == 0) {
-                    robotDirection = 1;
-                }
-                else {
-                    robotDirection = 0;
-                }
+                directionReverse = !directionReverse;
             }
         }
         else {
@@ -78,7 +73,7 @@ public class RR2TeleOp extends OpMode {
         }
 
         // D-Pad: Compass rose drive
-        if (robotDirection == 0) {
+        if (!directionReverse) {
             if (this.gamepad1.dpad_right) {
                 steering.moveDegrees(0, MIN_SPEED_RATIO);
             }
@@ -131,7 +126,7 @@ public class RR2TeleOp extends OpMode {
         // Left Stick: Drive/Strafe
         if (Math.abs(this.gamepad1.left_stick_x) > 0.1 || Math.abs(this.gamepad1.left_stick_y) > 0.1) {
             double angle;
-            if (robotDirection == 0) {
+            if (!directionReverse) {
                 angle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x);
             }
             else {
@@ -174,15 +169,13 @@ public class RR2TeleOp extends OpMode {
         if (this.gamepad1.b) {
             if (!gamepad1BToggleLock) {
                 gamepad1BToggleLock = true;
-                // gunnerFunction.toggleArmPower();
-                gunnerFunction.zeroPowerArmMotor();
+                gunnerFunction.toggleArmPower();
+                // gunnerFunction.zeroPowerArmMotor();
             }
-            telemetry.addData("PIVOT MOTOR: ", "ZERO POWER");
         }
         else {
             gamepad1BToggleLock = false;
             gunnerFunction.powerArmMotor();
-            telemetry.addData("PIVOT MOTOR: ", "POWERED");
         }
 
         // ----- Gamepad 2: Gunner Functions -----
@@ -251,13 +244,17 @@ public class RR2TeleOp extends OpMode {
         steering.finishSteering();
 
         // Update telemetry
+        /*
         telemetry.addData("LB", driverFunction.getLbPosition());
         telemetry.addData("LF", driverFunction.getLfPosition());
         telemetry.addData("RB", driverFunction.getRbPosition());
         telemetry.addData("RF", driverFunction.getRfPosition());
-        telemetry.addData("Orientation", robotDirection == 0 ? "Normal" : "Reversed");
-        gunnerFunction.doTelemetry();
+        */
         telemetry.addData("Runtime", runtime.toString());
+        telemetry.addData("Orientation", !directionReverse ? "Normal" : "Reversed");
+        telemetry.addData("Pivot Motor", gunnerFunction.armMotorPowered() ? "Powered" : "Zero Power");
+        // gunnerFunction.doTelemetry();
+        // TODO: What other telemetry data is crucial for the drive team?
         telemetry.update();
     }
 
