@@ -174,15 +174,19 @@ public class RR2TeleOp extends OpMode {
         if (this.gamepad1.b) {
             if (!gamepad1BToggleLock) {
                 gamepad1BToggleLock = true;
-                // gunnerFunction.toggleArmPower();
-                gunnerFunction.zeroPowerArmMotor();
+                gunnerFunction.toggleArmPower();
+                // gunnerFunction.zeroPowerArmMotor();
             }
-            telemetry.addData("PIVOT MOTOR: ", "ZERO POWER");
         }
         else {
             gamepad1BToggleLock = false;
             gunnerFunction.powerArmMotor();
-            telemetry.addData("PIVOT MOTOR: ", "POWERED");
+        }
+        if (gunnerFunction.armMotorPowered()) {
+            telemetry.addData("Pivot Motor", "POWERED");
+        }
+        else {
+            telemetry.addData("Pivot Motor", "ZERO POWER");
         }
 
         // ----- Gamepad 2: Gunner Functions -----

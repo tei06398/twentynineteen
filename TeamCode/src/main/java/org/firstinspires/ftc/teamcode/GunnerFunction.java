@@ -167,6 +167,10 @@ public class GunnerFunction {
         }
     }
 
+    public boolean armMotorPowered() {
+        return armMotor.getPower() != 0;
+    }
+
     /*
     Drive the arm all the way down, and then reset the encoder
     This is pretty janky - will probably lock up the tele-op for ~4s if it works
