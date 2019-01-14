@@ -182,12 +182,6 @@ public class RR2TeleOp extends OpMode {
             gamepad1BToggleLock = false;
             gunnerFunction.powerArmMotor();
         }
-        if (gunnerFunction.armMotorPowered()) {
-            telemetry.addData("Pivot Motor", "POWERED");
-        }
-        else {
-            telemetry.addData("Pivot Motor", "ZERO POWER");
-        }
 
         // ----- Gamepad 2: Gunner Functions -----
 
@@ -255,13 +249,17 @@ public class RR2TeleOp extends OpMode {
         steering.finishSteering();
 
         // Update telemetry
+        /*
         telemetry.addData("LB", driverFunction.getLbPosition());
         telemetry.addData("LF", driverFunction.getLfPosition());
         telemetry.addData("RB", driverFunction.getRbPosition());
         telemetry.addData("RF", driverFunction.getRfPosition());
-        telemetry.addData("Orientation", robotDirection == 0 ? "Normal" : "Reversed");
-        gunnerFunction.doTelemetry();
+        */
         telemetry.addData("Runtime", runtime.toString());
+        telemetry.addData("Orientation", robotDirection == 0 ? "Normal" : "Reversed");
+        telemetry.addData("Pivot Motor", gunnerFunction.armMotorPowered() ? "Powered" : "Zero Power");
+        // gunnerFunction.doTelemetry();
+        // TODO: What other telemetry data is crucial for the drive team?
         telemetry.update();
     }
 
