@@ -207,19 +207,7 @@ public class GunnerFunction {
         armMotor.setTargetPosition(armMotor.getCurrentPosition());
     }
 
-    // --- Sweeper ---
-
-    public void runChainMotor() {
-        chainMotor.setPower(-1 * CHAIN_MOTOR_POWER);
-    }
-
-    public void runChainMotorReverse() {
-        chainMotor.setPower(CHAIN_MOTOR_POWER);
-    }
-
-    public void stopChainMotor() {
-        chainMotor.setPower(0);
-    }
+    // --- Slide Motor ---
 
     public void runSlideMotor() {
         if (slideMotor.getCurrentPosition() < SLIDE_POSITION_MAX) {
@@ -246,6 +234,22 @@ public class GunnerFunction {
     public double getSlideMotorPosition() {
         return slideMotor.getCurrentPosition();
     }
+
+    // --- Sweeper Chain Motor ---
+
+    public void runChainMotor() {
+        chainMotor.setPower(-1 * CHAIN_MOTOR_POWER);
+    }
+
+    public void runChainMotorReverse() {
+        chainMotor.setPower(CHAIN_MOTOR_POWER);
+    }
+
+    public void stopChainMotor() {
+        chainMotor.setPower(0);
+    }
+
+    // --- Sweeper Lift Servos ---
 
     public void sweepServoForward() {
         leftSweepServo.setPosition(Math.max(LEFT_SWEEP_SERVO_STOP + SWEEP_SERVO_POWER, 1));
