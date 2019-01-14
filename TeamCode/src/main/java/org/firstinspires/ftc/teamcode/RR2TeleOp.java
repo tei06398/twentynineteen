@@ -175,7 +175,7 @@ public class RR2TeleOp extends OpMode {
         }
         else {
             gamepad1BToggleLock = false;
-            gunnerFunction.powerArmMotor();
+            // gunnerFunction.powerArmMotor();
         }
 
         // ----- Gamepad 2: Gunner Functions -----

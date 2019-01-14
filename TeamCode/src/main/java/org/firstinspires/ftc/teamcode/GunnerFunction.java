@@ -27,9 +27,9 @@ public class GunnerFunction {
 
     private final double CHAIN_MOTOR_POWER = 0.15;
 
-    private final int SLIDE_POSITION_MIN = 750;
+    private final int SLIDE_POSITION_MIN = 1000;
     private final int SLIDE_POSITION_MAX = 3150;
-    private final double SLIDE_MOTOR_POWER = 0.3;
+    private final double SLIDE_MOTOR_POWER = 0.5;
 
     private int slidePosition = 0;
 
