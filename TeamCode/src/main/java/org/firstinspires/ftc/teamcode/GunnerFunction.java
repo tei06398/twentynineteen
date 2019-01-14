@@ -37,16 +37,16 @@ public class GunnerFunction {
     private double LOCK_SERVO_UNLOCKED = 0.9;
 
     private double SWEEP_SERVO_POWER = 0.3;
-    private double LEFT_SWEEP_SERVO_STOP = 0.54;
-    private double RIGHT_SWEEP_SERVO_STOP = 0.46;
+    private double RIGHT_SWEEP_SERVO_STOP = 0.54;
+    private double LEFT_SWEEP_SERVO_STOP = 0.46;
     // TODO: Add a bias term for the +/- 0.04 on the stop differences
 
     private boolean isLocked = false;
     private DcMotor winchMotor;
     private DcMotor chainMotor;
     private DcMotor slideMotor;
-    private Servo rightSweepServo;
     private Servo leftSweepServo;
+    private Servo rightSweepServo;
     private TwoStateServo lockServo;
 
     private DcMotor armMotor;
@@ -57,9 +57,8 @@ public class GunnerFunction {
         this.armMotor = hardwareMap.dcMotor.get("armMotor");
         this.winchMotor = hardwareMap.dcMotor.get("winchMotor");
         this.lockServo = new GunnerFunction.TwoStateServo(hardwareMap.servo.get("lockServo"), LOCK_SERVO_LOCKED, LOCK_SERVO_UNLOCKED, 0, true);
-        // TODO: Fix this swappage...
-        this.rightSweepServo = hardwareMap.servo.get("leftSweepServo");
-        this.leftSweepServo = hardwareMap.servo.get("rightSweepServo");
+        this.leftSweepServo = hardwareMap.servo.get("leftSweepServo");
+        this.rightSweepServo = hardwareMap.servo.get("rightSweepServo");
         this.chainMotor = hardwareMap.dcMotor.get("chainMotor");
         this.slideMotor = hardwareMap.dcMotor.get("slideMotor");
         resetEncoders();
@@ -249,8 +248,8 @@ public class GunnerFunction {
     }
 
     public void sweepServoForward() {
-        leftSweepServo.setPosition(Math.min(LEFT_SWEEP_SERVO_STOP - SWEEP_SERVO_POWER, 0));
-        rightSweepServo.setPosition(Math.max(RIGHT_SWEEP_SERVO_STOP + SWEEP_SERVO_POWER, 1));
+        leftSweepServo.setPosition(Math.max(LEFT_SWEEP_SERVO_STOP + SWEEP_SERVO_POWER, 1));
+        rightSweepServo.setPosition(Math.min(RIGHT_SWEEP_SERVO_STOP - SWEEP_SERVO_POWER, 0));
     }
 
     public void sweepServoStop() {
@@ -259,8 +258,8 @@ public class GunnerFunction {
     }
 
     public void sweepServoReverse() {
-        leftSweepServo.setPosition(Math.max(LEFT_SWEEP_SERVO_STOP + SWEEP_SERVO_POWER, 1));
-        rightSweepServo.setPosition(Math.min(RIGHT_SWEEP_SERVO_STOP - SWEEP_SERVO_POWER, 0));
+        leftSweepServo.setPosition(Math.min(LEFT_SWEEP_SERVO_STOP - SWEEP_SERVO_POWER, 0));
+        rightSweepServo.setPosition(Math.max(RIGHT_SWEEP_SERVO_STOP + SWEEP_SERVO_POWER, 1));
     }
 
     // --- Telemetry ---
