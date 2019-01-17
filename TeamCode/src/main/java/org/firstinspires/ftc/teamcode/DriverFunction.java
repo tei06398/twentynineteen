@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.sun.tools.javac.tree.DCTree;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
@@ -76,6 +75,27 @@ public class DriverFunction {
 
         public int getPosition() {
             return motor.getCurrentPosition();
+        }
+
+        // Nested class providing a weighted value
+        public class WeightedValue {
+
+            private double value = 0;
+            private double smoothness;
+
+            public WeightedValue(double smoothness) {
+                this.smoothness = smoothness;
+            }
+
+            public double applyValue(double newValue) {
+                if (value < newValue) {
+                    value = value + Math.min(newValue-value, smoothness);
+                }
+                else {
+                    value = value - Math.min(value-newValue, smoothness);
+                }
+                return value;
+            }
         }
     }
 
