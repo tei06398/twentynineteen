@@ -15,7 +15,6 @@ public class AutonFunction {
 
     private static final double WINCH_POWER = 0.5; // 0.2
 
-    // TODO: Get values
     private static final int WINCH_COAST_POSITION = 200; // 3000 // Two wheels hit ground after coasting, robot stops
     private static final int WINCH_RUN_POSITION = 5000; // All four wheels hit ground
 
@@ -38,7 +37,6 @@ public class AutonFunction {
     private Servo rightSweepServo;
     private Servo leftSweepServo;
 
-    // TODO: (Potentially) better zero-movement values
     private double RIGHT_SWEEP_CENTER = 0.5;
     private double LEFT_SWEEP_CENTER = 0.5;
 
@@ -87,7 +85,6 @@ public class AutonFunction {
     // --- Winch ---
 
     // NOTE: Direction winch is wound in will be important
-    // TODO: May have to flip comparators if positions are negative
 
     public boolean winchCoastFinished() {
         return winchMotor.getCurrentPosition() > WINCH_COAST_POSITION;

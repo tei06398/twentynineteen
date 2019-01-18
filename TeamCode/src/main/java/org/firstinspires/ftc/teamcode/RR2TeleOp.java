@@ -151,7 +151,6 @@ public class RR2TeleOp extends OpMode {
 
         /*
         // TODO: WARNING: This will lock up the tele-op for ~4 seconds
-        // TODO: Fix this semi-issue
         // Left Bumper: Re-zero the arm position
         if (this.gamepad1.left_bumper) {
             if (!gamepad1LBumperToggleLock) {
@@ -244,17 +243,9 @@ public class RR2TeleOp extends OpMode {
         steering.finishSteering();
 
         // Update telemetry
-        /*
-        telemetry.addData("LB", driverFunction.getLbPosition());
-        telemetry.addData("LF", driverFunction.getLfPosition());
-        telemetry.addData("RB", driverFunction.getRbPosition());
-        telemetry.addData("RF", driverFunction.getRfPosition());
-        */
         telemetry.addData("Runtime", runtime.toString());
         telemetry.addData("Orientation", !directionReverse ? "Normal" : "Reversed");
         telemetry.addData("Pivot Motor", gunnerFunction.armMotorPowered() ? "Powered" : "Zero Power");
-        // gunnerFunction.doTelemetry();
-        // TODO: What other telemetry data is crucial for the drive team?
         telemetry.update();
     }
 
