@@ -80,11 +80,13 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.lockServo();
         autonFunction.zeroPowerArm(); // We don't want to power the arm until we've retracted all the way
 
+        /*
         while (!this.isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        // waitForStart();
+        */
+        waitForStart();
 
         // --- Start ---
 
