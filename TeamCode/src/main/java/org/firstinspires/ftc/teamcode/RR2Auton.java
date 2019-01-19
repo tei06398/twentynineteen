@@ -223,28 +223,29 @@ public class RR2Auton extends LinearOpMode {
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(0);
+            steering.move(reflectAngle(0));
             steering.finishSteering();
             sleep(convertDelay(1500));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
-            steering.turnCounterclockwise();
+            // ORIG CCW
+            steering.turnClockwise();
             steering.finishSteering();
             sleep(convertDelay(950));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(0);
+            steering.move(reflectAngle(0));
             steering.finishSteering();
             sleep(convertDelay(2000)); // 1500
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(180);
+            steering.move(reflectAngle(180));
             steering.finishSteering();
             sleep(convertDelay(200));
             steering.stopAllMotors();
@@ -253,7 +254,7 @@ public class RR2Auton extends LinearOpMode {
 
             steering.setSpeedRatio(FAST_SPEED_RATIO);
 
-            steering.move(270);
+            steering.move(reflectAngle(270));
             steering.finishSteering();
             sleep(convertDelay(4800));
             steering.stopAllMotors();
@@ -261,7 +262,7 @@ public class RR2Auton extends LinearOpMode {
             autonFunction.dropMarker();
             sleep(MARKER_DROP_DELAY_MS);
 
-            steering.move(90);
+            steering.move(reflectAngle(90));
             steering.finishSteering();
             sleep(convertDelay(6700));
             steering.stopAllMotors();
@@ -323,25 +324,26 @@ public class RR2Auton extends LinearOpMode {
 
     // --- Crater Side Knocking Methods ---
 
-    public void knockLeftCrater() {
+    // ORIG LEFT
+    public void knockRightCrater() {
 
         // Knock
 
-        steering.move(90);
+        steering.move(reflectAngle(90));
         steering.finishSteering();
         sleep(1500);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.move(180);
+        steering.move(reflectAngle(180));
         steering.finishSteering();
         sleep(1700);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.move(90);
+        steering.move(reflectAngle(90));
         steering.finishSteering();
         sleep(1300);
         steering.stopAllMotors();
@@ -350,7 +352,7 @@ public class RR2Auton extends LinearOpMode {
 
         // Retreat
 
-        steering.move(270);
+        steering.move(reflectAngle(270));
         steering.finishSteering();
         sleep(RETREAT_MS);
         steering.stopAllMotors();
@@ -361,17 +363,18 @@ public class RR2Auton extends LinearOpMode {
 
         steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
-        steering.move(0);
+        steering.move(reflectAngle(0));
         steering.finishSteering();
         sleep(convertDelay(3300)); // 3000
         steering.stopAllMotors();
     }
 
+    // ORIG CENTER
     public void knockCenterCrater() {
 
         // Knock
 
-        steering.move(90);
+        steering.move(reflectAngle(90));
         steering.finishSteering();
         sleep(2800);
         steering.stopAllMotors();
@@ -380,7 +383,7 @@ public class RR2Auton extends LinearOpMode {
 
         // Retreat
 
-        steering.move(270);
+        steering.move(reflectAngle(270));
         steering.finishSteering();
         sleep(RETREAT_MS);
         steering.stopAllMotors();
@@ -391,31 +394,32 @@ public class RR2Auton extends LinearOpMode {
 
         steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
-        steering.move(0);
+        steering.move(reflectAngle(0));
         steering.finishSteering();
         sleep(convertDelay(1800)); // 1500
         steering.stopAllMotors();
     }
 
-    public void knockRightCrater() {
+    // ORIG RIGHT
+    public void knockLeftCrater() {
 
         // Knock
 
-        steering.move(90);
+        steering.move(reflectAngle(90));
         steering.finishSteering();
         sleep(1500);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.move(0);
+        steering.move(reflectAngle(0));
         steering.finishSteering();
         sleep(1500);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.move(90);
+        steering.move(reflectAngle(90));
         steering.finishSteering();
         sleep(1300);
         steering.stopAllMotors();
@@ -424,7 +428,7 @@ public class RR2Auton extends LinearOpMode {
 
         // Retreat
 
-        steering.move(270);
+        steering.move(reflectAngle(270));
         steering.finishSteering();
         sleep(RETREAT_MS);
         steering.stopAllMotors();
@@ -579,5 +583,20 @@ public class RR2Auton extends LinearOpMode {
 
     private enum MineralPosition {
         LEFT, CENTER, RIGHT
+    }
+
+    // Reflect angle over the y-axis... hope it works
+    public static double reflectAngle(double angle) {
+        angle = angle % 360;
+        angle = angle < 0 ? angle + 360 : angle;
+        if (0 <= angle && angle < 180) {
+            return 180 - angle;
+        }
+        else if (180 <= angle && angle <= 360) {
+            return 540 - angle;
+        }
+        else {
+            return angle;
+        }
     }
 }
