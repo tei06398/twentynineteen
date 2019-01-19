@@ -14,20 +14,20 @@ public class GunnerFunction {
     All the power and position constants are place here, for convenience
     We should probably pass them in instead, but this is way easier...
     */
-    private final int ARM_UP_ABS = -280; // -240, -313
+    private final int ARM_UP_ABS = -270; // -240, -313
     private final int ARM_DOWN_ABS = 180;
-    private int ARM_OFFSET = -150; // -180 for fully down, 0 for level with top, 250 for up, -150 for sitting on sweeper
+    private int ARM_OFFSET = -140; // -180 for fully down, 0 for level with top, 250 for up, -150 for sitting on sweeper
     private int ARM_UP = ARM_UP_ABS + ARM_OFFSET;
     private int ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
 
-    private static final double ARM_MOTOR_POWER = 0.05;
+    private static final double ARM_MOTOR_POWER = 0.07;
     private final int IS_ARM_UP_THRESH = 5;
 
     private final double WINCH_POWER = 0.5;
 
     private final double CHAIN_MOTOR_POWER = 0.15;
 
-    private final int SLIDE_POSITION_MIN = 1600; // TODO: Confirm this value (old 1000)
+    private final int SLIDE_POSITION_MIN = 1300; // TODO: Confirm this value (old 1000)
     private final int SLIDE_POSITION_MAX = 3150;
     private final double SLIDE_MOTOR_POWER = 0.5;
 
