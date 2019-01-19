@@ -218,7 +218,7 @@ public class RR2Auton extends LinearOpMode {
             }
 
             // TODO: Comment this section to make it more readable
-
+            /*
             steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
             sleep(MOVE_DELAY_MS);
@@ -265,6 +265,7 @@ public class RR2Auton extends LinearOpMode {
             steering.finishSteering();
             sleep(convertDelay(6700));
             steering.stopAllMotors();
+            */
 
         }
         else if (startPos == AutonPosition.DEPOT) {
