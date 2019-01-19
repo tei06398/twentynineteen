@@ -246,6 +246,9 @@ public class RR2TeleOp extends OpMode {
         telemetry.addData("Runtime", runtime.toString());
         telemetry.addData("Orientation", !directionReverse ? "Normal" : "Reversed");
         telemetry.addData("Pivot Motor", gunnerFunction.armMotorPowered() ? "Powered" : "Zero Power");
+        telemetry.addLine();
+        telemetry.addData("Slide Motor Position", gunnerFunction.getSlideMotorPosition());
+        telemetry.addData("Slide Min, Max", gunnerFunction.getSLIDE_POSITION_MIN() + ", " + gunnerFunction.getSLIDE_POSITION_MAX());
         telemetry.update();
     }
 

@@ -14,20 +14,20 @@ public class GunnerFunction {
     All the power and position constants are place here, for convenience
     We should probably pass them in instead, but this is way easier...
     */
-    private final int ARM_UP_ABS = -255; // -240, -313, -250
+    private final int ARM_UP_ABS = -250; // -240, -313, -250
     private final int ARM_DOWN_ABS = 185; // -180
     private int ARM_OFFSET = -140; // -180 for fully down, 0 for level with top, 250 for up, -150 for sitting on sweeper
     private int ARM_UP = ARM_UP_ABS + ARM_OFFSET;
     private int ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
 
-    private static final double ARM_MOTOR_POWER = 0.07;
+    private static final double ARM_MOTOR_POWER = 0.055; // 0.05, 0.07
     private final int IS_ARM_UP_THRESH = 5;
 
     private final double WINCH_POWER = 0.5;
 
     private final double CHAIN_MOTOR_POWER = 0.15;
 
-    private final int SLIDE_POSITION_MIN = 1300; // TODO: Confirm this value (old 1000)
+    private final int SLIDE_POSITION_MIN = 1400; // TODO: Confirm this value (old 1000)
     private final int SLIDE_POSITION_MAX = 3150;
     private final double SLIDE_MOTOR_POWER = 0.5;
 
@@ -233,6 +233,14 @@ public class GunnerFunction {
 
     public double getSlideMotorPosition() {
         return slideMotor.getCurrentPosition();
+    }
+
+    public int getSLIDE_POSITION_MIN() {
+        return SLIDE_POSITION_MIN;
+    }
+
+    public int getSLIDE_POSITION_MAX() {
+        return SLIDE_POSITION_MAX;
     }
 
     // --- Sweeper Chain Motor ---
