@@ -63,6 +63,9 @@ public class RR2Auton extends LinearOpMode {
         steering = driverFunction.getSteering();
         autonFunction = new AutonFunction(hardwareMap, telemetry);
 
+        // To have this called ASAP
+        autonFunction.undropMarker();
+
         // Initialize CV
         colorDetector = new Detector(telemetry, true);
         colorDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
@@ -76,7 +79,6 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.centerSweepServos();
         autonFunction.lockServo();
         autonFunction.zeroPowerArm(); // We don't want to power the arm until we've retracted all the way
-        autonFunction.undropMarker();
 
         while (!this.isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
