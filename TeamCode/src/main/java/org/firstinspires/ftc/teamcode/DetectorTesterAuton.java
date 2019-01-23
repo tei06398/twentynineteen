@@ -13,11 +13,20 @@ public class DetectorTesterAuton extends LinearOpMode {
     public void runOpMode() {
 
         rr2detector = new Detector(telemetry,true);
-        rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Replace with ActivityViewDisplay.getInstance() for fullscreen
-        rr2detector.enable(); // start vision system
+        rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
         while (!this.isStarted()) {}
 
+        sleep(180_000);
+
+        // rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        rr2detector.enable(); // start vision system
+
+        sleep(180_000);
+
+        rr2detector.disable();
+
         while (opModeIsActive()) {}
+
     }
 }
