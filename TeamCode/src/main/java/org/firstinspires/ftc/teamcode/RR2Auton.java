@@ -69,7 +69,6 @@ public class RR2Auton extends LinearOpMode {
         // Initialize CV
         colorDetector = new Detector(telemetry, true);
         colorDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-        colorDetector.enable();
 
         // Reset encoders
         driverFunction.resetAllEncoders();
@@ -179,6 +178,9 @@ public class RR2Auton extends LinearOpMode {
         sleep(MOVE_DELAY_MS);
 
         // COLOR DETECTION
+
+        colorDetector.enable(); // TODO: Find optimal time to call this
+        sleep(500);
 
         int[] blockPositions = new int[CV_ITERATIONS];
         for (int i = 0; i < blockPositions.length; i++) {
