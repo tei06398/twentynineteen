@@ -16,7 +16,7 @@ public class RR2Auton extends LinearOpMode {
     private ElapsedTime runtime;
     private DriverFunction driverFunction;
     private DriverFunction.Steering steering;
-    private  AutonFunction autonFunction;
+    private AutonFunction autonFunction;
 
     private Detector colorDetector;
 

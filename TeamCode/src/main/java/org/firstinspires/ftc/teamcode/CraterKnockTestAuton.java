@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Depot Knock Test Auton")
-public class DepotKnockTestAuton extends LinearOpMode {
+@Autonomous(name = "Crater Knock Test Auton")
+public class CraterKnockTestAuton extends LinearOpMode {
 
     private ElapsedTime runtime;
     private DriverFunction driverFunction;
@@ -57,40 +57,61 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
             switch (i) {
                 case 0:
-                    knockLeftDepot();
+                    knockLeftCrater();
                     break;
                 case 1:
-                    knockCenterDepot();
+                    knockCenterCrater();
                     break;
                 case 2:
-                    knockRightDepot();
+                    knockRightCrater();
                     break;
             }
 
+            steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
+
             sleep(MOVE_DELAY_MS);
 
-            steering.moveDegrees(180);
+            steering.move(0);
             steering.finishSteering();
-            sleep(1000);
+            sleep(convertDelay(1500));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
-            steering.moveDegrees(0);
+            steering.turnCounterclockwise();
             steering.finishSteering();
-            sleep(200);
+            sleep(convertDelay(950));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
+
+            steering.move(0);
+            steering.finishSteering();
+            sleep(convertDelay(2000)); // 1500
+            steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.move(180);
+            steering.finishSteering();
+            sleep(convertDelay(200));
+            steering.stopAllMotors();
+
+            sleep(MOVE_DELAY_MS);
+
+            steering.setSpeedRatio(FAST_SPEED_RATIO);
+
+            steering.move(270);
+            steering.finishSteering();
+            sleep(convertDelay(4800));
+            steering.stopAllMotors();
 
             autonFunction.dropMarker();
             sleep(MARKER_DROP_DELAY_MS);
 
-            steering.setSpeedRatio(FAST_SPEED_RATIO);
-
-            steering.moveDegrees(90);
+            steering.move(90);
             steering.finishSteering();
-            sleep(convertDelay(6200));
+            sleep(convertDelay(6700));
             steering.stopAllMotors();
 
             sleep(20_000);
@@ -103,7 +124,7 @@ public class DepotKnockTestAuton extends LinearOpMode {
         }
     }
 
-    public void knockLeftDepot() {
+    public void knockLeftCrater() {
 
         // Knock
 
@@ -116,7 +137,7 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
         steering.move(180);
         steering.finishSteering();
-        sleep(1900);
+        sleep(1700);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -128,36 +149,26 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
         sleep(MOVE_DELAY_MS);
 
-        // Common Position
+        // Retreat
 
-        steering.move(90);
+        steering.move(270);
         steering.finishSteering();
-        sleep(1200);
+        sleep(RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.turnClockwise();
+        // Common right
+
+        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
+
+        steering.move(0);
         steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(180);
-        steering.finishSteering();
-        sleep(2500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(90);
-        steering.finishSteering();
-        sleep(500);
+        sleep(convertDelay(3300)); // 3000
         steering.stopAllMotors();
     }
 
-    public void knockCenterDepot() {
+    public void knockCenterCrater() {
 
         // Knock
 
@@ -168,29 +179,26 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
         sleep(MOVE_DELAY_MS);
 
-        // Common position
+        // Retreat
 
-        steering.move(90);
+        steering.move(270);
         steering.finishSteering();
-        sleep(1500);
+        sleep(RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.turnClockwise();
-        steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
+        // Common right
 
-        sleep(MOVE_DELAY_MS);
+        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
-        steering.moveDegrees(180);
+        steering.move(0);
         steering.finishSteering();
-        sleep(1100);
+        sleep(convertDelay(1800)); // 1500
         steering.stopAllMotors();
     }
 
-    public void knockRightDepot() {
+    public void knockRightCrater() {
 
         // Knock
 
@@ -215,26 +223,14 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
         sleep(MOVE_DELAY_MS);
 
-        // Common position
+        // Retreat
 
-        steering.move(90);
+        steering.move(270);
         steering.finishSteering();
-        sleep(1500); // 1000
+        sleep(RETREAT_MS);
         steering.stopAllMotors();
 
-        sleep(MOVE_DELAY_MS);
-
-        steering.turnClockwise();
-        steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(1000);
-        steering.stopAllMotors();
+        // Common right already attained
     }
 
     // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying
