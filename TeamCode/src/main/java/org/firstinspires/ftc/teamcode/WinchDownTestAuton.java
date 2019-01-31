@@ -36,6 +36,7 @@ public class WinchDownTestAuton extends LinearOpMode {
 
         // To have this called ASAP
         autonFunction.undropMarker();
+        autonFunction.centerSweepServos();
 
         // Reset encoders
         driverFunction.resetAllEncoders();

@@ -43,6 +43,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
         autonFunction.resetAllEncoders();
 
         autonFunction.undropMarker();
+        autonFunction.centerSweepServos();
 
         while (!this.isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -95,7 +96,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
             steering.move(reflectAngle(180));
             steering.finishSteering();
-            sleep(convertDelay(200));
+            sleep(convertDelay(300));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
@@ -110,9 +111,34 @@ public class CraterKnockTestAuton extends LinearOpMode {
             autonFunction.dropMarker();
             sleep(MARKER_DROP_DELAY_MS);
 
+            /*
             steering.move(reflectAngle(90));
             steering.finishSteering();
             sleep(convertDelay(6700));
+            steering.stopAllMotors();
+            */
+
+            // TODO: Perform a re-align right about here...
+
+            steering.move(90);
+            steering.finishSteering();
+            sleep(convertDelay(4000));
+            steering.stopAllMotors();
+
+            // -------
+
+            steering.move(reflectAngle(0));
+            steering.finishSteering();
+            sleep(convertDelay(800));
+            steering.stopAllMotors();
+
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+
+            // -------
+
+            steering.move(90);
+            steering.finishSteering();
+            sleep(convertDelay(2400)); // 2700
             steering.stopAllMotors();
 
             sleep(20_000);

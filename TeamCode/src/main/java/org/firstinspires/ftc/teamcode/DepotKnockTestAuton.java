@@ -43,6 +43,7 @@ public class DepotKnockTestAuton extends LinearOpMode {
         autonFunction.resetAllEncoders();
 
         autonFunction.undropMarker();
+        autonFunction.centerSweepServos();
 
         while (!this.isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
