@@ -72,7 +72,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(reflectAngle(0));
+            steering.move(180);
             steering.finishSteering();
             sleep(convertDelay(1500));
             steering.stopAllMotors();
@@ -87,14 +87,14 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(reflectAngle(0));
+            steering.move(180);
             steering.finishSteering();
             sleep(convertDelay(2000)); // 1500
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(reflectAngle(180));
+            steering.move(0);
             steering.finishSteering();
             sleep(convertDelay(300));
             steering.stopAllMotors();
@@ -103,7 +103,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
             steering.setSpeedRatio(FAST_SPEED_RATIO);
 
-            steering.move(reflectAngle(270));
+            steering.move(270);
             steering.finishSteering();
             sleep(convertDelay(4800));
             steering.stopAllMotors();
@@ -127,7 +127,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
             // -------
 
-            steering.move(reflectAngle(0));
+            steering.move(180);
             steering.finishSteering();
             sleep(convertDelay(800));
             steering.stopAllMotors();
@@ -156,21 +156,21 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
         // Knock
 
-        steering.move(reflectAngle(90));
+        steering.move(90);
         steering.finishSteering();
         sleep(1500);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.move(reflectAngle(180));
+        steering.move(0);
         steering.finishSteering();
         sleep(1700);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.move(reflectAngle(90));
+        steering.move(90);
         steering.finishSteering();
         sleep(1300);
         steering.stopAllMotors();
@@ -179,7 +179,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
         // Retreat
 
-        steering.move(reflectAngle(270));
+        steering.move(270);
         steering.finishSteering();
         sleep(RETREAT_MS);
         steering.stopAllMotors();
@@ -190,7 +190,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
         steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
-        steering.move(reflectAngle(0));
+        steering.move(180);
         steering.finishSteering();
         sleep(convertDelay(3300)); // 3000
         steering.stopAllMotors();
@@ -201,7 +201,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
         // Knock
 
-        steering.move(reflectAngle(90));
+        steering.move(90);
         steering.finishSteering();
         sleep(2800);
         steering.stopAllMotors();
@@ -210,7 +210,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
         // Retreat
 
-        steering.move(reflectAngle(270));
+        steering.move(270);
         steering.finishSteering();
         sleep(RETREAT_MS);
         steering.stopAllMotors();
@@ -221,7 +221,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
         steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
-        steering.move(reflectAngle(0));
+        steering.move(180);
         steering.finishSteering();
         sleep(convertDelay(1800)); // 1500
         steering.stopAllMotors();
@@ -232,21 +232,21 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
         // Knock
 
-        steering.move(reflectAngle(90));
+        steering.move(90);
         steering.finishSteering();
         sleep(1500);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.move(reflectAngle(0));
+        steering.move(180);
         steering.finishSteering();
         sleep(1500);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.move(reflectAngle(90));
+        steering.move(90);
         steering.finishSteering();
         sleep(1300);
         steering.stopAllMotors();
@@ -255,7 +255,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
         // Retreat
 
-        steering.move(reflectAngle(270));
+        steering.move(270);
         steering.finishSteering();
         sleep(RETREAT_MS);
         steering.stopAllMotors();
@@ -266,20 +266,5 @@ public class CraterKnockTestAuton extends LinearOpMode {
     // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying
     public long convertDelay(long originalDelay) {
         return (long) (originalDelay * (NORMAL_SPEED_RATIO / steering.getSpeedRatio()));
-    }
-
-    // Reflect angle over the y-axis... hope it works
-    public static double reflectAngle(double angle) {
-        angle = angle % 360;
-        angle = angle < 0 ? angle + 360 : angle;
-        if (0 <= angle && angle < 180) {
-            return 180 - angle;
-        }
-        else if (180 <= angle && angle <= 360) {
-            return 540 - angle;
-        }
-        else {
-            return angle;
-        }
     }
 }
