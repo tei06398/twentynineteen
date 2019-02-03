@@ -17,16 +17,11 @@ public class DetectorTesterAuton extends LinearOpMode {
 
         while (!this.isStarted()) {}
 
-        sleep(180_000);
-
-        // rr2detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         rr2detector.enable(); // start vision system
 
-        sleep(180_000);
+        while (opModeIsActive()) {}
 
         rr2detector.disable();
-
-        while (opModeIsActive()) {}
 
     }
 }
