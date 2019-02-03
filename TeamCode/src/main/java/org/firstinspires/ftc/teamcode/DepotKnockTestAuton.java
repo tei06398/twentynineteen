@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import static org.firstinspires.ftc.teamcode.AutonDriving.knockRightDepot;
+
 @Autonomous(name = "Depot Knock Test Auton")
 public class DepotKnockTestAuton extends LinearOpMode {
 
@@ -58,34 +60,17 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
             switch (i) {
                 case 0:
-                    knockLeftDepot();
+                    AutonDriving.knockLeftDepot(this, steering);
                     break;
                 case 1:
-                    knockCenterDepot();
+                    AutonDriving.knockCenterDepot(this, steering);
                     break;
                 case 2:
-                    knockRightDepot();
+                    knockRightDepot(this, steering);
                     break;
             }
 
-            sleep(MOVE_DELAY_MS);
-
-            steering.moveDegrees(0);
-            steering.finishSteering();
-            sleep(1000);
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            autonFunction.dropMarker();
-            sleep(MARKER_DROP_DELAY_MS);
-
-            steering.setSpeedRatio(FAST_SPEED_RATIO);
-
-            steering.moveDegrees(90);
-            steering.finishSteering();
-            sleep(convertDelay(6500));
-            steering.stopAllMotors();
+            AutonDriving.depotSequence(this, steering, autonFunction);
 
             sleep(20_000);
         }
@@ -94,159 +79,6 @@ public class DepotKnockTestAuton extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
-        }
-    }
-
-    public void knockLeftDepot() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(180);
-        steering.finishSteering();
-        sleep(1900);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common Position
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500); // 1000
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.turnCounterclockwise();
-        steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(1000);
-        steering.stopAllMotors();
-    }
-
-    public void knockCenterDepot() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(2800);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common position
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.turnCounterclockwise();
-        steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(0);
-        steering.finishSteering();
-        sleep(1100);
-        steering.stopAllMotors();
-    }
-
-    public void knockRightDepot() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(0);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common position
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1200);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.turnCounterclockwise();
-        steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(0);
-        steering.finishSteering();
-        sleep(2500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(90);
-        steering.finishSteering();
-        sleep(500);
-        steering.stopAllMotors();
-    }
-
-    // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying
-    public long convertDelay(long originalDelay) {
-        return (long) (originalDelay * (NORMAL_SPEED_RATIO / steering.getSpeedRatio()));
-    }
-
-    public static double angleConvert(double angle) {
-        angle = angle % 360;
-        angle = angle < 0 ? angle + 360 : angle;
-        if (0 <= angle && angle < 180) {
-            return 180 - angle;
-        }
-        else if (180 <= angle && angle <= 360) {
-            return 540 - angle;
-        }
-        else {
-            return angle;
         }
     }
 }

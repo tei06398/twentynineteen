@@ -20,6 +20,7 @@ public class RR2Auton extends LinearOpMode {
 
     private Detector colorDetector;
 
+    /*
     public static final double MAX_COAST_SECONDS = 6;
 
     public static final double NORMAL_SPEED_RATIO = 0.3;
@@ -31,6 +32,7 @@ public class RR2Auton extends LinearOpMode {
     private static final long RETREAT_MS = 1300;
     private static final long DEPOT_TURN_MS = 3000;
     private static final long MARKER_DROP_DELAY_MS = 800;
+    */
 
     private static final int CV_ITERATIONS = 5;
     private static final long CV_LOOP_DELAY = 200;
@@ -83,7 +85,6 @@ public class RR2Auton extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        // waitForStart();
 
         // --- Start ---
 
@@ -95,87 +96,7 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.writeTelemetry();
         telemetry.update();
 
-        // LANDING
-
-        autonFunction.unlockServo();
-
-        // Coast winch until winch position reaches a relatively steady state
-        while (opModeIsActive() && !autonFunction.winchCoastFinished() && runtime.seconds() < MAX_COAST_SECONDS) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            autonFunction.writeTelemetry();
-            telemetry.update();
-        }
-
-        // Run winch to get us all the way down
-        while (opModeIsActive() && !autonFunction.winchRunFinished()) {
-            autonFunction.runWinch();
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            autonFunction.writeTelemetry();
-            telemetry.update();
-        }
-        autonFunction.stopWinch();
-
-        // Set a relatively slow speed ratio
-        steering.setSpeedRatio(NORMAL_SPEED_RATIO);
-
-        sleep(MOVE_DELAY_MS);
-
-        // Move against lander
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Move away slightly
-        steering.moveDegrees(90);
-        steering.finishSteering();
-        sleep(200);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Strafe out
-        steering.moveDegrees(0);
-        steering.finishSteering();
-        sleep(350);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Re-align with lander
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(400);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Negative means arm above flat, positive means arm below flat
-        if (autonFunction.getArmPosition() < 0) {
-            autonFunction.powerArm();
-            autonFunction.armDown();
-        }
-
-        sleep(LONG_DELAY_MS);
-
-        // Strafe to align center of lander
-        steering.moveDegrees(180);
-        steering.finishSteering();
-        sleep(350);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // TODO: Consider if this should be commented, or the time adjusted again
-        // Re-align with lander
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(200); // 600
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
+        AutonDriving.landingSequence(this, steering, autonFunction, runtime, telemetry);
 
         // COLOR DETECTION
 
@@ -210,103 +131,30 @@ public class RR2Auton extends LinearOpMode {
         if (startPos == AutonPosition.CRATER) {
 
             if (mineralPosition == MineralPosition.LEFT) {
-                knockLeftCrater();
+                AutonDriving.knockLeftCrater(this, steering);
             }
             else if (mineralPosition == MineralPosition.CENTER) {
-                knockCenterCrater();
+                AutonDriving.knockCenterCrater(this, steering);
             }
             else {
-                knockRightCrater();
+                AutonDriving.knockRightCrater(this, steering);
             }
 
-            // TODO: Comment this section to make it more readable
-
-            steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
-
-            sleep(MOVE_DELAY_MS);
-
-            steering.move(0);
-            steering.finishSteering();
-            sleep(convertDelay(1500));
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            steering.turnCounterclockwise();
-            steering.finishSteering();
-            sleep(convertDelay(950));
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            steering.move(0);
-            steering.finishSteering();
-            sleep(convertDelay(2000)); // 1500
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            steering.move(180);
-            steering.finishSteering();
-            sleep(convertDelay(200));
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            steering.setSpeedRatio(FAST_SPEED_RATIO);
-
-            steering.move(270);
-            steering.finishSteering();
-            sleep(convertDelay(4800));
-            steering.stopAllMotors();
-
-            autonFunction.dropMarker();
-            sleep(MARKER_DROP_DELAY_MS);
-
-            steering.move(90);
-            steering.finishSteering();
-            sleep(convertDelay(6700));
-            steering.stopAllMotors();
-
+            AutonDriving.craterSequence(this, steering, autonFunction);
         }
         else if (startPos == AutonPosition.DEPOT) {
 
             if (mineralPosition == MineralPosition.LEFT) {
-                knockLeftDepot();
+                AutonDriving.knockLeftDepot(this, steering);
             }
             else if (mineralPosition == MineralPosition.CENTER) {
-                knockCenterDepot();
+                AutonDriving.knockCenterDepot(this, steering);
             }
             else {
-                knockRightDepot();
+                AutonDriving.knockRightDepot(this, steering);
             }
 
-            sleep(MOVE_DELAY_MS);
-
-            steering.moveDegrees(180);
-            steering.finishSteering();
-            sleep(1000);
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            steering.moveDegrees(0);
-            steering.finishSteering();
-            sleep(200);
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
-
-            autonFunction.dropMarker();
-            sleep(MARKER_DROP_DELAY_MS);
-
-            steering.setSpeedRatio(FAST_SPEED_RATIO);
-
-            steering.moveDegrees(90);
-            steering.finishSteering();
-            sleep(convertDelay(6200));
-            steering.stopAllMotors();
-
+            AutonDriving.depotSequence(this, steering, autonFunction);
         }
         else {
             telemetry.addLine("Error: no start position specified");
@@ -321,258 +169,6 @@ public class RR2Auton extends LinearOpMode {
 
         // To attempt to prevent the auton from dropping the marker if we don't reach the depot
         autonFunction.undropMarker();
-    }
-
-    // --- Crater Side Knocking Methods ---
-
-    public void knockLeftCrater() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(180);
-        steering.finishSteering();
-        sleep(1700);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Retreat
-
-        steering.move(270);
-        steering.finishSteering();
-        sleep(RETREAT_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common right
-
-        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
-
-        steering.move(0);
-        steering.finishSteering();
-        sleep(convertDelay(3300)); // 3000
-        steering.stopAllMotors();
-    }
-
-    public void knockCenterCrater() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(2800);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Retreat
-
-        steering.move(270);
-        steering.finishSteering();
-        sleep(RETREAT_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common right
-
-        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
-
-        steering.move(0);
-        steering.finishSteering();
-        sleep(convertDelay(1800)); // 1500
-        steering.stopAllMotors();
-    }
-
-    public void knockRightCrater() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(0);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Retreat
-
-        steering.move(270);
-        steering.finishSteering();
-        sleep(RETREAT_MS);
-        steering.stopAllMotors();
-
-        // Common right already attained
-    }
-
-    // --- Depot Side Knocking Methods ---
-
-    public void knockLeftDepot() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(180);
-        steering.finishSteering();
-        sleep(1900);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common Position
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1200);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.turnClockwise();
-        steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(180);
-        steering.finishSteering();
-        sleep(2500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(90);
-        steering.finishSteering();
-        sleep(500);
-        steering.stopAllMotors();
-    }
-
-    public void knockCenterDepot() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(2800);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common position
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.turnClockwise();
-        steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(180);
-        steering.finishSteering();
-        sleep(1100);
-        steering.stopAllMotors();
-    }
-
-    public void knockRightDepot() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(0);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common position
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500); // 1000
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.turnClockwise();
-        steering.finishSteering();
-        sleep(DEPOT_TURN_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(1000);
-        steering.stopAllMotors();
-    }
-
-    // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying
-    public long convertDelay(long originalDelay) {
-        return (long) (originalDelay * (NORMAL_SPEED_RATIO / steering.getSpeedRatio()));
     }
 
     private enum AutonPosition {

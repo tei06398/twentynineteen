@@ -51,11 +51,8 @@ public class WinchDownTestAuton extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        // waitForStart();
 
         // --- Start ---
-
-        // Potentially reset the encoders here
 
         runtime.reset();
 
@@ -65,85 +62,7 @@ public class WinchDownTestAuton extends LinearOpMode {
 
         // LANDING
 
-        autonFunction.unlockServo();
-
-        // Coast winch until winch position reaches a relatively steady state
-        while (opModeIsActive() && !autonFunction.winchCoastFinished() && runtime.seconds() < MAX_COAST_SECONDS) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            autonFunction.writeTelemetry();
-            telemetry.update();
-        }
-
-        // Run winch to get us all the way down
-        while (opModeIsActive() && !autonFunction.winchRunFinished()) {
-            autonFunction.runWinch();
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            autonFunction.writeTelemetry();
-            telemetry.update();
-        }
-        autonFunction.stopWinch();
-
-        // Set a relatively slow speed ratio
-        steering.setSpeedRatio(NORMAL_SPEED_RATIO);
-
-        sleep(MOVE_DELAY_MS);
-
-        // Move against lander
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Move away slightly
-        steering.moveDegrees(90);
-        steering.finishSteering();
-        sleep(200);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Strafe out
-        steering.moveDegrees(0);
-        steering.finishSteering();
-        sleep(350);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Re-align with lander
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(400);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Negative means arm above flat, positive means arm below flat
-        if (autonFunction.getArmPosition() < 0) {
-            autonFunction.powerArm();
-            autonFunction.armDown();
-        }
-
-        sleep(LONG_DELAY_MS);
-
-        // Strafe to align center of lander
-        steering.moveDegrees(180);
-        steering.finishSteering();
-        sleep(350);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // TODO: Consider if this should be commented, or the time adjusted again
-        // Re-align with lander
-        steering.moveDegrees(270);
-        steering.finishSteering();
-        sleep(200); // 600
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
+        AutonDriving.landingSequence(this, steering, autonFunction, runtime, telemetry);
 
         // run until opmode ends
         while (opModeIsActive()) {
@@ -153,18 +72,5 @@ public class WinchDownTestAuton extends LinearOpMode {
 
         // To attempt to prevent the auton from dropping the marker if we don't reach the depot
         autonFunction.undropMarker();
-    }
-
-    // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying
-    public long convertDelay(long originalDelay) {
-        return (long) (originalDelay * (NORMAL_SPEED_RATIO / steering.getSpeedRatio()));
-    }
-
-    private enum AutonPosition {
-        CRATER, DEPOT, NULL
-    }
-
-    private enum MineralPosition {
-        LEFT, CENTER, RIGHT
     }
 }
