@@ -70,6 +70,8 @@ public class DepotKnockTestAuton extends LinearOpMode {
 
             sleep(MOVE_DELAY_MS);
 
+            // -----
+
             steering.moveDegrees(0);
             steering.finishSteering();
             sleep(1000);
@@ -80,11 +82,46 @@ public class DepotKnockTestAuton extends LinearOpMode {
             autonFunction.dropMarker();
             sleep(MARKER_DROP_DELAY_MS);
 
+            steering.moveDegrees(180);
+            steering.finishSteering();
+            sleep(500);
+            steering.stopAllMotors();
+
+            // -----
+
             steering.setSpeedRatio(FAST_SPEED_RATIO);
 
             steering.moveDegrees(90);
             steering.finishSteering();
-            sleep(convertDelay(6500));
+            sleep(convertDelay(4000));
+            steering.stopAllMotors();
+
+            // ---
+
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+
+            steering.moveDegrees(0);
+            steering.finishSteering();
+            sleep(convertDelay(800));
+            steering.stopAllMotors();
+
+            steering.moveDegrees(180);
+            steering.finishSteering();
+            sleep(convertDelay(200));
+            steering.stopAllMotors();
+
+            /*
+            steering.moveDegrees(180);
+            steering.finishSteering();
+            sleep(convertDelay(300));
+            steering.stopAllMotors();
+            */
+
+            // ---
+
+            steering.moveDegrees(90);
+            steering.finishSteering();
+            sleep(convertDelay(2500));
             steering.stopAllMotors();
 
             sleep(20_000);

@@ -120,12 +120,30 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
             // TODO: Perform a re-align right about here...
 
+            // -----
+
+            steering.move(180);
+            steering.finishSteering();
+            sleep(convertDelay(1000));
+            steering.stopAllMotors();
+
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+
+            steering.move(0);
+            steering.finishSteering();
+            sleep(convertDelay(500));
+            steering.stopAllMotors();
+
+            // -----
+
+            steering.setSpeedRatio(FAST_SPEED_RATIO);
+
             steering.move(90);
             steering.finishSteering();
             sleep(convertDelay(4000));
             steering.stopAllMotors();
 
-            // -------
+            // ---
 
             steering.move(180);
             steering.finishSteering();
@@ -134,7 +152,7 @@ public class CraterKnockTestAuton extends LinearOpMode {
 
             steering.setSpeedRatio(NORMAL_SPEED_RATIO);
 
-            // -------
+            // ---
 
             steering.move(90);
             steering.finishSteering();
