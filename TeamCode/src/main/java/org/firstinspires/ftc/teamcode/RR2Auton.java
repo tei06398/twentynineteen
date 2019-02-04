@@ -225,30 +225,31 @@ public class RR2Auton extends LinearOpMode {
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(0);
+            steering.move(180);
             steering.finishSteering();
             sleep(convertDelay(1500));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
-            steering.turnCounterclockwise();
+            // ORIG CCW
+            steering.turnClockwise();
             steering.finishSteering();
             sleep(convertDelay(950));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(0);
+            steering.move(180);
             steering.finishSteering();
             sleep(convertDelay(2000)); // 1500
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
 
-            steering.move(180);
+            steering.move(0);
             steering.finishSteering();
-            sleep(convertDelay(200));
+            sleep(convertDelay(300));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
@@ -263,9 +264,52 @@ public class RR2Auton extends LinearOpMode {
             autonFunction.dropMarker();
             sleep(MARKER_DROP_DELAY_MS);
 
-            steering.move(90);
+            /*
+            steering.move(reflectAngle(90));
             steering.finishSteering();
             sleep(convertDelay(6700));
+            steering.stopAllMotors();
+            */
+
+            // TODO: Perform a re-align right about here...
+
+            // -----
+
+            steering.move(180);
+            steering.finishSteering();
+            sleep(convertDelay(1000));
+            steering.stopAllMotors();
+
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+
+            steering.move(0);
+            steering.finishSteering();
+            sleep(convertDelay(500));
+            steering.stopAllMotors();
+
+            // -----
+
+            steering.setSpeedRatio(FAST_SPEED_RATIO);
+
+            steering.move(90);
+            steering.finishSteering();
+            sleep(convertDelay(4000));
+            steering.stopAllMotors();
+
+            // ---
+
+            steering.move(180);
+            steering.finishSteering();
+            sleep(convertDelay(800));
+            steering.stopAllMotors();
+
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+
+            // ---
+
+            steering.move(90);
+            steering.finishSteering();
+            sleep(convertDelay(2400)); // 2700
             steering.stopAllMotors();
 
         }
@@ -283,16 +327,11 @@ public class RR2Auton extends LinearOpMode {
 
             sleep(MOVE_DELAY_MS);
 
-            steering.moveDegrees(180);
-            steering.finishSteering();
-            sleep(1000);
-            steering.stopAllMotors();
-
-            sleep(MOVE_DELAY_MS);
+            // -----
 
             steering.moveDegrees(0);
             steering.finishSteering();
-            sleep(200);
+            sleep(1000);
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
@@ -300,11 +339,46 @@ public class RR2Auton extends LinearOpMode {
             autonFunction.dropMarker();
             sleep(MARKER_DROP_DELAY_MS);
 
+            steering.moveDegrees(180);
+            steering.finishSteering();
+            sleep(500);
+            steering.stopAllMotors();
+
+            // -----
+
             steering.setSpeedRatio(FAST_SPEED_RATIO);
 
             steering.moveDegrees(90);
             steering.finishSteering();
-            sleep(convertDelay(6200));
+            sleep(convertDelay(4000));
+            steering.stopAllMotors();
+
+            // ---
+
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+
+            steering.moveDegrees(0);
+            steering.finishSteering();
+            sleep(convertDelay(800));
+            steering.stopAllMotors();
+
+            steering.moveDegrees(180);
+            steering.finishSteering();
+            sleep(convertDelay(200));
+            steering.stopAllMotors();
+
+            /*
+            steering.moveDegrees(180);
+            steering.finishSteering();
+            sleep(convertDelay(300));
+            steering.stopAllMotors();
+            */
+
+            // ---
+
+            steering.moveDegrees(90);
+            steering.finishSteering();
+            sleep(convertDelay(2500));
             steering.stopAllMotors();
 
         }
@@ -338,7 +412,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(180);
         steering.finishSteering();
-        sleep(1700);
+        sleep(1500);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -357,16 +431,7 @@ public class RR2Auton extends LinearOpMode {
         sleep(RETREAT_MS);
         steering.stopAllMotors();
 
-        sleep(MOVE_DELAY_MS);
-
-        // Common right
-
-        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
-
-        steering.move(0);
-        steering.finishSteering();
-        sleep(convertDelay(3300)); // 3000
-        steering.stopAllMotors();
+        // Common right already attained
     }
 
     public void knockCenterCrater() {
@@ -393,7 +458,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
-        steering.move(0);
+        steering.move(180);
         steering.finishSteering();
         sleep(convertDelay(1800)); // 1500
         steering.stopAllMotors();
@@ -412,7 +477,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(0);
         steering.finishSteering();
-        sleep(1500);
+        sleep(1700);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -431,7 +496,16 @@ public class RR2Auton extends LinearOpMode {
         sleep(RETREAT_MS);
         steering.stopAllMotors();
 
-        // Common right already attained
+        sleep(MOVE_DELAY_MS);
+
+        // Common right
+
+        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
+
+        steering.move(180);
+        steering.finishSteering();
+        sleep(convertDelay(3300)); // 3000
+        steering.stopAllMotors();
     }
 
     // --- Depot Side Knocking Methods ---
@@ -465,28 +539,21 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(90);
         steering.finishSteering();
-        sleep(1200);
+        sleep(1500); // 1000
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.turnClockwise();
+        steering.turnCounterclockwise();
         steering.finishSteering();
         sleep(DEPOT_TURN_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.moveDegrees(180);
+        steering.moveDegrees(270);
         steering.finishSteering();
-        sleep(2500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.moveDegrees(90);
-        steering.finishSteering();
-        sleep(500);
+        sleep(1000);
         steering.stopAllMotors();
     }
 
@@ -510,14 +577,14 @@ public class RR2Auton extends LinearOpMode {
 
         sleep(MOVE_DELAY_MS);
 
-        steering.turnClockwise();
+        steering.turnCounterclockwise();
         steering.finishSteering();
         sleep(DEPOT_TURN_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.moveDegrees(180);
+        steering.moveDegrees(0);
         steering.finishSteering();
         sleep(1100);
         steering.stopAllMotors();
@@ -552,21 +619,28 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(90);
         steering.finishSteering();
-        sleep(1500); // 1000
+        sleep(1200);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.turnClockwise();
+        steering.turnCounterclockwise();
         steering.finishSteering();
         sleep(DEPOT_TURN_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
 
-        steering.moveDegrees(270);
+        steering.moveDegrees(0);
         steering.finishSteering();
-        sleep(1000);
+        sleep(2500);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.moveDegrees(90);
+        steering.finishSteering();
+        sleep(500);
         steering.stopAllMotors();
     }
 
