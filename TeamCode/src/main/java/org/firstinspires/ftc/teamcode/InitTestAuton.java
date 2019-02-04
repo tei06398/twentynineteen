@@ -29,19 +29,6 @@ public class InitTestAuton extends LinearOpMode {
 
         runtime.reset();
 
-        telemetry.addData("Status", "Started");
-        telemetry.update();
-
-        sleep(180_000);
-
-        telemetry.addData("Status", "3 Minutes Elapsed");
-        telemetry.update();
-
-        sleep(180_000);
-
-        telemetry.addData("Status", "6 Minutes Elapsed");
-        telemetry.update();
-
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
