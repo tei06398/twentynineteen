@@ -31,7 +31,7 @@ public class AutonFunction {
     private static final double WINCH_SERVO_LOCK_POSITION = .35;
     private static final double WINCH_SERVO_UNLOCK_POSITION = 0.9;
 
-    private static final double DROPPER_OPEN_POSITION = 0.6;
+    private static final double DROPPER_OPEN_POSITION = 0.3;
     private static final double DROPPER_CLOSED_POSITION = 1.0;
 
     private Servo rightSweepServo;
