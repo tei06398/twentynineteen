@@ -169,7 +169,71 @@ public class CraterKnockTestAuton extends LinearOpMode {
         }
     }
 
-    // ORIG LEFT
+    public void knockLeftCrater() {
+
+        // Knock
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1500);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.move(180);
+        steering.finishSteering();
+        sleep(1500);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(1300);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Retreat
+
+        steering.move(270);
+        steering.finishSteering();
+        sleep(RETREAT_MS);
+        steering.stopAllMotors();
+
+        // Common right already attained
+    }
+
+    public void knockCenterCrater() {
+
+        // Knock
+
+        steering.move(90);
+        steering.finishSteering();
+        sleep(2800);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Retreat
+
+        steering.move(270);
+        steering.finishSteering();
+        sleep(RETREAT_MS);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Common right
+
+        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
+
+        steering.move(180);
+        steering.finishSteering();
+        sleep(convertDelay(1800)); // 1500
+        steering.stopAllMotors();
+    }
+
     public void knockRightCrater() {
 
         // Knock
@@ -212,73 +276,6 @@ public class CraterKnockTestAuton extends LinearOpMode {
         steering.finishSteering();
         sleep(convertDelay(3300)); // 3000
         steering.stopAllMotors();
-    }
-
-    // ORIG CENTER
-    public void knockCenterCrater() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(2800);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Retreat
-
-        steering.move(270);
-        steering.finishSteering();
-        sleep(RETREAT_MS);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Common right
-
-        steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
-
-        steering.move(180);
-        steering.finishSteering();
-        sleep(convertDelay(1800)); // 1500
-        steering.stopAllMotors();
-    }
-
-    // ORIG RIGHT
-    public void knockLeftCrater() {
-
-        // Knock
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(180);
-        steering.finishSteering();
-        sleep(1500);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        steering.move(90);
-        steering.finishSteering();
-        sleep(1300);
-        steering.stopAllMotors();
-
-        sleep(MOVE_DELAY_MS);
-
-        // Retreat
-
-        steering.move(270);
-        steering.finishSteering();
-        sleep(RETREAT_MS);
-        steering.stopAllMotors();
-
-        // Common right already attained
     }
 
     // Convert a delay from the intended speed ratio of 0.3 for a different speed ratio by multiplying
