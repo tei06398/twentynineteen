@@ -20,7 +20,6 @@ public class RR2Auton extends LinearOpMode {
 
     private Detector colorDetector;
 
-    /*
     public static final double MAX_COAST_SECONDS = 6;
 
     public static final double NORMAL_SPEED_RATIO = 0.3;
@@ -29,13 +28,12 @@ public class RR2Auton extends LinearOpMode {
 
     public static final long MOVE_DELAY_MS = 50;
     public static final long LONG_DELAY_MS = 300;
-    private static final long RETREAT_MS = 1300;
-    private static final long DEPOT_TURN_MS = 3000;
-    private static final long MARKER_DROP_DELAY_MS = 800;
-    */
+    public static final long RETREAT_MS = 1300;
+    public static final long DEPOT_TURN_MS = 3000;
+    public static final long MARKER_DROP_DELAY_MS = 800;
 
-    private static final int CV_ITERATIONS = 5;
-    private static final long CV_LOOP_DELAY = 200;
+    public static final int CV_ITERATIONS = 5;
+    public static final long CV_LOOP_DELAY = 200;
 
     @Override
     public void runOpMode() {
@@ -96,7 +94,87 @@ public class RR2Auton extends LinearOpMode {
         autonFunction.writeTelemetry();
         telemetry.update();
 
-        AutonDriving.landingSequence(this, steering, autonFunction, runtime, telemetry);
+        // LANDING
+
+        autonFunction.unlockServo();
+
+        // Coast winch until winch position reaches a relatively steady state
+        while (opModeIsActive() && !autonFunction.winchCoastFinished() && runtime.seconds() < MAX_COAST_SECONDS) {
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            autonFunction.writeTelemetry();
+            telemetry.update();
+        }
+
+        // Run winch to get us all the way down
+        while (opModeIsActive() && !autonFunction.winchRunFinished()) {
+            autonFunction.runWinch();
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            autonFunction.writeTelemetry();
+            telemetry.update();
+        }
+        autonFunction.stopWinch();
+
+        // Set a relatively slow speed ratio
+        steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+
+        sleep(MOVE_DELAY_MS);
+
+        // Move against lander
+        steering.moveDegrees(270);
+        steering.finishSteering();
+        sleep(1300);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Move away slightly
+        steering.moveDegrees(90);
+        steering.finishSteering();
+        sleep(200);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Strafe out
+        steering.moveDegrees(0);
+        steering.finishSteering();
+        sleep(350);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Re-align with lander
+        steering.moveDegrees(270);
+        steering.finishSteering();
+        sleep(400);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // Negative means arm above flat, positive means arm below flat
+        if (autonFunction.getArmPosition() < 0) {
+            autonFunction.powerArm();
+            autonFunction.armDown();
+        }
+
+        sleep(LONG_DELAY_MS);
+
+        // Strafe to align center of lander
+        steering.moveDegrees(180);
+        steering.finishSteering();
+        sleep(350);
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
+
+        // TODO: Consider if this should be commented, or the time adjusted again
+        // Re-align with lander
+        steering.moveDegrees(270);
+        steering.finishSteering();
+        sleep(200); // 600
+        steering.stopAllMotors();
+
+        sleep(MOVE_DELAY_MS);
 
         // COLOR DETECTION
 
