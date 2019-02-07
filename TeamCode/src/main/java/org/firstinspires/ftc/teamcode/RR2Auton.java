@@ -180,7 +180,7 @@ public class RR2Auton extends LinearOpMode {
         // COLOR DETECTION
 
         colorDetector.enable(); // TODO: Find optimal time to call this
-        sleep(500);
+        sleep(1500); //NOTE: Time for Color Detector to Run
 
         int[] blockPositions = new int[CV_ITERATIONS];
         for (int i = 0; i < blockPositions.length; i++) {
