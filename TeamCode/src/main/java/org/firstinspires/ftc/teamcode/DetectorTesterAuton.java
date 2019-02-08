@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 
+@Disabled
 @Autonomous(name = "Detector Tester Auton")
 public class DetectorTesterAuton extends LinearOpMode {
 
