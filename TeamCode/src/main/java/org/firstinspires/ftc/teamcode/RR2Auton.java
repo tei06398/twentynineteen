@@ -28,7 +28,7 @@ public class RR2Auton extends LinearOpMode {
 
     public static final long MOVE_DELAY_MS = 50;
     public static final long LONG_DELAY_MS = 300;
-    private static final long RETREAT_MS = 1300;
+    private static final long RETREAT_MS = 1000;
     private static final long DEPOT_TURN_MS = 3000;
     private static final long MARKER_DROP_DELAY_MS = 800;
 
@@ -419,7 +419,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(90);
         steering.finishSteering();
-        sleep(1300);
+        sleep(RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -440,7 +440,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(90);
         steering.finishSteering();
-        sleep(2800);
+        sleep(1500 + RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -484,7 +484,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(90);
         steering.finishSteering();
-        sleep(1300);
+        sleep(RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
