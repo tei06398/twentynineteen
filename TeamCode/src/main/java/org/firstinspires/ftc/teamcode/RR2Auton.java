@@ -28,7 +28,8 @@ public class RR2Auton extends LinearOpMode {
 
     public static final long MOVE_DELAY_MS = 50;
     public static final long LONG_DELAY_MS = 300;
-    private static final long RETREAT_MS = 1000;
+    private static final long CRATER_RETREAT_MS = 1000;
+
     private static final long DEPOT_TURN_MS = 3000;
     private static final long MARKER_DROP_DELAY_MS = 800;
 
@@ -223,8 +224,9 @@ public class RR2Auton extends LinearOpMode {
 
             steering.setSpeedRatio(MEDIUM_SPEED_RATIO);
 
+            /*
             sleep(MOVE_DELAY_MS);
-
+            */
             steering.move(180);
             steering.finishSteering();
             sleep(convertDelay(1500));
@@ -378,7 +380,7 @@ public class RR2Auton extends LinearOpMode {
 
             steering.moveDegrees(90);
             steering.finishSteering();
-            sleep(convertDelay(2500));
+            sleep(convertDelay(2200));
             steering.stopAllMotors();
 
         }
@@ -419,7 +421,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(90);
         steering.finishSteering();
-        sleep(RETREAT_MS);
+        sleep(CRATER_RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -428,8 +430,8 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(270);
         steering.finishSteering();
-        sleep(RETREAT_MS);
-        steering.stopAllMotors();
+        sleep(CRATER_RETREAT_MS);
+        // steering.stopAllMotors();
 
         // Common right already attained
     }
@@ -440,7 +442,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(90);
         steering.finishSteering();
-        sleep(1500 + RETREAT_MS);
+        sleep(1500 + CRATER_RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -449,7 +451,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(270);
         steering.finishSteering();
-        sleep(RETREAT_MS);
+        sleep(CRATER_RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -461,7 +463,7 @@ public class RR2Auton extends LinearOpMode {
         steering.move(180);
         steering.finishSteering();
         sleep(convertDelay(1800)); // 1500
-        steering.stopAllMotors();
+        // steering.stopAllMotors();
     }
 
     public void knockRightCrater() {
@@ -484,7 +486,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(90);
         steering.finishSteering();
-        sleep(RETREAT_MS);
+        sleep(CRATER_RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -493,7 +495,7 @@ public class RR2Auton extends LinearOpMode {
 
         steering.move(270);
         steering.finishSteering();
-        sleep(RETREAT_MS);
+        sleep(CRATER_RETREAT_MS);
         steering.stopAllMotors();
 
         sleep(MOVE_DELAY_MS);
@@ -505,7 +507,7 @@ public class RR2Auton extends LinearOpMode {
         steering.move(180);
         steering.finishSteering();
         sleep(convertDelay(3300)); // 3000
-        steering.stopAllMotors();
+        // steering.stopAllMotors();
     }
 
     // --- Depot Side Knocking Methods ---
