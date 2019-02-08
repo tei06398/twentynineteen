@@ -231,7 +231,7 @@ public class RR2Auton extends LinearOpMode {
             */
             steering.move(180);
             steering.finishSteering();
-            sleep(convertDelay(1500));
+            sleep(convertDelay(2500));
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
@@ -246,7 +246,7 @@ public class RR2Auton extends LinearOpMode {
 
             steering.move(180);
             steering.finishSteering();
-            sleep(convertDelay(2000)); // 1500
+            sleep(convertDelay(1300)); // 1500
             steering.stopAllMotors();
 
             sleep(MOVE_DELAY_MS);
@@ -262,7 +262,7 @@ public class RR2Auton extends LinearOpMode {
 
             steering.move(270);
             steering.finishSteering();
-            sleep(convertDelay(4800));
+            sleep(convertDelay(4100));
             steering.stopAllMotors();
 
             autonFunction.dropMarker();
