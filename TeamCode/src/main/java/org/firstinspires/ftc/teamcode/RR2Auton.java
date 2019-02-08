@@ -398,7 +398,8 @@ public class RR2Auton extends LinearOpMode {
         }
 
         // To attempt to prevent the auton from dropping the marker if we don't reach the depot
-        autonFunction.undropMarker();
+        // Commented to allow for easier loading of marker when testing
+        // autonFunction.undropMarker();
     }
 
     // --- Crater Side Knocking Methods ---
