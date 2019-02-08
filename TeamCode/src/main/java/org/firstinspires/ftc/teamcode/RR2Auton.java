@@ -29,8 +29,8 @@ public class RR2Auton extends LinearOpMode {
     public static final long MOVE_DELAY_MS = 50;
     public static final long LONG_DELAY_MS = 300;
 
-    private static final long CRATER_ADVANCE_MS = 1000;
-    private static final long CRATER_RETREAT_MS = 800;
+    private static final long CRATER_ADVANCE_MS = 1100;
+    private static final long CRATER_RETREAT_MS = 850;
 
     private static final long DEPOT_TURN_MS = 3000;
     private static final long MARKER_DROP_DELAY_MS = 800;
@@ -288,7 +288,7 @@ public class RR2Auton extends LinearOpMode {
 
             steering.move(0);
             steering.finishSteering();
-            sleep(convertDelay(500));
+            sleep(convertDelay(150));
             steering.stopAllMotors();
 
             // -----
@@ -302,12 +302,12 @@ public class RR2Auton extends LinearOpMode {
 
             // ---
 
+            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
+
             steering.move(180);
             steering.finishSteering();
-            sleep(convertDelay(800));
+            sleep(convertDelay(300));
             steering.stopAllMotors();
-
-            steering.setSpeedRatio(NORMAL_SPEED_RATIO);
 
             // ---
 
