@@ -23,7 +23,7 @@ public class GunnerFunction {
     private int ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
     */
 
-    private final int ARM_UP = -405;
+    private final int ARM_UP = -420;
     private final int ARM_DOWN = 75;
 
     private static final double ARM_MOTOR_POWER = 0.055; // 0.05, 0.07
