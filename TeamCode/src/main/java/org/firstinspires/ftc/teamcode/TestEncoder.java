@@ -4,9 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Hardware;
 
 @Disabled
 @TeleOp(name="Encoder Tester", group="TeleOp OpMode")
@@ -17,6 +15,7 @@ public class TestEncoder extends OpMode {
     private DriverFunction driverFunction;
 
     private DcMotor winchMotor;
+    private DcMotor armMotor;
 
     boolean lock = false;
 
@@ -27,6 +26,7 @@ public class TestEncoder extends OpMode {
         driverFunction = new DriverFunction(hardwareMap, telemetry);
 
         winchMotor = hardwareMap.dcMotor.get("winchMotor");
+        armMotor = hardwareMap.dcMotor.get("armMotor");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -53,13 +53,16 @@ public class TestEncoder extends OpMode {
                 lock = true;
                 driverFunction.resetAllEncoders();
                 winchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 winchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
         }
         else {
             lock = false;
         }
 
+        telemetry.addData("Arm Motor", armMotor.getCurrentPosition());
         telemetry.addData("Winch Motor", winchMotor.getCurrentPosition());
         telemetry.addData("LB", driverFunction.getLbPosition());
         telemetry.addData("LF", driverFunction.getLfPosition());
