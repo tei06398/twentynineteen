@@ -255,8 +255,8 @@ public class RR2TeleOp extends OpMode {
     // Code to run ONCE after the driver hits STOP
     @Override
     public void stop() {
-        driverFunction.resetAllEncoders();
-        gunnerFunction.resetEncoders();
+        // driverFunction.resetAllEncoders();
+        // gunnerFunction.resetEncoders();
     }
 
 }
