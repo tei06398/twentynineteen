@@ -14,11 +14,17 @@ public class GunnerFunction {
     All the power and position constants are place here, for convenience
     We should probably pass them in instead, but this is way easier...
     */
+
+    /*
     private final int ARM_UP_ABS = -250; // -240, -313, -250
     private final int ARM_DOWN_ABS = 185; // -180
     private int ARM_OFFSET = -140; // -180 for fully down, 0 for level with top, 250 for up, -150 for sitting on sweeper
     private int ARM_UP = ARM_UP_ABS + ARM_OFFSET;
     private int ARM_DOWN = ARM_DOWN_ABS + ARM_OFFSET;
+    */
+
+    private final int ARM_UP = -405;
+    private final int ARM_DOWN = 75;
 
     private static final double ARM_MOTOR_POWER = 0.055; // 0.05, 0.07
     private final int IS_ARM_UP_THRESH = 5;
@@ -174,6 +180,7 @@ public class GunnerFunction {
     Drive the arm all the way down, and then reset the encoder
     This is pretty janky - will probably lock up the tele-op for ~4s if it works
      */
+    /*
     public void reZeroArm(RR2TeleOp rr2TeleOp) {
         // Set arm runmode to RUN_WITHOUT_ENCODERS
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -206,6 +213,7 @@ public class GunnerFunction {
         armMotor.setPower(ARM_MOTOR_POWER);
         armMotor.setTargetPosition(armMotor.getCurrentPosition());
     }
+    */
 
     // --- Slide Motor ---
 
