@@ -1,6 +1,7 @@
 ## Welcome!
 This GitHub repository contains the source code that is used to build the Android app used to control the RoboWarriors' *FIRST* Tech Challenge competition robot.  To use this SDK, follow the instructions below.
 
+This Branch is for the Postseason. Switch to master for the most recent commit from the game season.
 ## 6460 Programming Handbook
 September 24th, 2018
 
